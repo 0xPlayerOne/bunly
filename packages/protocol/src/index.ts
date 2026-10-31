@@ -1,6 +1,6 @@
 export { encodeFrame, FrameDecoder, MAX_FRAME_BYTES, ProtocolError } from './framing.ts'
 export { parseElement, type Element, type Style } from './elements.ts'
-export { MAX_TEXT_BYTES, MAX_TITLE_BYTES } from './values.ts'
+export { MAX_TEXT_BYTES } from './values.ts'
 export {
   DEFAULT_LIMITS,
   ERROR_CODES,

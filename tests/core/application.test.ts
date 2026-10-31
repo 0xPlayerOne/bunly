@@ -3,6 +3,7 @@ import {
   createApplication,
   NativeCommandError,
   NativeStateError,
+  UnsupportedFeatureError,
   type NativeApplication,
   type NativeBatch,
   type NativeNode,
@@ -46,6 +47,21 @@ async function controls(window: NativeWindow) {
 }
 
 describe('owned application API (headless subprocess)', () => {
+  test('exposes immutable capabilities and rejects unsupported JavaScript elements explicitly', () =>
+    withApp(async (app) => {
+      expect(app.capabilities).toEqual(['tree', 'input_revisions'])
+      expect(Object.isFrozen(app.capabilities)).toBe(true)
+      expect(Object.isFrozen(app.limits)).toBe(true)
+      const window = await app.openWindow({ title: 'Capability contract' })
+      await assert.rejects(
+        window.batch((batch) => batch.create({ kind: 'webview' } as never)),
+        (error: unknown) =>
+          error instanceof UnsupportedFeatureError && error.feature === 'element:webview'
+      )
+      expect(window.revision).toBe(0)
+      expect(app.diagnostics.nodes).toBe(1)
+    }))
+
   test('serializes transactions across windows, disposes subtrees and closes idempotently', () =>
     withApp(async (app) => {
       const [one, two] = await Promise.all([
@@ -127,10 +143,20 @@ describe('owned application API (headless subprocess)', () => {
       })
       assert.throws(() => escaped!.create({ kind: 'text', text: 'late' }), /already returned/)
       await assert.rejects(
-        window.batch(async () => {}),
+        // @ts-expect-error JavaScript callers must also get the runtime contract failure.
+        window.batch(async (batch) => {
+          await Promise.resolve()
+          batch.create({ kind: 'text', text: 'after await' })
+        }),
         /synchronous/
       )
+      // The rejected async callback must be consumed after its transaction is revoked.
+      await new Promise<void>((resolve) => setImmediate(resolve))
+      // oxlint-disable-next-line unicorn/no-thenable -- A non-callable field is deliberately not a PromiseLike.
+      const ordinary = { then: 'ordinary property' }
+      expect(await window.batch(() => ordinary)).toBe(ordinary)
       expect(window.revision).toBe(0)
+      expect(app.diagnostics.nodes).toBe(1)
     }))
 
   test('validates attachment, cycles, ordering, root disposal and immutable node kinds', () =>

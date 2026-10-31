@@ -25,6 +25,8 @@ type Callback = { windowId: number; nodeId: number; event: ClickEvent | InputEve
 class Application implements NativeApplication {
   readonly closed: Promise<void>
   readonly limits: Readonly<Limits>
+  // NativeHost.launch has negotiated both mandatory protocol features.
+  readonly capabilities = Object.freeze(['tree', 'input_revisions'] as const)
   readonly windows = new Map<number, Window>()
   private tail: Promise<void> = Promise.resolve()
   private queued = 0
@@ -250,9 +252,13 @@ class Window implements NativeWindow {
         if (
           value !== null &&
           (typeof value === 'object' || typeof value === 'function') &&
-          'then' in value
-        )
+          typeof (value as { then?: unknown }).then === 'function'
+        ) {
+          // Reject the async contract while consuming a later rejection from
+          // the already-started callback. Its escaped transaction is revoked.
+          void Promise.resolve(value).catch(() => {})
           throw new NativeStateError('invalid_state', 'Batch callbacks must be synchronous')
+        }
         transaction.validate()
       } finally {
         transaction.finish()

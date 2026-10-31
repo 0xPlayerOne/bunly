@@ -1,5 +1,6 @@
 export { createApplication } from './application.ts'
-export { NativeStateError } from './types.ts'
+export { NativeStateError, UnsupportedFeatureError } from './types.ts'
+export { ProtocolError } from '@bun-native/protocol'
 export { NativeCommandError } from '@bun-native/runtime'
 export type {
   ApplicationOptions,
@@ -11,6 +12,7 @@ export type {
   Listener,
   NativeApplication,
   NativeBatch,
+  NativeCapability,
   NativeNode,
   NativeWindow,
   Style,

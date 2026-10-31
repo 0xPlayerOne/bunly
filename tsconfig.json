@@ -5,6 +5,8 @@
     "module": "Preserve",
     "moduleResolution": "Bundler",
     "allowImportingTsExtensions": true,
+    "allowJs": true,
+    "checkJs": true,
     "verbatimModuleSyntax": true,
     "strict": true,
     "noUncheckedIndexedAccess": true,
@@ -23,7 +25,8 @@
     "scripts/**/*.ts",
     "tests/**/*.ts",
     "examples/**/*.ts",
-    "benchmarks/**/*.ts"
+    "benchmarks/**/*.ts",
+    "tests/native/javascript.js"
   ],
   "exclude": ["**/dist/**", "**/node_modules/**", "tests/fixtures/**"]
 }

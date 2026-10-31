@@ -36,6 +36,9 @@ The implementation agent may accept an ADR autonomously within the owner's exper
 
 - [0001 — Bun Native direction](0001-bun-native-direction.md)
 - [0002 — Own a separate GPUI process](0002-owned-native-process.md)
+- [0003 — Trust, authority and lifetime at the native boundary](0003-bridge-security.md)
+- [0004 — Shared public TS/JS application API](0004-public-api.md)
+- [Native host protocol 2](../native-abi.md)
 - [Active roadmap](https://github.com/0xPlayerOne/bun-native/issues/1)
 - [Architecture overview](../architecture.md)
 - [Engineering quality](../engineering-quality.md)

@@ -1,9 +1,10 @@
-import type { Element, Limits, Style } from '@bun-native/protocol'
+import type { Capability, Element, Limits, Style } from '@bun-native/protocol'
 import type { HostOptions } from '@bun-native/runtime'
 
 export type { Element, Style }
 export type ApplicationOptions = HostOptions
 export type ElementKind = Element['kind']
+export type NativeCapability = Capability
 declare const nodeType: unique symbol
 
 /** Opaque identity. Copying its properties does not create a usable handle. */
@@ -42,7 +43,7 @@ export interface NativeBatch {
   ): void
   set<K extends Exclude<ElementKind, 'input'>>(
     node: NativeNode<K>,
-    element: Extract<Element, { kind: K }>
+    element: Extract<Element, { kind: NoInfer<K> }>
   ): void
   /** Index is evaluated after detaching the child from its previous parent. */
   insert(parent: NativeNode<'box'>, child: NativeNode, index: number): void
@@ -62,7 +63,9 @@ export interface NativeWindow {
   readonly closed: Promise<void>
   readonly revision: number
   /** The callback is synchronous. Its changes commit atomically after acknowledgement. */
-  batch<T>(update: (batch: NativeBatch) => T): Promise<T>
+  batch<T>(
+    update: (batch: NativeBatch) => T & (T extends PromiseLike<unknown> ? never : unknown)
+  ): Promise<T>
   onClick(node: NativeNode<'button'>, listener: Listener<ClickEvent>): () => void
   onInput(node: NativeNode<'input'>, listener: Listener<InputEvent>): () => void
   input(node: NativeNode<'input'>): InputState
@@ -73,6 +76,7 @@ export interface NativeWindow {
 export interface NativeApplication {
   readonly closed: Promise<void>
   readonly limits: Readonly<Limits>
+  readonly capabilities: readonly NativeCapability[]
   readonly diagnostics: Readonly<{
     windows: number
     nodes: number
@@ -93,5 +97,12 @@ export class NativeStateError extends Error {
     message: string
   ) {
     super(message)
+  }
+}
+
+export class UnsupportedFeatureError extends Error {
+  override readonly name = 'UnsupportedFeatureError'
+  constructor(readonly feature: string) {
+    super('Unsupported native feature: ' + feature)
   }
 }

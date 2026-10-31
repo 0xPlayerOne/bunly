@@ -1,8 +1,26 @@
 import { parseElement, type Element, type Limits, type Operation } from '@bun-native/protocol'
-import { NativeStateError, type ElementKind, type NativeBatch, type NativeNode } from './types.ts'
+import {
+  NativeStateError,
+  UnsupportedFeatureError,
+  type ElementKind,
+  type NativeBatch,
+  type NativeNode,
+} from './types.ts'
 
 const identities = new WeakMap<NativeNode, number>()
 const encoder = new TextEncoder()
+const elementKinds: readonly string[] = ['box', 'text', 'button', 'input']
+
+function normalize(element: Element): Element {
+  if (
+    element !== null &&
+    typeof element === 'object' &&
+    typeof element.kind === 'string' &&
+    !elementKinds.includes(element.kind)
+  )
+    throw new UnsupportedFeatureError('element:' + element.kind)
+  return parseElement(element)
+}
 
 export interface NodeState {
   id: number
@@ -22,7 +40,7 @@ export function makeNode<E extends Element>(
   return {
     id,
     handle,
-    element: parseElement(element),
+    element: normalize(element),
     parent: undefined,
     children: [],
     inputRevision: 0,
@@ -72,7 +90,7 @@ export class Transaction implements NativeBatch {
     this.check()
     if (this.nodes.size >= this.limits.max_nodes_per_window)
       throw new NativeStateError('limit_exceeded', 'Window node limit exceeded')
-    const normalized = parseElement(element)
+    const normalized = normalize(element)
     const node = makeNode(this.allocateId(), normalized)
     this.nodes.set(node.id, node)
     this.operations.push({ type: 'create', node_id: node.id, element: node.element })
@@ -86,12 +104,12 @@ export class Transaction implements NativeBatch {
   ): void
   set<K extends Exclude<ElementKind, 'input'>>(
     node: NativeNode<K>,
-    element: Extract<Element, { kind: K }>
+    element: Extract<Element, { kind: NoInfer<K> }>
   ): void
   set(handle: NativeNode, value: Element, expectedInputRevision?: number): void {
     this.check()
     const node = own(this.nodes, handle)
-    const element = parseElement(value)
+    const element = normalize(value)
     if (element.kind !== node.element.kind)
       throw new NativeStateError(
         'invalid_state',
