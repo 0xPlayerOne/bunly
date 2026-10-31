@@ -3,12 +3,16 @@
 set -euo pipefail
 
 if (( $# < 3 )); then
-  echo 'usage: native-linux-session.sh NEW_OUTPUT_DIR development|aot APP [ARGS...]' >&2
+  echo 'usage: native-linux-session.sh NEW_OUTPUT_DIR {development|aot|aot-input-race|--} COMMAND [ARGS...]' >&2
   exit 1
 fi
 evidence_dir=$1
 mode=$2
 shift 2
+if [[ "$mode" != development && "$mode" != aot && "$mode" != aot-input-race && "$mode" != -- ]]; then
+  echo 'Choose development, aot, aot-input-race, or -- followed by an explicit command' >&2
+  exit 1
+fi
 mkdir "$evidence_dir"
 evidence_dir=$(cd "$evidence_dir" && pwd)
 export XDG_RUNTIME_DIR="$evidence_dir/runtime"
@@ -47,22 +51,69 @@ for attempt in {1..50}; do
 done
 xprop -root _NET_SUPPORTING_WM_CHECK | grep -q 'window id'
 
+if [[ "$mode" == -- ]]; then
+  "$@"
+  exit
+fi
+
 if [[ "$mode" == development ]]; then
   # This test reopens five real windows in one host and checks invalid states.
   timeout 45s bun tests/native/lifecycle.ts 2>&1 | tee "$evidence_dir/lifecycle.log"
 fi
 
-python3 scripts/quality/native-input-linux.py \
-  --output "$evidence_dir/click" --mode "$mode" --timeout 30 --expect-software-renderer \
-  --click 100 145 \
-  --expect-event '{"type":"click","stage":"bun-application"}' \
-  --expect-render '{"type":"rendered","stage":"native-paint","text":"Clicks: 1","input":""}' \
-  -- "$@"
+# Share the independent full-tree expectations with the repeated baseline.
+snapshot() {
+  python3 - "$@" <<'PY'
+import importlib.util
+import json
+import sys
+
+spec = importlib.util.spec_from_file_location("native_input_linux", "scripts/quality/native-input-linux.py")
+driver = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(driver)
+print(json.dumps(driver.fixture_paint(int(sys.argv[1]), sys.argv[2], sys.argv[3])))
+PY
+}
+
+initial=$(snapshot 1 'Clicks: 0' '')
+execution_mode=$mode
+if [[ "$mode" == aot-input-race ]]; then
+  execution_mode=aot
+fi
+driver=(python3 scripts/quality/native-input-linux.py --mode "$execution_mode" --timeout 30
+  --title 'Bun Native BN1' --expect-software-renderer --expect-initial-render "$initial")
+
+input_race() {
+  "${driver[@]}" --output "$evidence_dir/input-race" --key ctrl+a --text 'Bun Native {nonce}' \
+    --expect-event '{"type":"input","stage":"bun-application","sequence":43,"input_revision":43,"value":"Bun Native {nonce}"}' \
+    --expect-render "$(snapshot 2 'Input preserved after stale rejection' 'Bun Native {nonce}')" \
+    -- "$@"
+}
+
+if [[ "$mode" == aot-input-race ]]; then
+  input_race "$@"
+  exit
+fi
+
+"${driver[@]}" --output "$evidence_dir/click" --click 100 130 \
+  --expect-event '{"type":"click","stage":"bun-application","sequence":1,"target":"increment"}' \
+  --expect-render "$(snapshot 2 'Clicks: 1' '')" -- "$@"
 
 # A fresh launch after a verified OS close must regain input focus and work.
-python3 scripts/quality/native-input-linux.py \
-  --output "$evidence_dir/input" --mode "$mode" --timeout 30 --expect-software-renderer \
-  --key ctrl+a --text 'Bun Native {nonce}' \
-  --expect-event '{"type":"input","stage":"bun-application","value":"Bun Native {nonce}"}' \
-  --expect-render '{"type":"rendered","stage":"native-paint","text":"Clicks: 0","input":"Bun Native {nonce}"}' \
+"${driver[@]}" --output "$evidence_dir/input" --key ctrl+a --text 'Bun Native {nonce}' \
+  --expect-event '{"type":"input","stage":"bun-application","sequence":43,"input_revision":43,"value":"Bun Native {nonce}"}' \
+  --expect-render "$(snapshot 1 'Clicks: 0' 'Bun Native {nonce}')" -- "$@"
+
+# Clicking focuses the actual button. Enter must produce a distinct second
+# application event and a second committed tree update, not reuse click evidence.
+"${driver[@]}" --output "$evidence_dir/keyboard" --click 100 130 --key Return \
+  --expect-event '{"type":"click","stage":"bun-application","sequence":1,"target":"increment"}' \
+  --expect-event '{"type":"click","stage":"bun-application","sequence":2,"target":"increment"}' \
+  --expect-render "$(snapshot 3 'Clicks: 2' '')" \
   -- "$@"
+
+if [[ "$mode" == development ]]; then
+  # The raw runtime fixture rejects an old input revision, then commits an
+  # unrelated label update. Native input must survive both operations unchanged.
+  input_race bun tests/native/input-race.ts
+fi

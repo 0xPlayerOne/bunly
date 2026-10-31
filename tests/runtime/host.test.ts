@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'bun:test'
-import { NativeHost } from '@bun-native/runtime'
+import { NativeCommandError, NativeHost } from '@bun-native/runtime'
 import { ProtocolError, type Command, type Element } from '@bun-native/protocol'
-import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 
@@ -50,6 +50,31 @@ async function deadline<T>(operation: Promise<T>, name: string): Promise<T> {
   }
 }
 
+async function rejectedError(operation: Promise<unknown>): Promise<Error> {
+  // Pinned Bun's .rejects matcher stalls Windows pipe callbacks while waiting.
+  // Await the real operation before making synchronous assertions about it.
+  try {
+    await operation
+  } catch (error) {
+    if (error instanceof Error) return error
+    throw error
+  }
+  throw new Error('Expected operation to reject')
+}
+
+function holderIsAlive(directory: string): boolean {
+  const ownedPid = Number(readFileSync(join(directory, 'ready'), 'utf8'))
+  if (!Number.isSafeInteger(ownedPid) || ownedPid <= 0)
+    throw new Error('Invalid test-owned pipe holder PID')
+  try {
+    process.kill(ownedPid, 0)
+    return true
+  } catch (error) {
+    if (error instanceof Error && 'code' in error && error.code === 'ESRCH') return false
+    throw error
+  }
+}
+
 async function releasePipeHolder(directory: string): Promise<void> {
   // Only this test's holder reads its private release file. The holder also has
   // a hard self-expiry; cleanup never signals an unrelated process.
@@ -57,7 +82,10 @@ async function releasePipeHolder(directory: string): Promise<void> {
   if (!existsSync(join(directory, 'ready'))) return
   const finished = join(directory, 'finished')
   const until = performance.now() + 1_500
-  while (!existsSync(finished) && performance.now() < until) await Bun.sleep(10)
+  while (!existsSync(finished) && performance.now() < until) {
+    if (!holderIsAlive(directory)) return
+    await Bun.sleep(10)
+  }
   if (!existsSync(finished)) throw new Error('Test-owned pipe holder did not release')
 }
 
@@ -74,14 +102,22 @@ async function withPipeHolder(
       args: [fixture, `inherited-pipe-${mode}`, directory],
     })
     await run(host, finished)
+    // A terminated descendant cannot establish held-open-pipe coverage.
+    expect(holderIsAlive(directory)).toBe(true)
   } finally {
-    await releasePipeHolder(directory)
-    if (host)
-      await deadline(
-        host.shutdown().catch(() => {}),
-        'host cleanup'
-      )
-    rmSync(directory, { recursive: true, force: true })
+    try {
+      await releasePipeHolder(directory)
+    } finally {
+      try {
+        if (host)
+          await deadline(
+            host.shutdown().catch(() => {}),
+            'host cleanup'
+          )
+      } finally {
+        rmSync(directory, { recursive: true, force: true })
+      }
+    }
   }
 }
 
@@ -130,16 +166,18 @@ describe('native process transport (headless protocol peer)', () => {
     expect(await host.exited).toBe(0)
     expect(await events.next()).toEqual({ done: true, value: undefined })
     await host.shutdown()
-    await expect(host.send({ type: 'close', window_id: 1 })).rejects.toThrow('not running')
+    expect((await rejectedError(host.send({ type: 'close', window_id: 1 }))).message).toContain(
+      'not running'
+    )
   })
 
   test('command rejection preserves the healthy session', async () => {
     const host = await NativeHost.launch(options())
     try {
       await host.send(open)
-      await expect(host.send(batch({ kind: 'text', text: 'reject' }))).rejects.toThrow(
-        'invalid_state'
-      )
+      const error = await rejectedError(host.send(batch({ kind: 'text', text: 'reject' })))
+      expect(error).toBeInstanceOf(NativeCommandError)
+      expect(error).toMatchObject({ code: 'invalid_state', requestId: 3 })
       await host.send(batch({ kind: 'text', text: 'accepted' }))
     } finally {
       await host.shutdown()
@@ -158,24 +196,35 @@ describe('native process transport (headless protocol peer)', () => {
   })
 
   test.each([
-    'wrong-version',
-    'missing-capability',
-    'bad-json',
-    'wrong-id',
-    'wrong-ack',
-    'duplicate-ready',
-    'exit',
-  ])('rejects and reaps a host with %s', async (mode) => {
-    await expect(NativeHost.launch(options(mode))).rejects.toThrow()
+    ['wrong-version', 'Native protocol version mismatch'],
+    ['missing-capability', 'Native host lacks the required tree/input capabilities'],
+    ['bad-json', 'Invalid UTF-8 or JSON in native frame'],
+    ['wrong-id', 'Unknown native response id'],
+    ['wrong-ack', 'Native response does not match its request, owner or revision'],
+    ['duplicate-ready', 'Unexpected ready event'],
+  ])('rejects and reaps a host with %s', async (mode, message) => {
+    const error = await rejectedError(NativeHost.launch(options(mode)))
+    expect(error).toBeInstanceOf(ProtocolError)
+    expect(error.message).toBe(message)
+  })
+
+  test('rejects and reaps a host that exits during startup', async () => {
+    const error = await rejectedError(NativeHost.launch(options('exit')))
+    expect(error.message).toMatch(
+      /^Native (output closed before shutdown|host exited unexpectedly \(23\))/
+    )
   })
 
   test('bounds startup when the native process stops responding', async () => {
-    await expect(NativeHost.launch(options('silent', 100))).rejects.toThrow('timed out')
+    const error = await rejectedError(NativeHost.launch(options('silent', 100)))
+    expect(error.message).toBe('Native hello request 1 timed out')
   })
 
   test('rejects invalid options before spawning', async () => {
-    await expect(NativeHost.launch({ executable: 'relative' })).rejects.toThrow('absolute')
-    await expect(NativeHost.launch(options('normal', 0))).rejects.toThrow('requestTimeoutMs')
+    const pathError = await rejectedError(NativeHost.launch({ executable: 'relative' }))
+    expect(pathError.message).toContain('absolute')
+    const timeoutError = await rejectedError(NativeHost.launch(options('normal', 0)))
+    expect(timeoutError.message).toContain('requestTimeoutMs')
   })
 
   test('bounds an unconsumed event flood and terminates the native process', async () => {
@@ -183,12 +232,15 @@ describe('native process transport (headless protocol peer)', () => {
     await host.send(open)
     await host.send(batch({ kind: 'button', text: 'Flood' }))
     await host.exited
-    await expect(host.shutdown()).rejects.toThrow('event limit')
+    expect((await rejectedError(host.shutdown())).message).toBe('Native event limit exceeded')
   })
 
   test('bounds shutdown after native exit when inherited pipes stay open', async () => {
     await withPipeHolder('shutdown', async (host, finished) => {
-      await expect(deadline(host.shutdown(), 'shutdown')).rejects.toThrow('Native')
+      const error = await rejectedError(deadline(host.shutdown(), 'shutdown'))
+      expect(error.message).toMatch(
+        /^Native (host did not exit|output remained open after host exit)$/
+      )
       expect(await host.exited).toBe(0)
       expect(existsSync(finished)).toBe(false)
     })
@@ -202,7 +254,8 @@ describe('native process transport (headless protocol peer)', () => {
       // command timeout to rescue the event iterator when the process exits.
       await host.send(open)
       await host.send(batch({ kind: 'text', text: 'exit-after-ack' }))
-      await expect(pending).rejects.toThrow('Native')
+      const error = await rejectedError(pending)
+      expect(error.message).toBe('Native output remained open after host exit')
       expect(await host.exited).toBe(23)
       expect(existsSync(finished)).toBe(false)
     })
@@ -213,9 +266,9 @@ describe('native process transport (headless protocol peer)', () => {
     async (mode) => {
       const host = await NativeHost.launch(options(mode))
       try {
-        await expect(deadline(host.send(open), 'invalid opened response')).rejects.toBeInstanceOf(
-          ProtocolError
-        )
+        const error = await rejectedError(deadline(host.send(open), 'invalid opened response'))
+        expect(error).toBeInstanceOf(ProtocolError)
+        expect(error.message).toBe('Native response does not match its request, owner or revision')
       } finally {
         await deadline(
           host.shutdown().catch(() => {}),
@@ -231,9 +284,11 @@ describe('native process transport (headless protocol peer)', () => {
       const host = await NativeHost.launch(options(mode))
       try {
         await host.send(open)
-        await expect(
+        const error = await rejectedError(
           deadline(host.send(batch({ kind: 'text', text: 'Update' })), 'invalid applied response')
-        ).rejects.toBeInstanceOf(ProtocolError)
+        )
+        expect(error).toBeInstanceOf(ProtocolError)
+        expect(error.message).toBe('Native response does not match its request, owner or revision')
       } finally {
         await deadline(
           host.shutdown().catch(() => {}),
@@ -252,7 +307,9 @@ describe('native process transport (headless protocol peer)', () => {
         await host.send(open)
         await host.send(batch({ kind: 'button', text: 'Sequence test' }))
         await deadline(host.exited, 'invalid event sequence')
-        await expect(events.next()).rejects.toBeInstanceOf(ProtocolError)
+        const error = await rejectedError(events.next())
+        expect(error).toBeInstanceOf(ProtocolError)
+        expect(error.message).toBe('Native event sequence is out of order')
       } finally {
         await deadline(
           host.shutdown().catch(() => {}),

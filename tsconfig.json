@@ -18,6 +18,12 @@
     "noEmit": true,
     "types": ["bun"]
   },
-  "include": ["packages/**/*.ts", "scripts/**/*.ts", "tests/**/*.ts", "examples/**/*.ts"],
+  "include": [
+    "packages/**/*.ts",
+    "scripts/**/*.ts",
+    "tests/**/*.ts",
+    "examples/**/*.ts",
+    "benchmarks/**/*.ts"
+  ],
   "exclude": ["**/dist/**", "**/node_modules/**", "tests/fixtures/**"]
 }

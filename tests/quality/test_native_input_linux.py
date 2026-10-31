@@ -1,5 +1,6 @@
 """Headless driver safety tests. These do not verify a native window or input."""
 
+import copy
 import importlib.util
 import io
 import json
@@ -61,6 +62,56 @@ class EvidenceTests(unittest.TestCase):
                 output.write("\n")
             self.assertEqual(len(DRIVER.read_events(path, "run", 0)), 1)
 
+    def test_paint_requires_native_stage_full_tree_and_matching_revisions(self):
+        expected = {
+            "type": "rendered",
+            "window_id": 1,
+            "tree_revision": 2,
+            "nodes": [
+                {
+                    "node_id": 1,
+                    "element": {"kind": "box", "style": {}},
+                    "children": [2],
+                },
+                {
+                    "node_id": 2,
+                    "element": {
+                        "kind": "input",
+                        "value": "native edit",
+                        "placeholder": "",
+                        "style": {},
+                    },
+                    "children": [],
+                    "input_revision": 11,
+                },
+            ],
+        }
+        painted = {"stage": "native-paint", "nonce": "run", **expected}
+        self.assertTrue(DRIVER.matches_paint(painted, expected))
+        for change in [
+            {"type": "ack"},
+            {"stage": "bun-application"},
+            {"window_id": 2},
+            {"tree_revision": 1},
+            {"nodes": expected["nodes"][:1]},
+            {"status": "omitted", "reason": "evidence_record_limit"},
+        ]:
+            with self.subTest(change=change):
+                self.assertFalse(DRIVER.matches_paint({**painted, **change}, expected))
+        stale = copy.deepcopy(painted)
+        stale["nodes"][1]["input_revision"] = 10
+        self.assertFalse(DRIVER.matches_paint(stale, expected))
+        stale["nodes"][1]["input_revision"] = 11
+        stale["nodes"][1]["element"]["value"] = "stale application echo"
+        self.assertFalse(DRIVER.matches_paint(stale, expected))
+
+    def test_keyboard_activation_requires_a_distinct_event_sequence(self):
+        click = {"type": "click", "target": "increment", "sequence": 1}
+        keyboard = {"type": "click", "target": "increment", "sequence": 2}
+        self.assertTrue(DRIVER.matches(click, click))
+        self.assertFalse(DRIVER.matches(click, keyboard))
+        self.assertTrue(DRIVER.matches(keyboard, keyboard))
+
     def test_evidence_size_is_bounded(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "events.jsonl"
@@ -119,16 +170,13 @@ class EvidenceTests(unittest.TestCase):
         "Linux process IDs and /proc must share a PID namespace",
     )
     def test_real_process_tree_is_observed_and_stopped_without_killing_the_test(self):
+        DRIVER.enable_subreaper()
         app = subprocess.Popen(
             [
                 sys.executable,
                 "-c",
-                "import signal,subprocess,sys,time\n"
+                "import subprocess,sys,time\n"
                 'child=subprocess.Popen([sys.executable,"-c","import time; time.sleep(30)"])\n'
-                "def stop(_signal,_frame):\n"
-                "    child.wait(timeout=2)\n"
-                "    raise SystemExit(0)\n"
-                "signal.signal(signal.SIGTERM,stop)\n"
                 "print(child.pid,flush=True)\n"
                 "time.sleep(30)",
             ],

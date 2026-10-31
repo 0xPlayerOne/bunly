@@ -9,6 +9,7 @@ Screenshots are evidence, never automatically asserted to contain expected text.
 """
 
 import argparse
+import ctypes
 import hashlib
 import json
 import os
@@ -37,6 +38,22 @@ def proc_identity_matches():
         return int(Path("/proc/self/stat").read_text().split(" ", 1)[0]) == os.getpid()
     except (OSError, ValueError):
         return False
+
+
+def enable_subreaper():
+    """Adopt orphaned descendants so cleanup can reap them without relying on PID1."""
+    # Process-local Linux API; no privilege or system-wide setting is changed.
+    # https://man7.org/linux/man-pages/man2/PR_SET_CHILD_SUBREAPER.2const.html
+    try:
+        prctl = ctypes.CDLL(None, use_errno=True).prctl
+    except (AttributeError, OSError) as error:
+        raise Unsupported("Linux child-subreaper support is unavailable") from error
+    prctl.argtypes = [ctypes.c_int, *([ctypes.c_ulong] * 4)]
+    prctl.restype = ctypes.c_int
+    if prctl(36, 1, 0, 0, 0) != 0:  # PR_SET_CHILD_SUBREAPER
+        raise Unsupported(
+            f"Cannot supervise orphaned children: {os.strerror(ctypes.get_errno())}"
+        )
 
 
 def run(command, timeout=3):
@@ -118,11 +135,88 @@ def matches(event, expected):
     )
 
 
+def matches_paint(event, expected):
+    return (
+        event.get("stage") == "native-paint"
+        and event.get("status") != "omitted"
+        and matches(event, expected)
+    )
+
+
+def fixture_paint(tree_revision, label, value=""):
+    """Independent full-tree expectation shared by native smoke and baseline runs."""
+    elements = [
+        {
+            "kind": "box",
+            "style": {
+                "direction": "column",
+                "gap": 12,
+                "padding": 24,
+                "background": 0xF4F5F7,
+            },
+        },
+        {"kind": "text", "text": "Bun Native", "style": {"font_size": 28}},
+        {"kind": "text", "text": label, "style": {}},
+        {
+            "kind": "button",
+            "text": "Increment",
+            "disabled": False,
+            "style": {"width": 160, "height": 44},
+        },
+        {"kind": "text", "text": "Native editable input", "style": {}},
+        {
+            "kind": "input",
+            "value": value,
+            "placeholder": "Type here…",
+            "style": {"width": "fill", "font_size": 24},
+        },
+    ]
+    nodes = [
+        {
+            "node_id": index + 1,
+            "element": element,
+            "children": [2, 3, 4, 5, 6] if index == 0 else [],
+        }
+        for index, element in enumerate(elements)
+    ]
+    # The smoke fixture types only ASCII; one native edit per typed character.
+    nodes[-1]["input_revision"] = len(value.replace("{nonce}", "0" * 32))
+    return {
+        "type": "rendered",
+        "stage": "native-paint",
+        "window_id": 1,
+        "tree_revision": tree_revision,
+        "nodes": nodes,
+    }
+
+
+def interrupted(signum, _frame):
+    raise InterruptedError(f"Native input driver received signal {signum}")
+
+
 def cleanup(app, observed):
     """Signal only this launched session and identity-checked observed descendants."""
+
+    def reap_adopted():
+        app.poll()
+        table = process_table()
+        for pid, started in observed.items():
+            row = table.get(pid)
+            if (
+                pid != app.pid
+                and row is not None
+                and row["start_ticks"] == started
+                and row["parent_pid"] == os.getpid()
+                and row["state"] == "Z"
+            ):
+                try:
+                    os.waitpid(pid, os.WNOHANG)
+                except ChildProcessError:
+                    pass
+
     forced = False
     for sig, grace in [(signal.SIGTERM, 2), (signal.SIGKILL, 1)]:
-        app.poll()
+        reap_adopted()
         table = process_table()
         alive = [
             row
@@ -150,7 +244,7 @@ def cleanup(app, observed):
         except subprocess.TimeoutExpired:
             pass
         time.sleep(0.1)
-    app.poll()
+    reap_adopted()
     table = process_table()
     remaining = [
         pid
@@ -180,7 +274,7 @@ def main():
         "--output", type=Path, required=True, help="New evidence directory"
     )
     parser.add_argument(
-        "--title", default="Bun Native BN0", help="Exact X11 window title"
+        "--title", default="Bun Native BN1", help="Exact X11 window title"
     )
     parser.add_argument("--mode", required=True, choices=["development", "aot"])
     parser.add_argument("--timeout", type=float, default=20)
@@ -200,6 +294,10 @@ def main():
     )
     parser.add_argument(
         "--expect-render", help="JSON subset with type=rendered; app-reported only"
+    )
+    parser.add_argument(
+        "--expect-initial-render",
+        help="Native paint JSON subset required before idle sampling or input",
     )
     parser.add_argument(
         "--expect-software-renderer",
@@ -253,6 +351,7 @@ def main():
             "window": "not-run",
             "os_input": "not-run",
             "app_input_event": "unsupported",
+            "app_initial_render_report": "not-required",
             "app_render_report": "unsupported",
             "pixel_or_text_assertion": "unsupported",
             "os_close": "not-run",
@@ -265,6 +364,7 @@ def main():
     threads = []
     observed = {}
     started = time.monotonic()
+    previous_sigterm = signal.signal(signal.SIGTERM, interrupted)
 
     def sample(phase="interaction"):
         rows = owned_processes(app.pid, process_table())
@@ -311,6 +411,8 @@ def main():
             raise Unsupported(
                 "Process IDs and /proc belong to different namespaces; ownership and RSS cannot be verified"
             )
+        enable_subreaper()
+        report["platform"]["child_subreaper"] = True
         missing = [tool for tool in ["xdotool", "import"] if not shutil.which(tool)]
         if missing:
             raise Unsupported(
@@ -336,6 +438,11 @@ def main():
             if args.expect_render
             else None
         )
+        initial_render = (
+            json.loads(args.expect_initial_render.replace("{nonce}", nonce))
+            if args.expect_initial_render
+            else None
+        )
         if any(
             not isinstance(item, dict) or item.get("type") not in ["input", "click"]
             for item in expectations
@@ -343,12 +450,18 @@ def main():
             raise RuntimeError(
                 "--expect-event must describe an actual input or click event"
             )
-        if render is not None and (
-            not isinstance(render, dict) or render.get("type") != "rendered"
-        ):
-            raise RuntimeError(
-                "--expect-render must describe type=rendered, never an update acknowledgement"
-            )
+        for name, expected in [
+            ("--expect-render", render),
+            ("--expect-initial-render", initial_render),
+        ]:
+            if expected is not None and (
+                not isinstance(expected, dict)
+                or expected.get("type") != "rendered"
+                or expected.get("stage", "native-paint") != "native-paint"
+            ):
+                raise RuntimeError(
+                    f"{name} must describe type=rendered from native-paint, never an acknowledgement"
+                )
         report["scenario"] = {
             "click": args.click,
             "keys": args.key,
@@ -356,6 +469,7 @@ def main():
             if args.text is not None
             else None,
             "expected_events": expectations,
+            "expected_initial_render": initial_render,
             "expected_render": render,
         }
         report["native_host"] = {
@@ -431,16 +545,29 @@ def main():
             time.monotonic() - started
         ) * 1000
         report["window_id"] = window
-        # Wait for the initial paint traversal before targeting the rendered controls.
-        if render is not None or args.idle_seconds:
-            while (
-                "time_to_first_paint_report_observed_ms" not in report["measurements"]
-            ):
-                observe_first_paint()
+        # The first traversal can contain only the root, before the app's initial
+        # batch. Match the mounted tree before targeting controls or sampling idle.
+        if initial_render is not None or render is not None or args.idle_seconds:
+            if initial_render is not None:
+                report["checks"]["app_initial_render_report"] = "failed"
+            while True:
+                records = observe_first_paint()
+                if "time_to_first_paint_report_observed_ms" in report[
+                    "measurements"
+                ] and (
+                    initial_render is None
+                    or any(matches_paint(event, initial_render) for event in records)
+                ):
+                    if initial_render is not None:
+                        report["checks"]["app_initial_render_report"] = "passed"
+                        report["measurements"][
+                            "time_to_expected_initial_paint_report_observed_ms"
+                        ] = (time.monotonic() - started) * 1000
+                    break
                 sample("startup")
                 if app.poll() is not None or time.monotonic() >= deadline:
                     raise RuntimeError(
-                        "The native window did not report its initial paint"
+                        "The native window did not report the required initial paint"
                     )
                 time.sleep(0.1)
         if args.idle_seconds:
@@ -537,8 +664,7 @@ def main():
                 any(matches(event, item) for event in events) for item in expectations
             )
             render_ok = render is not None and any(
-                event.get("stage") == "native-paint" and matches(event, render)
-                for event in events
+                matches_paint(event, render) for event in events
             )
             for matched, key in [
                 (input_ok, "input_start_to_matching_app_event_observed_ms"),
@@ -607,6 +733,8 @@ def main():
     except (OSError, ValueError, RuntimeError, subprocess.TimeoutExpired) as error:
         report.update(status="failed", error=str(error))
     finally:
+        # Finish bounded child cleanup even if a supervisor repeats termination.
+        signal.signal(signal.SIGTERM, signal.SIG_IGN)
         if app is not None:
             try:
                 report["cleanup"] = cleanup(app, observed)
@@ -645,6 +773,7 @@ def main():
                 }
             )
         )
+        signal.signal(signal.SIGTERM, previous_sigterm)
     return (
         0
         if report["status"] == "passed"

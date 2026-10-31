@@ -10,7 +10,7 @@
     "check": "bun run format:check && bun run lint && bun run typecheck && bun run check:boundaries && bun run test && bun run build",
     "format": "bun fmt --no-script .",
     "format:check": "bun fmt --no-script --check .",
-    "lint": "oxlint --deny-warnings packages scripts tests examples",
+    "lint": "oxlint --deny-warnings packages scripts tests examples benchmarks",
     "typecheck": "bun --check --tsconfig-override tsconfig.json",
     "check:boundaries": "bun scripts/quality/boundaries.ts",
     "test": "bun test tests",
@@ -30,7 +30,8 @@
     "oxc-parser": "0.154.0",
     "oxlint": "1.83.0",
     "@bun-native/protocol": "workspace:*",
-    "@bun-native/runtime": "workspace:*"
+    "@bun-native/runtime": "workspace:*",
+    "@bun-native/core": "workspace:*"
   },
   "engines": {
     "bun": "1.4.4-canary.1"

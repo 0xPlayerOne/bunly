@@ -49,6 +49,32 @@ Use `--host-profile dev` when qualifying a development host; omitting it records
 
 The package directory receives the AOT application, native host, compiler diagnostics, native linkage logs and a manifest with exact toolchain, source/lockfile hashes, dirty-worktree status, artifact hashes and sizes. Native rendering, OS input, teardown, installation and signing start as **not verified** in this build record; actual execution evidence is separate. The build itself cannot turn those checks into passes.
 
+The same compiler and inspection pipeline supports three explicit entries:
+
+| `--entry`                 | Source                           | Executable      | Native host placement                              |
+| ------------------------- | -------------------------------- | --------------- | -------------------------------------------------- |
+| `native-window` (default) | `examples/native-window/main.ts` | `native-window` | Copied into the package                            |
+| `input-race`              | `tests/native/input-race.ts`     | `input-race`    | Existing prebuilt host referenced by absolute path |
+| `bridge`                  | `benchmarks/bridge.ts`           | `bridge`        | Existing prebuilt host referenced by absolute path |
+
+All executable names gain `.exe` on Windows. The two test entries avoid making another large host copy; their manifests record `host.placement: "external"` and the exact existing host path and hash. They are test artifacts, not standalone installation packages. `--entry bridge` requires an explicit `--host-profile dev` or `release`. Its [benchmark runner](../../benchmarks/BRIDGE.md) verifies the actual running executable, host and source hashes against the supplied AOT manifest before collecting samples.
+
+```sh
+bun experiments/aot-gpui/build-window.ts \
+  --entry input-race \
+  --host /absolute/path/to/bun-native-host \
+  --host-profile release \
+  --outdir /absolute/path/to/empty-input-race-directory
+
+bun experiments/aot-gpui/build-window.ts \
+  --entry bridge \
+  --host /absolute/path/to/bun-native-host \
+  --host-profile release \
+  --outdir /absolute/path/to/empty-bridge-directory
+```
+
+The input-race fixture needs an actual native input session and a fresh evidence nonce; compiling it does not execute that regression. Each manifest identifies its selected entry and hashes the core, protocol and runtime sources, shared window content, native sources, package manifests and root build configuration. The helper checks those hashes before and after compilation and fails if the source changes during the build. Different entries cannot be substituted in a matched native-window baseline.
+
 On Linux, the helper additionally requires the emitted application to record JIT compiler removal and includes its full runtime-feature record in the manifest. An interpreter may remain present; this check does not claim otherwise. Other executable formats report the JIT inspection as unimplemented.
 
-`--trim` is an explicit comparison option for measuring Bun's unused-runtime removal. Run the same native input and teardown suite against the trimmed executable before choosing it for distribution. Build duration and artifact bytes in the manifest are single-build diagnostics, not cold-start, RSS or input-latency claims. A development-profile native host is not a release performance baseline.
+`--trim` is an explicit comparison option for measuring Bun's additional unused-runtime removal. Default AOT already removes the JIT; the separate `trimmedProgramFeatures` metadata flag can remain false for a correctly inspected AOT executable. Run the same native input and teardown suite against the trimmed executable before choosing it for distribution. Build duration and artifact bytes in the manifest are single-build diagnostics, not cold-start, RSS or input-latency claims. A development-profile native host is not a release performance baseline.

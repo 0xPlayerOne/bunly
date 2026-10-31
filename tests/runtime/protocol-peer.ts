@@ -24,6 +24,9 @@ if (mode === 'inherited-pipe-shutdown' || mode === 'inherited-pipe-exit') {
   const directory = process.argv[3]
   if (!directory) throw new Error('Inherited-pipe peer requires its private control directory')
   Bun.spawn([process.execPath, import.meta.path, 'pipe-holder', directory], {
+    // Keep this bounded helper outside the peer's Windows process job so its
+    // inherited output handles remain open after the direct peer exits.
+    detached: true,
     stdin: 'ignore',
     stdout: 'inherit',
     stderr: 'inherit',
