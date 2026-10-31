@@ -1,9 +1,11 @@
 //! Bounded I/O workers keep pipe reads and writes off the native UI thread.
 
 use async_channel::{Receiver, Sender};
-use bun_native_protocol::{Command, CommandReader, Event, write_event};
+use bun_native_protocol::{Command, CommandReader, Event, EventSequence, write_event};
 use gpui::App;
+use std::cell::Cell;
 use std::io;
+use std::rc::Rc;
 use std::sync::mpsc::{SyncSender, sync_channel};
 
 pub(crate) enum Incoming {
@@ -20,9 +22,21 @@ enum Outgoing {
 #[derive(Clone)]
 pub(crate) struct EventSink {
     sender: SyncSender<Outgoing>,
+    sequence: Rc<Cell<u64>>,
 }
 
 impl EventSink {
+    pub(crate) fn ui(&self, event: impl FnOnce(EventSequence) -> Event, cx: &mut App) {
+        let next = self.sequence.get() + 1;
+        let Ok(sequence) = EventSequence::try_from(next) else {
+            eprintln!("Bun Native UI event sequence exhausted");
+            cx.quit();
+            return;
+        };
+        self.sequence.set(next);
+        self.send(event(sequence), cx);
+    }
+
     pub(crate) fn send(&self, event: Event, cx: &mut App) {
         if self.sender.try_send(Outgoing::Event(event)).is_err() {
             eprintln!("Bun Native event channel disconnected or exceeded its 256-event capacity");
@@ -76,5 +90,11 @@ pub(crate) fn connect() -> (Receiver<Incoming>, EventSink) {
             }
         }
     });
-    (receiver, EventSink { sender })
+    (
+        receiver,
+        EventSink {
+            sender,
+            sequence: Rc::new(Cell::new(0)),
+        },
+    )
 }

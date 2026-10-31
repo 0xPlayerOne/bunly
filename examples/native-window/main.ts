@@ -1,4 +1,5 @@
 import { NativeHost, type WindowEvent } from '@bun-native/runtime'
+import type { Element, Operation } from '@bun-native/protocol'
 import { appendFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
@@ -17,14 +18,61 @@ function record(event: WindowEvent): void {
 }
 
 let clicks = 0
+let revision = 0
 try {
-  await host.send({ type: 'open', title: 'Bun Native BN0', text: 'Clicks: 0', input: '' })
+  await host.send({
+    type: 'open',
+    window_id: 1,
+    root_id: 1,
+    title: 'Bun Native BN1',
+    width: 560,
+    height: 380,
+  })
+  const elements: Element[] = [
+    { kind: 'text', text: 'Bun Native', style: { font_size: 28 } },
+    { kind: 'text', text: 'Clicks: 0' },
+    { kind: 'button', text: 'Increment', style: { width: 160, height: 44 } },
+    { kind: 'text', text: 'Native editable input' },
+    {
+      kind: 'input',
+      value: '',
+      placeholder: 'Type here…',
+      style: { width: 'fill', font_size: 24 },
+    },
+  ]
+  const operations: Operation[] = [
+    {
+      type: 'set',
+      node_id: 1,
+      element: {
+        kind: 'box',
+        style: { direction: 'column', gap: 12, padding: 24, background: 0xf4f5f7 },
+      },
+    },
+  ]
+  elements.forEach((element, index) =>
+    operations.push(
+      { type: 'create', node_id: index + 2, element },
+      { type: 'insert', parent_id: 1, child_id: index + 2, index }
+    )
+  )
+  revision = (await host.send({ type: 'batch', window_id: 1, base_revision: 0, operations }))
+    .tree_revision
   for await (const event of host) {
     record(event)
     if (event.type === 'closed') break
     if (event.type === 'click') {
       clicks += 1
-      await host.send({ type: 'update', text: `Clicks: ${clicks}` })
+      revision = (
+        await host.send({
+          type: 'batch',
+          window_id: 1,
+          base_revision: revision,
+          operations: [
+            { type: 'set', node_id: 3, element: { kind: 'text', text: `Clicks: ${clicks}` } },
+          ],
+        })
+      ).tree_revision
     }
   }
 } finally {

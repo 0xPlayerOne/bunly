@@ -7,13 +7,27 @@ import {
   ProtocolError,
   type Command,
   type NativeEvent,
+  type ErrorCode,
+  type Limits,
 } from '@bun-native/protocol'
 import { isAbsolute } from 'node:path'
 import type { ReadableStreamDefaultReader } from 'node:stream/web'
 
 type WithoutId<T> = T extends { id: number } ? Omit<T, 'id'> : never
-export type WindowCommand = WithoutId<Extract<Command, { type: 'open' | 'update' | 'close' }>>
+export type WindowCommand = WithoutId<Extract<Command, { type: 'open' | 'batch' | 'close' }>>
 export type WindowEvent = Extract<NativeEvent, { type: 'click' | 'input' | 'closed' }>
+export type HostResponse = Extract<NativeEvent, { type: 'ack' | 'opened' | 'applied' }>
+
+export class NativeCommandError extends Error {
+  override readonly name = 'NativeCommandError'
+  constructor(
+    readonly code: ErrorCode,
+    readonly requestId: number,
+    message: string
+  ) {
+    super('Native ' + code + ': ' + message)
+  }
+}
 
 export interface HostOptions {
   /** Explicit prebuilt executable; starting an app never invokes Cargo. */
@@ -24,8 +38,8 @@ export interface HostOptions {
 }
 
 type Pending = {
-  expected: 'ack' | 'opened'
-  resolve: () => void
+  command: Command
+  resolve: (response: HostResponse) => void
   reject: (error: Error) => void
   timer: ReturnType<typeof setTimeout>
 }
@@ -39,7 +53,7 @@ const MAX_PENDING_COMMANDS = 128
 const MAX_QUEUED_EVENTS = 128
 
 /**
- * Owns one native process and its bounded, versioned channel. BN0 transport API;
+ * Owns one native process and its bounded, versioned channel. Private transport;
  * framework-specific reconciliation belongs above this shared connection.
  */
 export class NativeHost implements AsyncIterable<WindowEvent> {
@@ -55,6 +69,8 @@ export class NativeHost implements AsyncIterable<WindowEvent> {
   private failure: Error | undefined
   private phase: 'starting' | 'running' | 'stopping' | 'closed' = 'starting'
   private ready = false
+  private negotiatedLimits: Readonly<Limits> | undefined
+  private sequence = 0
   private nextId = 1
   private writeTail: Promise<void> = Promise.resolve()
   private stderrTail = ''
@@ -92,8 +108,23 @@ export class NativeHost implements AsyncIterable<WindowEvent> {
     }
   }
 
+  get limits(): Readonly<Limits> {
+    if (!this.negotiatedLimits) throw new ProtocolError('Native limits are not negotiated')
+    return this.negotiatedLimits
+  }
+
   /** Resolves after the native UI thread acknowledges the operation. */
-  send(command: WindowCommand): Promise<void> {
+  send(
+    command: Extract<WindowCommand, { type: 'open' }>
+  ): Promise<Extract<HostResponse, { type: 'opened' }>>
+  send(
+    command: Extract<WindowCommand, { type: 'batch' }>
+  ): Promise<Extract<HostResponse, { type: 'applied' }>>
+  send(
+    command: Extract<WindowCommand, { type: 'close' }>
+  ): Promise<Extract<HostResponse, { type: 'ack' }>>
+  send(command: WindowCommand): Promise<HostResponse>
+  send(command: WindowCommand): Promise<HostResponse> {
     if (this.phase !== 'running') return Promise.reject(this.closedError())
     return this.request(command)
   }
@@ -147,7 +178,7 @@ export class NativeHost implements AsyncIterable<WindowEvent> {
     }
   }
 
-  private request(input: WithoutId<Command>): Promise<void> {
+  private request(input: WithoutId<Command>): Promise<HostResponse> {
     if (this.phase === 'closed') return Promise.reject(this.closedError())
     if (this.pending.size >= MAX_PENDING_COMMANDS)
       return Promise.reject(new Error('Native command limit exceeded'))
@@ -156,16 +187,25 @@ export class NativeHost implements AsyncIterable<WindowEvent> {
     try {
       command = parseCommand({ ...input, id: this.nextId++ })
       frame = encodeFrame(command)
+      if (this.negotiatedLimits) {
+        if (frame.byteLength - 1 > this.negotiatedLimits.max_frame_bytes)
+          throw new ProtocolError('Command exceeds the negotiated frame limit')
+        if (
+          command.type === 'batch' &&
+          command.operations.length > this.negotiatedLimits.max_operations
+        )
+          throw new ProtocolError('Command exceeds the negotiated batch limit')
+      }
     } catch (error) {
       return Promise.reject(error)
     }
-    const result = new Promise<void>((resolve, reject) => {
+    const result = new Promise<HostResponse>((resolve, reject) => {
       const timer = setTimeout(
         () => this.fail(new Error(`Native ${command.type} request ${command.id} timed out`)),
         this.timeout
       )
       this.pending.set(command.id, {
-        expected: command.type === 'open' ? 'opened' : 'ack',
+        command,
         resolve,
         reject,
         timer,
@@ -251,10 +291,18 @@ export class NativeHost implements AsyncIterable<WindowEvent> {
     if (this.phase === 'closed') return
     if (event.type === 'ready') {
       if (this.ready || this.phase !== 'starting') throw new ProtocolError('Unexpected ready event')
+      if (!event.capabilities.includes('tree') || !event.capabilities.includes('input_revisions'))
+        throw new ProtocolError('Native host lacks the required tree/input capabilities')
+      this.negotiatedLimits = Object.freeze(event.limits)
       this.ready = true
       return
     }
-    if (event.type === 'ack' || event.type === 'opened' || event.type === 'error') {
+    if (
+      event.type === 'ack' ||
+      event.type === 'opened' ||
+      event.type === 'applied' ||
+      event.type === 'error'
+    ) {
       if (event.type === 'error' && event.id === undefined)
         throw new ProtocolError(`Native ${event.code}: ${event.message}`)
       const requestId = event.id
@@ -263,15 +311,20 @@ export class NativeHost implements AsyncIterable<WindowEvent> {
       clearTimeout(request.timer)
       this.pending.delete(requestId)
       if (event.type === 'error')
-        request.reject(new Error(`Native ${event.code}: ${event.message}`))
-      else if (event.type !== request.expected) {
-        const error = new ProtocolError('Native response type does not match its request')
+        request.reject(new NativeCommandError(event.code, requestId, event.message))
+      else if (!this.matchesResponse(request.command, event)) {
+        const error = new ProtocolError(
+          'Native response does not match its request, owner or revision'
+        )
         request.reject(error)
         throw error
-      } else request.resolve()
+      } else request.resolve(event)
       return
     }
     if (!this.ready) throw new ProtocolError('Native input arrived before protocol readiness')
+    if (event.sequence !== this.sequence + 1)
+      throw new ProtocolError('Native event sequence is out of order')
+    this.sequence = event.sequence
     if (this.waiting) {
       this.waiting.resolve({ done: false, value: event })
       this.waiting = undefined
@@ -279,6 +332,28 @@ export class NativeHost implements AsyncIterable<WindowEvent> {
       if (this.events.length >= MAX_QUEUED_EVENTS)
         throw new ProtocolError('Native event limit exceeded')
       this.events.push(event)
+    }
+  }
+
+  private matchesResponse(command: Command, response: HostResponse): boolean {
+    switch (command.type) {
+      case 'open':
+        return (
+          response.type === 'opened' &&
+          response.window_id === command.window_id &&
+          response.root_id === command.root_id &&
+          response.tree_revision === 0
+        )
+      case 'batch':
+        return (
+          response.type === 'applied' &&
+          response.window_id === command.window_id &&
+          response.tree_revision === command.base_revision + 1
+        )
+      case 'hello':
+      case 'close':
+      case 'shutdown':
+        return response.type === 'ack'
     }
   }
 

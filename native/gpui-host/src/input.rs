@@ -1,14 +1,15 @@
 // Adapted from Zed GPUI examples/input.rs, revision ba63a022c9a22ca66d68ef2a8f0bb9b5b0a9984d.
 // Copyright the Zed contributors. Licensed under Apache-2.0; see LICENSE-APACHE and NOTICE.
+mod binding;
 mod paint;
+pub(crate) use binding::InputBinding;
 use paint::TextElement;
 use std::ops::Range;
 
 use gpui::{
     App, Bounds, ClipboardItem, Context, CursorStyle, EntityInputHandler, FocusHandle, Focusable,
     KeyBinding, MouseButton, MouseDownEvent, MouseMoveEvent, MouseUpEvent, Pixels, Point,
-    ShapedLine, SharedString, UTF16Selection, Window, actions, div, point, prelude::*, px, rgb,
-    white,
+    ShapedLine, SharedString, UTF16Selection, Window, actions, div, point, prelude::*, px, white,
 };
 use unicode_segmentation::*;
 
@@ -32,7 +33,7 @@ actions!(
 );
 
 pub(crate) struct TextInput {
-    events: crate::channel::EventSink,
+    binding: InputBinding,
     focus_handle: FocusHandle,
     content: SharedString,
     placeholder: SharedString,
@@ -113,6 +114,7 @@ impl TextInput {
         cx: &mut Context<Self>,
     ) {
         self.is_selecting = true;
+        window.focus(&self.focus_handle, cx);
         window.request_virtual_keyboard();
 
         if event.modifiers.shift {
@@ -272,15 +274,16 @@ impl TextInput {
 
     pub(crate) fn new(
         content: String,
-        events: crate::channel::EventSink,
+        placeholder: String,
+        binding: InputBinding,
         cx: &mut Context<Self>,
     ) -> Self {
         let end = content.len();
         Self {
-            events,
+            binding,
             focus_handle: cx.focus_handle(),
             content: content.into(),
-            placeholder: "Type here…".into(),
+            placeholder: placeholder.into(),
             selected_range: end..end,
             selection_reversed: false,
             marked_range: None,
@@ -290,16 +293,22 @@ impl TextInput {
         }
     }
 
-    pub(crate) fn content(&self) -> &str {
-        &self.content
-    }
-
-    pub(crate) fn set_content(&mut self, value: String, window: &Window, cx: &mut Context<Self>) {
+    pub(crate) fn set_properties(
+        &mut self,
+        value: &str,
+        placeholder: &str,
+        window: &Window,
+        cx: &mut Context<Self>,
+    ) {
+        if self.placeholder.as_ref() != placeholder {
+            self.placeholder = placeholder.to_owned().into();
+            cx.notify();
+        }
         if self.content.as_ref() == value {
             return;
         }
         let end = value.len();
-        self.content = value.into();
+        self.content = value.to_owned().into();
         self.selected_range = end..end;
         self.selection_reversed = false;
         self.marked_range = None;
@@ -308,15 +317,6 @@ impl TextInput {
         self.is_selecting = false;
         window.notify_text_input_changed(&self.focus_handle);
         cx.notify();
-    }
-
-    fn notify_input(&self, cx: &mut Context<Self>) {
-        self.events.send(
-            bun_native_protocol::Event::Input {
-                value: self.content.to_string(),
-            },
-            cx,
-        );
     }
 }
 
@@ -401,14 +401,16 @@ impl EntityInputHandler for TextInput {
             window.play_system_bell();
             return;
         }
-        self.content =
-            (self.content[0..range.start].to_owned() + new_text + &self.content[range.end..])
-                .into();
+        let value = self.content[0..range.start].to_owned() + new_text + &self.content[range.end..];
+        if !self.binding.edit(&value, cx) {
+            window.play_system_bell();
+            return;
+        }
+        self.content = value.into();
         self.selected_range = range.start + new_text.len()..range.start + new_text.len();
         self.selection_reversed = false;
         self.marked_range.take();
         window.notify_text_input_changed(&self.focus_handle);
-        self.notify_input(cx);
         cx.notify();
     }
 
@@ -433,9 +435,12 @@ impl EntityInputHandler for TextInput {
             window.play_system_bell();
             return;
         }
-        self.content =
-            (self.content[0..range.start].to_owned() + new_text + &self.content[range.end..])
-                .into();
+        let value = self.content[0..range.start].to_owned() + new_text + &self.content[range.end..];
+        if !self.binding.edit(&value, cx) {
+            window.play_system_bell();
+            return;
+        }
+        self.content = value.into();
         if !new_text.is_empty() {
             self.marked_range = Some(range.start..range.start + new_text.len());
         } else {
@@ -454,7 +459,6 @@ impl EntityInputHandler for TextInput {
         self.selection_reversed = false;
 
         window.notify_text_input_changed(&self.focus_handle);
-        self.notify_input(cx);
         cx.notify();
     }
 
@@ -515,6 +519,7 @@ impl Render for TextInput {
     fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         div()
             .flex()
+            .w_full()
             .key_context("TextInput")
             .track_focus(&self.focus_handle(cx))
             .cursor(CursorStyle::IBeam)
@@ -535,12 +540,9 @@ impl Render for TextInput {
             .on_mouse_up(MouseButton::Left, cx.listener(Self::on_mouse_up))
             .on_mouse_up_out(MouseButton::Left, cx.listener(Self::on_mouse_up))
             .on_mouse_move(cx.listener(Self::on_mouse_move))
-            .bg(rgb(0xeeeeee))
-            .line_height(px(30.))
-            .text_size(px(24.))
             .child(
                 div()
-                    .h(px(30. + 4. * 2.))
+                    .min_h(px(32.))
                     .w_full()
                     .p(px(4.))
                     .bg(white())

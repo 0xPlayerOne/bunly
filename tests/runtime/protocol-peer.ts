@@ -1,5 +1,11 @@
 // A real subprocess that exercises channel failures. It does not render UI.
-import { encodeFrame, FrameDecoder, parseCommand } from '@bun-native/protocol'
+import {
+  DEFAULT_LIMITS,
+  encodeFrame,
+  FrameDecoder,
+  parseCommand,
+  PROTOCOL_VERSION,
+} from '@bun-native/protocol'
 import { existsSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 
@@ -30,6 +36,7 @@ if (mode === 'inherited-pipe-shutdown' || mode === 'inherited-pipe-exit') {
 }
 const decoder = new FrameDecoder()
 const output = Bun.stdout.writer()
+let sequence = 0
 async function emit(value: unknown): Promise<void> {
   output.write(encodeFrame(value))
   await output.flush()
@@ -46,22 +53,42 @@ for await (const chunk of Bun.stdin.stream()) {
         await output.flush()
         continue
       }
-      await emit({ type: 'ready', protocol: mode === 'wrong-version' ? 2 : 1 })
+      const ready = {
+        type: 'ready',
+        protocol: mode === 'wrong-version' ? PROTOCOL_VERSION + 1 : PROTOCOL_VERSION,
+        capabilities: mode === 'missing-capability' ? ['tree'] : ['tree', 'input_revisions'],
+        limits: DEFAULT_LIMITS,
+      }
+      await emit(ready)
       if (mode === 'duplicate-ready') {
         // A second ready is an invalid handshake transition.
-        await emit({ type: 'ready', protocol: 1 })
+        await emit(ready)
       }
-      await emit({
-        type: mode === 'wrong-ack' ? 'opened' : 'ack',
-        id: mode === 'wrong-id' ? 123 : command.id,
-      })
+      if (mode === 'wrong-ack')
+        await emit({
+          type: 'opened',
+          id: command.id,
+          window_id: 1,
+          root_id: 1,
+          tree_revision: 0,
+        })
+      else await emit({ type: 'ack', id: mode === 'wrong-id' ? 123 : command.id })
     } else if (command.type === 'open') {
-      await emit({ type: 'opened', id: command.id })
-      if (mode === 'flood') {
-        for (let n = 0; n < 129; n += 1) await emit({ type: 'click' })
-      } else await emit({ type: 'input', value: command.input })
-    } else if (command.type === 'update') {
-      if (command.text === 'reject')
+      await emit({
+        type: 'opened',
+        id: command.id,
+        window_id: command.window_id + (mode === 'wrong-window' ? 1 : 0),
+        root_id: command.root_id + (mode === 'wrong-root' ? 1 : 0),
+        tree_revision: mode === 'wrong-initial-revision' ? 1 : 0,
+      })
+    } else if (command.type === 'batch') {
+      const rejected = command.operations.some(
+        (operation) =>
+          operation.type === 'create' &&
+          operation.element.kind === 'text' &&
+          operation.element.text === 'reject'
+      )
+      if (rejected)
         await emit({
           type: 'error',
           id: command.id,
@@ -69,12 +96,52 @@ for await (const chunk of Bun.stdin.stream()) {
           message: 'Rejected by fixture',
         })
       else {
-        await emit({ type: 'ack', id: command.id })
-        if (command.text === 'emit-click') await emit({ type: 'click' })
+        await emit({
+          type: 'applied',
+          id: command.id,
+          window_id: command.window_id + (mode === 'wrong-batch-window' ? 1 : 0),
+          tree_revision: command.base_revision + (mode === 'wrong-revision' ? 2 : 1),
+        })
+        for (const operation of command.operations) {
+          if (operation.type !== 'create') continue
+          if (operation.element.kind === 'input')
+            await emit({
+              type: 'input',
+              sequence: ++sequence,
+              window_id: command.window_id,
+              node_id: operation.node_id,
+              value: operation.element.value,
+              input_revision: 1,
+            })
+          if (operation.element.kind === 'button') {
+            const count =
+              mode === 'flood'
+                ? 129
+                : mode === 'wrong-sequence'
+                  ? 2
+                  : mode === 'out-of-order-sequence'
+                    ? 3
+                    : 1
+            for (let n = 0; n < count; n += 1) {
+              const actual = ++sequence
+              await emit({
+                type: 'click',
+                sequence:
+                  mode === 'wrong-sequence'
+                    ? 1
+                    : mode === 'out-of-order-sequence'
+                      ? [1, 3, 2][n]
+                      : actual,
+                window_id: command.window_id,
+                node_id: operation.node_id,
+              })
+            }
+          }
+        }
         if (mode === 'inherited-pipe-exit') setTimeout(() => process.exit(23), 25)
       }
     } else if (command.type === 'close') {
-      await emit({ type: 'closed' })
+      await emit({ type: 'closed', sequence: ++sequence, window_id: command.window_id })
       await emit({ type: 'ack', id: command.id })
     } else {
       await emit({ type: 'ack', id: command.id })

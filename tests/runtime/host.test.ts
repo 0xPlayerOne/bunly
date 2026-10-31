@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'bun:test'
 import { NativeHost } from '@bun-native/runtime'
+import { ProtocolError, type Command, type Element } from '@bun-native/protocol'
 import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
@@ -10,6 +11,30 @@ const options = (mode = 'normal', requestTimeoutMs = 1_000) => ({
   args: [fixture, mode],
   requestTimeoutMs,
 })
+const open = {
+  type: 'open',
+  window_id: 1,
+  root_id: 1,
+  title: 'Test',
+  width: 560,
+  height: 380,
+} as const
+
+function batch(
+  element: Element,
+  base_revision = 0,
+  node_id = 2
+): Omit<Extract<Command, { type: 'batch' }>, 'id'> {
+  return {
+    type: 'batch',
+    window_id: 1,
+    base_revision,
+    operations: [
+      { type: 'create', node_id, element },
+      { type: 'insert', parent_id: 1, child_id: node_id, index: 0 },
+    ],
+  }
+}
 
 async function deadline<T>(operation: Promise<T>, name: string): Promise<T> {
   let timer: ReturnType<typeof setTimeout> | undefined
@@ -65,26 +90,57 @@ describe('native process transport (headless protocol peer)', () => {
     const host = await NativeHost.launch(options())
     const events = host[Symbol.asyncIterator]()
     try {
-      await host.send({ type: 'open', title: 'Test', text: 'Hello', input: '世界' })
-      expect(await events.next()).toEqual({ done: false, value: { type: 'input', value: '世界' } })
-      await host.send({ type: 'update', text: 'emit-click' })
-      expect(await events.next()).toEqual({ done: false, value: { type: 'click' } })
-      await host.send({ type: 'close' })
-      expect(await events.next()).toEqual({ done: false, value: { type: 'closed' } })
+      expect(await host.send(open)).toEqual({
+        type: 'opened',
+        id: 2,
+        window_id: 1,
+        root_id: 1,
+        tree_revision: 0,
+      })
+      expect(await host.send(batch({ kind: 'input', value: '世界' }))).toEqual({
+        type: 'applied',
+        id: 3,
+        window_id: 1,
+        tree_revision: 1,
+      })
+      expect(await events.next()).toEqual({
+        done: false,
+        value: {
+          type: 'input',
+          sequence: 1,
+          window_id: 1,
+          node_id: 2,
+          value: '世界',
+          input_revision: 1,
+        },
+      })
+      await host.send(batch({ kind: 'button', text: 'Click' }, 1, 3))
+      expect(await events.next()).toEqual({
+        done: false,
+        value: { type: 'click', sequence: 2, window_id: 1, node_id: 3 },
+      })
+      expect(await host.send({ type: 'close', window_id: 1 })).toEqual({ type: 'ack', id: 5 })
+      expect(await events.next()).toEqual({
+        done: false,
+        value: { type: 'closed', sequence: 3, window_id: 1 },
+      })
     } finally {
       await host.shutdown()
     }
     expect(await host.exited).toBe(0)
     expect(await events.next()).toEqual({ done: true, value: undefined })
     await host.shutdown()
-    await expect(host.send({ type: 'close' })).rejects.toThrow('not running')
+    await expect(host.send({ type: 'close', window_id: 1 })).rejects.toThrow('not running')
   })
 
   test('command rejection preserves the healthy session', async () => {
     const host = await NativeHost.launch(options())
     try {
-      await expect(host.send({ type: 'update', text: 'reject' })).rejects.toThrow('invalid_state')
-      await host.send({ type: 'update', text: 'accepted' })
+      await host.send(open)
+      await expect(host.send(batch({ kind: 'text', text: 'reject' }))).rejects.toThrow(
+        'invalid_state'
+      )
+      await host.send(batch({ kind: 'text', text: 'accepted' }))
     } finally {
       await host.shutdown()
     }
@@ -101,12 +157,17 @@ describe('native process transport (headless protocol peer)', () => {
     expect(() => host[Symbol.asyncIterator]()).toThrow('exactly one consumer')
   })
 
-  test.each(['wrong-version', 'bad-json', 'wrong-id', 'wrong-ack', 'duplicate-ready', 'exit'])(
-    'rejects and reaps a host with %s',
-    async (mode) => {
-      await expect(NativeHost.launch(options(mode))).rejects.toThrow()
-    }
-  )
+  test.each([
+    'wrong-version',
+    'missing-capability',
+    'bad-json',
+    'wrong-id',
+    'wrong-ack',
+    'duplicate-ready',
+    'exit',
+  ])('rejects and reaps a host with %s', async (mode) => {
+    await expect(NativeHost.launch(options(mode))).rejects.toThrow()
+  })
 
   test('bounds startup when the native process stops responding', async () => {
     await expect(NativeHost.launch(options('silent', 100))).rejects.toThrow('timed out')
@@ -119,7 +180,8 @@ describe('native process transport (headless protocol peer)', () => {
 
   test('bounds an unconsumed event flood and terminates the native process', async () => {
     const host = await NativeHost.launch(options('flood'))
-    await host.send({ type: 'open', title: 'Test', text: '', input: '' })
+    await host.send(open)
+    await host.send(batch({ kind: 'button', text: 'Flood' }))
     await host.exited
     await expect(host.shutdown()).rejects.toThrow('event limit')
   })
@@ -138,10 +200,65 @@ describe('native process transport (headless protocol peer)', () => {
       const pending = deadline(events.next(), 'event after native exit')
       // The peer acknowledges this request before exiting. There is no pending
       // command timeout to rescue the event iterator when the process exits.
-      await host.send({ type: 'update', text: 'exit-after-ack' })
+      await host.send(open)
+      await host.send(batch({ kind: 'text', text: 'exit-after-ack' }))
       await expect(pending).rejects.toThrow('Native')
       expect(await host.exited).toBe(23)
       expect(existsSync(finished)).toBe(false)
     })
   })
+
+  test.each(['wrong-window', 'wrong-root', 'wrong-initial-revision'])(
+    'rejects an opened response with %s',
+    async (mode) => {
+      const host = await NativeHost.launch(options(mode))
+      try {
+        await expect(deadline(host.send(open), 'invalid opened response')).rejects.toBeInstanceOf(
+          ProtocolError
+        )
+      } finally {
+        await deadline(
+          host.shutdown().catch(() => {}),
+          'failed host cleanup'
+        )
+      }
+    }
+  )
+
+  test.each(['wrong-batch-window', 'wrong-revision'])(
+    'rejects an applied response with %s',
+    async (mode) => {
+      const host = await NativeHost.launch(options(mode))
+      try {
+        await host.send(open)
+        await expect(
+          deadline(host.send(batch({ kind: 'text', text: 'Update' })), 'invalid applied response')
+        ).rejects.toBeInstanceOf(ProtocolError)
+      } finally {
+        await deadline(
+          host.shutdown().catch(() => {}),
+          'failed host cleanup'
+        )
+      }
+    }
+  )
+
+  test.each(['wrong-sequence', 'out-of-order-sequence'])(
+    'terminates on %s and rejects further event reads',
+    async (mode) => {
+      const host = await NativeHost.launch(options(mode))
+      const events = host[Symbol.asyncIterator]()
+      try {
+        await host.send(open)
+        await host.send(batch({ kind: 'button', text: 'Sequence test' }))
+        await deadline(host.exited, 'invalid event sequence')
+        await expect(events.next()).rejects.toBeInstanceOf(ProtocolError)
+      } finally {
+        await deadline(
+          host.shutdown().catch(() => {}),
+          'failed host cleanup'
+        )
+      }
+    }
+  )
 })
