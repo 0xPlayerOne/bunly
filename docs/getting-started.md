@@ -1,17 +1,17 @@
 # Getting started with Bun Native
 
-**Bun Native is not installable as a working desktop framework yet.** This guide is for contributors and coding agents implementing the direct rewrite. It must not pretend the old Bunly 0.6.9 CEF scripts create a Bun Native app.
+**Bun Native currently provides a working native integration fixture, not an installable general-purpose framework.** Contributors can run the real GPUI window and compile its Bun application with AOT. Solid/React adapters, a public app CLI and supported release packages are still being implemented.
 
 ## Start with the current implementation task
 
 1. Read the [vision](bun-native-vision.md), [architecture](architecture.md), [engineering-quality policy](engineering-quality.md) and [roadmap](https://github.com/0xPlayerOne/bun-native/issues/1).
-2. Start [BN0 #217](https://github.com/0xPlayerOne/bun-native/issues/217). [#251](https://github.com/0xPlayerOne/bun-native/issues/251) replaces legacy source, scripts and CI; [#225](https://github.com/0xPlayerOne/bun-native/issues/225) pins the _actual_ Bun AOT, GPUI and Rust toolchains. They can proceed in parallel.
+2. Read the [implementation handoff](bun-native-handoff.md) and inspect [BN0 #217](https://github.com/0xPlayerOne/bun-native/issues/217). Source migration #251 and toolchain #225 are merged; the current task is the earliest uncompleted dependency, not another rewrite of those foundations.
 3. Inspect the current checkout/branch and any existing PRs. Do not assume obsolete Bun 1.4.4 versions, M1 tests or CEF run commands apply to the new framework.
 4. Open a draft PR with the first useful change, push continuously, run focused tests and enable auto-merge when repository checks permit. No routine human design checkpoint is required.
 
 ## Toolchains
 
-You need Bun, a matching target OS/architecture, Rust toolchain/native renderer build prerequisites for **framework contributors**, and GitHub-hosted CI or a supported native desktop for verification. Pin exact versions in #225 rather than copying version numbers from legacy Bunly documents.
+You need the exact pinned Bun, a matching target OS/architecture, Rust/native prerequisites for **framework contributors**, and GitHub-hosted CI or a native desktop for verification. `toolchain.json` and `rust-toolchain.toml` are the implemented pins. Linux X11 with Mesa software Vulkan is the first verified GUI environment; other platforms must be qualified explicitly.
 
 The **new** developer command contract (create/dev/build/test/doctor) is designed in [BN5 #242](https://github.com/0xPlayerOne/bun-native/issues/242) and **does not exist yet**. Avoid showing fictional install commands or framework imports as runnable examples.
 
@@ -34,7 +34,34 @@ The destination must be an absolute path. On Windows use an absolute Windows
 path and prepend it to that shell's PATH. The installer verifies the platform
 archive SHA-256 and the executable revision. Rust contributors use the exact
 `rust-toolchain.toml` pin. These checks cover protocol, source and architecture;
-the [implementation handoff](bun-native-handoff.md) records native GUI/AOT gaps.
+the [integration record](bn0-integration.md) distinguishes GUI/AOT evidence from remaining gaps.
+
+## Run the real native window
+
+Install the platform prerequisites from [the native host README](../native/gpui-host/README.md). The exact Ubuntu build/display package list is in `.github/workflows/native-linux.yml`. Framework contributors build the host explicitly:
+
+```sh
+cargo build --locked -p bun-native-host
+BUN_NATIVE_HOST="$PWD/target/debug/bun-native-host" \
+  bun examples/native-window/main.ts
+```
+
+Run this in a desktop session, or use the isolated X11 command in [testing](testing.md). Click Increment, type in the input and close through the window manager. Ordinary TypeScript edits rerun the example with the same prebuilt host; they do not compile Rust.
+
+## Compile that application with AOT
+
+Build an optimized native host once, then compile the application separately:
+
+```sh
+cargo build --locked --release -p bun-native-host
+bun experiments/aot-gpui/build-window.ts \
+  --host "$PWD/target/release/bun-native-host" \
+  --host-profile release --outdir "$PWD/.bun-native/app"
+BUN_NATIVE_HOST="$PWD/.bun-native/app/bun-native-host" \
+  .bun-native/app/native-window
+```
+
+The output directory must be empty. The recipe checks the exact compiler, inspects the compiled-program metadata and records both executable hashes, source hashes and linkage in `manifest.json`. On Windows native executable filenames use `.exe`; Windows GUI/AOT packaging is not qualified by the Linux record. This recipe creates experimental executables, not a signed installer. GUI verification remains an explicit run against the produced artifacts.
 
 ## First actual app acceptance
 

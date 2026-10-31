@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "scope": "Initial debug-host diagnostic before the committed runner retained per-request latency samples; not a release baseline or controlled comparison.",
+  "target": {
+    "os": "Linux",
+    "architecture": "x64",
+    "kernel": "6.18.57",
+    "display": "isolated X11/Xvfb",
+    "selectedVulkanIcd": "Mesa lavapipe"
+  },
+  "runtime": {
+    "version": "1.4.4-canary.1+da867c60b",
+    "revision": "da867c60bf0bcbf9d6d36994f8ca0efa42075115",
+    "mode": "development"
+  },
+  "nativeHost": {
+    "profile": "dev",
+    "sha256": "8a221ff318aa0a3ee0bfff95bc243dc0091d3c0a2af97347ab3bc550cc3ad40e"
+  },
+  "workload": {
+    "textNodes": 1000,
+    "individualUpdates": 1000,
+    "batchSize": 100,
+    "batches": 10,
+    "nativeInputEntityLifecycles": 1000,
+    "nativeWindowsOpenedAndClosed": 3,
+    "warmupRequests": 20
+  },
+  "timingScope": "NativeHost send through Applied acknowledgement, not frame presentation or OS input latency",
+  "trials": [
+    {
+      "sourceReport": "stress-no-instrumentation.json",
+      "sourceReportSha256": "b953a3da5881a656c5a5309482ad16c16b89ed12a535558597a9f6247b21ddf6",
+      "status": "passed",
+      "instrumentationEnabled": false,
+      "individual": {
+        "count": 1000,
+        "p50_ms": 0.9985280000000785,
+        "p95_ms": 58.047146000000794,
+        "p99_ms": 64.99413800000002,
+        "total_ms": 8360.759430000011
+      },
+      "batchesOf100": {
+        "count": 10,
+        "p50_ms": 2.5811439999997674,
+        "p95_ms": 121.11121699999967,
+        "p99_ms": 121.11121699999967,
+        "total_ms": 230.31799899999532
+      },
+      "nativeExitCode": 0,
+      "totalWorkloadMs": 11185.619306999999
+    },
+    {
+      "sourceReport": "stress-instrumented.json",
+      "sourceReportSha256": "d458ef3f8b0a146db1ccf471710d1bf139dc70b5c4ca1e4badfb3574ce93a1fe",
+      "status": "passed",
+      "instrumentationEnabled": true,
+      "individual": {
+        "count": 1000,
+        "p50_ms": 1.068355999999767,
+        "p95_ms": 68.19753299999957,
+        "p99_ms": 84.07197400000041,
+        "total_ms": 10609.381891999987
+      },
+      "batchesOf100": {
+        "count": 10,
+        "p50_ms": 2.981369999999515,
+        "p95_ms": 139.97072800000024,
+        "p99_ms": 139.97072800000024,
+        "total_ms": 298.38815499999873
+      },
+      "nativeExitCode": 0,
+      "totalWorkloadMs": 13537.151954
+    }
+  ],
+  "preflightAt1001Nodes": {
+    "count": 1020,
+    "p50Nanos": 623630,
+    "p95Nanos": 928582,
+    "p99Nanos": 1389695,
+    "scope": "candidate model clone, validation and graph preflight only"
+  },
+  "instrumentation": {
+    "records": 4223,
+    "bytes": 765396,
+    "sha256": "56f7eb98a0abbef5a8bf34ebf389d03e46171c6441f66c2284c4603fc774d99f",
+    "omittedPaintSnapshots": 149
+  },
+  "limitations": [
+    "One uncontrolled trial per instrumentation setting.",
+    "Host is not optimized; physical GPU, cold cache, and power mode were not controlled.",
+    "Only summary latency statistics survived from the prototype; committed runner preserves every duration.",
+    "Memory and frame presentation are not inferred from acknowledgement timing."
+  ]
+}

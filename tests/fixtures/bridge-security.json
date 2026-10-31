@@ -1,0 +1,222 @@
+{
+  "protocol": 2,
+  "scope": "Headless command decoding and native validation. No GUI, OS capability grant, sandbox or update-integrity claim.",
+  "cases": [
+    {
+      "name": "version-two-handshake",
+      "category": "handshake",
+      "wire": "{\"id\":1,\"type\":\"hello\",\"protocol\":2}",
+      "outcome": "accept"
+    },
+    {
+      "name": "ordinary-window",
+      "category": "window",
+      "wire": "{\"id\":2,\"type\":\"open\",\"window_id\":1,\"root_id\":1,\"title\":\"Native\",\"width\":560,\"height\":380}",
+      "outcome": "accept"
+    },
+    {
+      "name": "literal-untrusted-text",
+      "category": "content",
+      "wire": "{\"id\":3,\"type\":\"batch\",\"window_id\":1,\"base_revision\":0,\"operations\":[{\"type\":\"create\",\"node_id\":2,\"element\":{\"kind\":\"text\",\"text\":\"<script>globalThis.pwned=true</script> javascript:alert(1) $(command)\\n\\u754c\\ud83d\\ude42\"}},{\"type\":\"insert\",\"parent_id\":1,\"child_id\":2,\"index\":0}]}",
+      "outcome": "accept"
+    },
+    {
+      "name": "ordinary-input",
+      "category": "content",
+      "wire": "{\"id\":3,\"type\":\"batch\",\"window_id\":1,\"base_revision\":0,\"operations\":[{\"type\":\"create\",\"node_id\":2,\"element\":{\"kind\":\"input\",\"value\":\"User supplied value\",\"placeholder\":\"Input\"}},{\"type\":\"insert\",\"parent_id\":1,\"child_id\":2,\"index\":0}]}",
+      "outcome": "accept"
+    },
+    {
+      "name": "filesystem-read",
+      "category": "unsupported-service",
+      "wire": "{\"id\":1,\"type\":\"file_read\",\"path\":\"/untrusted/path\"}",
+      "outcome": "reject"
+    },
+    {
+      "name": "filesystem-write",
+      "category": "unsupported-service",
+      "wire": "{\"id\":1,\"type\":\"file_write\",\"path\":\"/untrusted/path\",\"contents\":\"data\"}",
+      "outcome": "reject"
+    },
+    {
+      "name": "process-launch",
+      "category": "unsupported-service",
+      "wire": "{\"id\":1,\"type\":\"process_spawn\",\"command\":\"untrusted-command\"}",
+      "outcome": "reject"
+    },
+    {
+      "name": "shell-execution",
+      "category": "unsupported-service",
+      "wire": "{\"id\":1,\"type\":\"shell_exec\",\"command\":\"untrusted-command\"}",
+      "outcome": "reject"
+    },
+    {
+      "name": "network-request",
+      "category": "unsupported-service",
+      "wire": "{\"id\":1,\"type\":\"network_fetch\",\"url\":\"https://example.invalid/\"}",
+      "outcome": "reject"
+    },
+    {
+      "name": "clipboard-read",
+      "category": "unsupported-service",
+      "wire": "{\"id\":1,\"type\":\"clipboard_read\"}",
+      "outcome": "reject"
+    },
+    {
+      "name": "clipboard-write",
+      "category": "unsupported-service",
+      "wire": "{\"id\":1,\"type\":\"clipboard_write\",\"text\":\"untrusted\"}",
+      "outcome": "reject"
+    },
+    {
+      "name": "external-url",
+      "category": "unsupported-service",
+      "wire": "{\"id\":1,\"type\":\"open_external\",\"url\":\"javascript:alert(1)\"}",
+      "outcome": "reject"
+    },
+    {
+      "name": "install-update",
+      "category": "unsupported-service",
+      "wire": "{\"id\":1,\"type\":\"install_update\",\"path\":\"/untrusted/update\"}",
+      "outcome": "reject"
+    },
+    {
+      "name": "native-plugin",
+      "category": "unsupported-service",
+      "wire": "{\"id\":1,\"type\":\"load_plugin\",\"path\":\"/untrusted/library\"}",
+      "outcome": "reject"
+    },
+    {
+      "name": "embedded-browser",
+      "category": "unsupported-service",
+      "wire": "{\"id\":1,\"type\":\"webview_open\",\"url\":\"https://example.invalid/\"}",
+      "outcome": "reject"
+    },
+    {
+      "name": "code-evaluation",
+      "category": "unsupported-service",
+      "wire": "{\"id\":1,\"type\":\"evaluate\",\"source\":\"globalThis.pwned=true\"}",
+      "outcome": "reject"
+    },
+    {
+      "name": "self-granted-service",
+      "category": "authorization",
+      "wire": "{\"id\":1,\"type\":\"hello\",\"protocol\":2,\"capabilities\":[\"shell_exec\"]}",
+      "outcome": "reject"
+    },
+    {
+      "name": "prototype-property",
+      "category": "schema",
+      "wire": "{\"id\":1,\"type\":\"shutdown\",\"__proto__\":{\"polluted\":true}}",
+      "outcome": "reject"
+    },
+    {
+      "name": "constructor-property",
+      "category": "schema",
+      "wire": "{\"id\":1,\"type\":\"close\",\"window_id\":1,\"constructor\":{\"prototype\":{\"polluted\":true}}}",
+      "outcome": "reject"
+    },
+    {
+      "name": "script-element",
+      "category": "content",
+      "wire": "{\"id\":3,\"type\":\"batch\",\"window_id\":1,\"base_revision\":0,\"operations\":[{\"type\":\"create\",\"node_id\":2,\"element\":{\"kind\":\"script\",\"source\":\"globalThis.pwned=true\"}},{\"type\":\"insert\",\"parent_id\":1,\"child_id\":2,\"index\":0}]}",
+      "outcome": "reject"
+    },
+    {
+      "name": "browser-element",
+      "category": "content",
+      "wire": "{\"id\":3,\"type\":\"batch\",\"window_id\":1,\"base_revision\":0,\"operations\":[{\"type\":\"create\",\"node_id\":2,\"element\":{\"kind\":\"webview\",\"url\":\"https://example.invalid/\"}},{\"type\":\"insert\",\"parent_id\":1,\"child_id\":2,\"index\":0}]}",
+      "outcome": "reject"
+    },
+    {
+      "name": "raw-html-property",
+      "category": "content",
+      "wire": "{\"id\":3,\"type\":\"batch\",\"window_id\":1,\"base_revision\":0,\"operations\":[{\"type\":\"create\",\"node_id\":2,\"element\":{\"kind\":\"text\",\"text\":\"plain\",\"html\":\"<script>untrusted</script>\"}},{\"type\":\"insert\",\"parent_id\":1,\"child_id\":2,\"index\":0}]}",
+      "outcome": "reject"
+    },
+    {
+      "name": "executable-click-property",
+      "category": "content",
+      "wire": "{\"id\":3,\"type\":\"batch\",\"window_id\":1,\"base_revision\":0,\"operations\":[{\"type\":\"create\",\"node_id\":2,\"element\":{\"kind\":\"button\",\"text\":\"Button\",\"on_click\":\"untrusted-command\"}},{\"type\":\"insert\",\"parent_id\":1,\"child_id\":2,\"index\":0}]}",
+      "outcome": "reject"
+    },
+    {
+      "name": "style-url-property",
+      "category": "content",
+      "wire": "{\"id\":3,\"type\":\"batch\",\"window_id\":1,\"base_revision\":0,\"operations\":[{\"type\":\"create\",\"node_id\":2,\"element\":{\"kind\":\"box\",\"style\":{\"background\":\"url(file:///untrusted/path)\"}}},{\"type\":\"insert\",\"parent_id\":1,\"child_id\":2,\"index\":0}]}",
+      "outcome": "reject"
+    },
+    {
+      "name": "style-unknown-property",
+      "category": "schema",
+      "wire": "{\"id\":3,\"type\":\"batch\",\"window_id\":1,\"base_revision\":0,\"operations\":[{\"type\":\"create\",\"node_id\":2,\"element\":{\"kind\":\"box\",\"style\":{\"position\":\"absolute\"}}},{\"type\":\"insert\",\"parent_id\":1,\"child_id\":2,\"index\":0}]}",
+      "outcome": "reject"
+    },
+    {
+      "name": "zero-handle",
+      "category": "handle",
+      "wire": "{\"id\":1,\"type\":\"close\",\"window_id\":0}",
+      "outcome": "reject"
+    },
+    {
+      "name": "negative-handle",
+      "category": "handle",
+      "wire": "{\"id\":1,\"type\":\"close\",\"window_id\":-1}",
+      "outcome": "reject"
+    },
+    {
+      "name": "fractional-handle",
+      "category": "handle",
+      "wire": "{\"id\":1,\"type\":\"close\",\"window_id\":1.5}",
+      "outcome": "reject"
+    },
+    {
+      "name": "unsafe-handle",
+      "category": "handle",
+      "wire": "{\"id\":1,\"type\":\"close\",\"window_id\":9007199254740992}",
+      "outcome": "reject"
+    },
+    {
+      "name": "string-handle",
+      "category": "handle",
+      "wire": "{\"id\":1,\"type\":\"close\",\"window_id\":\"1\"}",
+      "outcome": "reject"
+    },
+    {
+      "name": "null-handle",
+      "category": "handle",
+      "wire": "{\"id\":1,\"type\":\"close\",\"window_id\":null}",
+      "outcome": "reject"
+    },
+    {
+      "name": "nul-text",
+      "category": "content",
+      "wire": "{\"id\":3,\"type\":\"batch\",\"window_id\":1,\"base_revision\":0,\"operations\":[{\"type\":\"create\",\"node_id\":2,\"element\":{\"kind\":\"text\",\"text\":\"a\\u0000b\"}},{\"type\":\"insert\",\"parent_id\":1,\"child_id\":2,\"index\":0}]}",
+      "outcome": "reject"
+    },
+    {
+      "name": "unpaired-surrogate",
+      "category": "content",
+      "wire": "{\"id\":3,\"type\":\"batch\",\"window_id\":1,\"base_revision\":0,\"operations\":[{\"type\":\"create\",\"node_id\":2,\"element\":{\"kind\":\"text\",\"text\":\"\\ud800\"}},{\"type\":\"insert\",\"parent_id\":1,\"child_id\":2,\"index\":0}]}",
+      "outcome": "reject"
+    },
+    {
+      "name": "invalid-title-control",
+      "category": "window",
+      "wire": "{\"id\":1,\"type\":\"open\",\"window_id\":1,\"root_id\":1,\"title\":\"Native\\nspoof\",\"width\":560,\"height\":380}",
+      "outcome": "reject"
+    },
+    {
+      "name": "nonfinite-layout",
+      "category": "layout",
+      "wire": "{\"id\":3,\"type\":\"batch\",\"window_id\":1,\"base_revision\":0,\"operations\":[{\"type\":\"create\",\"node_id\":2,\"element\":{\"kind\":\"box\",\"style\":{\"width\":-1}}},{\"type\":\"insert\",\"parent_id\":1,\"child_id\":2,\"index\":0}]}",
+      "outcome": "reject"
+    },
+    {
+      "name": "input-update-without-revision",
+      "category": "revision",
+      "wire": "{\"id\":1,\"type\":\"batch\",\"window_id\":1,\"base_revision\":0,\"operations\":[{\"type\":\"set\",\"node_id\":2,\"element\":{\"kind\":\"input\",\"value\":\"stale\"}}]}",
+      "outcome": "reject"
+    }
+  ]
+}

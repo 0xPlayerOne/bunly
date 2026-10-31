@@ -4,9 +4,11 @@ Bun Native validates the implementation that exists at the tested revision. A pa
 
 ## Reproduce the foundation checks
 
-Install the exact Bun version in `.bun-version`. Rustup reads `rust-toolchain.toml`; no globally installed compiler version is assumed. From a clean checkout:
+Install Bun through the checksum- and revision-checking installer; `.bun-version` is only the display version of the pinned canary. Rustup reads `rust-toolchain.toml`; no globally installed compiler version is assumed. From a clean checkout:
 
 ```sh
+node scripts/install-bun.mjs --destination "$PWD/.bun-native/bun"
+export PATH="$PWD/.bun-native/bun:$PATH"
 bun install --frozen-lockfile
 bun run format:check
 bun run lint
@@ -25,21 +27,66 @@ cargo test --locked --manifest-path Cargo.toml -p bun-native-protocol
 
 ## Hosted workflows
 
-| Workflow/job                       | What it proves                                                                                                               | What it does not prove                   |
-| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
-| `bun-native.yml` / Source quality  | Formatting, linting, type checking, package boundaries, dependency use, package build, Bun unit coverage and workflow syntax | Native rendering or production AOT       |
-| `bun-native.yml` / Protocol matrix | TypeScript behavior and Rust protocol fmt/Clippy/tests on Ubuntu 24.04, macOS 15 and Windows Server 2022                     | GPU/window interaction or physical input |
-| `security.yml`                     | Dependency review and Bun/Rust advisory audits against the committed lockfiles                                               | A complete threat model or sandbox       |
-| `codeql.yml`                       | Source analysis through the pinned Code Foundry workflow                                                                     | Runtime correctness                      |
-| `Validation / Gate`                | Every required source, protocol and dependency-audit job succeeded                                                           | Completion of BN0 native/AOT acceptance  |
+| Workflow/job                          | What it proves                                                                                                                                                                              | What it does not prove                                               |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `bun-native.yml` / Source quality     | Formatting, linting, type checking, package boundaries, dependency use, package build, Bun unit coverage, Python harness safety and workflow syntax                                         | Native rendering or production AOT                                   |
+| `bun-native.yml` / Protocol matrix    | TypeScript behavior and Rust protocol fmt/Clippy/tests on Ubuntu 24.04, macOS 15 and Windows Server 2022                                                                                    | GPU/window interaction or physical input                             |
+| `bun-native.yml` / AOT native interop | Actual machine-code execution, native FFI/callback/subprocess behavior, explicit JIT control and compiler metadata checks on Linux                                                          | GPUI rendering or other OS AOT support                               |
+| `native-linux.yml`                    | Release GPUI host compilation/tests and actual development/AOT applications: X11 button/text events, native paint reports, screenshots, clean OS close and fresh launch with a software GPU | Physical input, hardware GPU performance or macOS/Windows GUI        |
+| `security.yml`                        | Dependency review and Bun/Rust advisory audits against the committed lockfiles                                                                                                              | A complete threat model or sandbox                                   |
+| `codeql.yml`                          | Source analysis through the pinned Code Foundry workflow                                                                                                                                    | Runtime correctness                                                  |
+| `Validation / Gate`                   | Every required source, protocol, AOT interop, native Linux and dependency-audit job succeeded                                                                                               | Completion of all platform, physical-device and packaging acceptance |
 
 The required check keeps its existing name so protected-main rules do not become stale. The aggregate fails if any required job fails, is cancelled or is skipped. No main-branch or administrator bypass is part of the workflow. Ordinary pull requests start as drafts; expensive validation runs after the explicit ready transition. The existing `CI_BILLING_PAUSED` control is preserved.
 
-Workflow actions, Bun, Rust and lockfiles are pinned. Cache entries contain dependency downloads only and are keyed by OS, architecture and toolchain/lockfile hashes; build outputs, dependency installations and credentials are not cached. Main-branch runs queue rather than cancel a previous run. Source checks target five minutes; the three portable protocol jobs allow ten minutes for a clean compiler/dependency setup. GPU and long-running soak checks belong in distinct native lanes under [#256](https://github.com/0xPlayerOne/bun-native/issues/256).
+Workflow actions, Bun, Rust and lockfiles are pinned. Cache entries contain dependency downloads only and are keyed by OS, architecture and toolchain/lockfile hashes; build outputs, dependency installations and credentials are not cached. Main-branch runs queue rather than cancel a previous run. Source checks target five minutes; the three portable protocol jobs allow ten minutes for a clean compiler/dependency setup. The separate native Linux lane allows sixty minutes for a clean release GPUI build and AOT compilation; it records build time and binary size and avoids a second debug host build. Cross-platform GUI and long-running soak coverage continue under [#256](https://github.com/0xPlayerOne/bun-native/issues/256).
 
 Each protocol job records the source SHA, Bun revision, verbose Rust version, OS/architecture and explicit development/headless scope in a retained Actions artifact. Passing foundation CI must never be presented as a native-window or no-JIT release result.
 
 The repository owns the native validation, dependency-security and CodeQL callers. Code Foundry still owns draft/release policy; its generated generic validation feature is disabled to prevent a later sync from replacing the native checks. `custom_workflows: preserve` retains these callers. The obsolete browser qualification workflows and their success contexts are removed.
+
+## Real Linux native input
+
+The Linux lane builds the release profile of `bun-native-host` from the root Cargo workspace. It creates a private Xvfb display and DBus session, starts Openbox, selects the installed Mesa lavapipe ICD, and launches the actual Bun application with its prebuilt GPUI host. It then compiles that same workspace entry point with `experiments/aot-gpui/build-window.ts`, verifies the Bun compiled-program metadata, and repeats the native interaction against the emitted AOT application and copied release host. No browser, mock renderer or synthetic application callback substitutes for the native path. Input is injected through the X server's XTest extension; this is real OS-delivered input, not a physical keyboard or mouse test.
+
+The development session first runs `tests/native/lifecycle.ts` under a 45-second process-group deadline. It checks five create/update/close/reopen cycles within one actual GPUI host, rejects invalid-state commands and verifies idempotent shutdown and exit zero. This is native lifecycle evidence; it does not assert visible pixels or OS input.
+
+The two input scenarios then launch independent application processes. The first clicks the native Increment button and requires a Bun-observed `click` plus the GPUI paint report for `Clicks: 1`. The second launches after the first has closed, types a fresh session value into the focused input, and requires the matching Bun `input` event and native painted text. Both capture the actual owned window before and after input, then close through the window manager and require an exit code of zero and no observed remaining application processes. The same two input scenarios also run against the inspected AOT application.
+
+Reproduce after installing the Linux packages listed in `.github/workflows/native-linux.yml`:
+
+```sh
+cargo build --locked --release -p bun-native-host
+mkdir -p .bun-native
+run_dir=$(mktemp -d "$PWD/.bun-native/native.XXXXXX")
+BUN_NATIVE_HOST="$PWD/target/release/bun-native-host" BUN_NATIVE_HOST_PROFILE=release \
+  xvfb-run --auto-servernum --server-args='-screen 0 1280x800x24 -nolisten tcp' \
+  dbus-run-session -- bash scripts/quality/native-linux-session.sh \
+  "$run_dir/interaction" development bun examples/native-window/main.ts
+```
+
+`scripts/quality/native-input-linux.py` also accepts an explicit app command after `--` for targeted runs. It verifies the exact window title and process ownership before focusing or sending input. A random nonce and the log offset immediately before injection prevent previous-session or startup records from satisfying input expectations. Application logs and event evidence are bounded to 4 MiB each. Input actions, subprocess calls and the test run have deadlines; cleanup targets only the process session it launched and identity-checked observed descendants. Environments where `/proc` and child-process IDs use different namespaces are reported unsupported before launch.
+
+Each scenario writes `result.json`, actual stdout/stderr, nonce-tagged JSONL events and `before.png`/`after.png`. The report separates OS input injection, application-observed input, native paint traversal, OS close and cleanup. Screenshots are retained for visual inspection; the harness does not claim automatic pixel or text recognition. Renderer metadata comes from `Window::gpu_specs()` in the actual GPUI window, and the hosted scenario requires it to identify a software adapter. System package versions and exact Bun/Rust/source versions are recorded alongside the evidence.
+
+The driver records time from app launch until the owned window is observed, the first native paint report is observed, input injection starts/ends, the matching Bun event and painted state are observed, and OS close/exiting are observed. Paint/event observations are polled at nominal 100 ms intervals and are not display-presentation timestamps. Text input timing includes the entire injected text sequence rather than measuring individual keystroke latency. Sampled process-tree RSS can count shared pages more than once, sampling can miss the true peak, and cache state is uncontrolled. These are fresh-process smoke observations, not controlled cold-cache, time-to-interactive or physical-GPU performance baselines.
+
+For a baseline trial, pass `--idle-seconds 2` directly to the Python driver. The option defaults to zero and accepts at most ten seconds; it samples after the first observed paint and before any input. The report retains raw samples with an `idle` phase plus the actual sampling duration, sample count, median and maximum process-tree RSS. Shared-page double counting still applies. The harness never flushes operating-system caches or changes machine power settings.
+
+`--mode aot` declares how the caller launched the app; the input driver never verifies machine-code compilation by itself. The CI lane separately invokes the pinned compiler, validates the emitted compiled-program metadata, hashes the source and both binaries, and retains `package/manifest.json` and build/inspection logs. The actual host build profile is declared in every scenario report and substantiated by the recorded Cargo release command and binary hash. Routine evidence artifacts omit the large executable files while retaining their hashes, sizes, linkage, compiler metadata and actual execution results. A missing or invalid AOT metadata check fails the job before the AOT GUI run.
+
+The harness uses Python's standard library. Ruff is the sole Python development dependency, pinned by version and wheel hashes in `scripts/quality/requirements.txt`; it is absent from application runtime dependencies. Its six headless safety tests check evidence freshness/nonce validation, incomplete records, bounded logs, unavailable-display behavior and real child-process cleanup. Each test has a ten-second deadline. These tests exercise the harness and do not qualify a native GUI:
+
+```sh
+python3 -m venv .bun-native/quality-env
+.bun-native/quality-env/bin/pip install --no-deps --only-binary=:all: --require-hashes -r scripts/quality/requirements.txt
+.bun-native/quality-env/bin/ruff format --check scripts/quality/native-input-linux.py tests/quality/test_native_input_linux.py
+.bun-native/quality-env/bin/ruff check scripts/quality/native-input-linux.py tests/quality/test_native_input_linux.py
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests/quality -p 'test_*.py' -v
+bash -n scripts/quality/native-linux-session.sh
+```
+
+The process-tree safety case is explicitly skipped if the local PID namespace cannot be reconciled with `/proc`. Hosted Ubuntu runs it in the real namespace. The native GUI lane fails, rather than reporting a pass, when the actual display/input/paint/cleanup requirements are unavailable or unfulfilled.
 
 ## Architecture and negative checks
 

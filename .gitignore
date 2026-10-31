@@ -27,3 +27,7 @@ artifacts/
 .claude/
 .githooks/*
 !.githooks/pre-commit
+
+# Native acceptance harness
+__pycache__/
+*.py[cod]

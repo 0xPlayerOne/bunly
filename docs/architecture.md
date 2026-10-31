@@ -1,19 +1,19 @@
 # Bun Native architecture
 
-**Status: target design, not yet an implemented runtime.** This is the implementation contract for the direct migration tracked in [BN0–BN7](https://github.com/0xPlayerOne/bun-native/issues/1). A fresh agent can refine mechanisms through a recorded ADR; the non-negotiable outcome is **Bun TS/JS application logic + real browserless native UI + Bun AOT production compilation**.
+**Status:** BN0 implements a real Bun-controlled GPUI window and the same application compiled with Bun machine-code AOT. Linux X11 tests have exercised pointer input, typing, native paint, OS close and repeated process launch using Mesa's software GPU. This is an experimental fixture; the reusable element tree, framework adapters and supported release matrix remain later work. See [the implementation record](bn0-integration.md) for precise evidence and limits.
 
 ## System layers
 
-```text
-Application packages  (TypeScript / JavaScript; .ts .tsx .js .jsx)
-     ├── SolidJS adapter  ┐
-     └── React adapter    ┴─→ Shared typed native component/host API
-                                         │
-                              Versioned native bridge
-                                         │
-                             Rust native renderer host
-                                         │
-                          GPU + OS windows and services
+```mermaid
+flowchart TD
+  App["TS or JS application"] --> Solid["Solid adapter: BN2"]
+  App --> React["React adapter: BN3"]
+  Solid --> Runtime["Shared native runtime"]
+  React --> Runtime
+  App --> Runtime
+  Runtime --> Pipe["Versioned bounded process transport"]
+  Pipe --> GPUI["Rust GPUI on the UI thread"]
+  GPUI --> OS["OS windows and GPU"]
 ```
 
 **Rust GPUI is the initial rendering engine.** Switching to another native rendering engine is allowed if technically justified and documented, but a WebView/CEF/Chromium UI is not an accepted fallback.
@@ -26,7 +26,22 @@ Application packages  (TypeScript / JavaScript; .ts .tsx .js .jsx)
 
 AOT is an execution mechanism, **not** a JSX/CSS-to-Rust compiler. The Solid/React adapters must translate framework tree operations into the native host's supported elements.
 
-## Package boundaries (suggested, not frozen names)
+## Implemented foundation
+
+| Source                   | Responsibility                                                                      | Dependency direction                          |
+| ------------------------ | ----------------------------------------------------------------------------------- | --------------------------------------------- |
+| `packages/protocol`      | Portable framing and validated command/event contracts                              | No runtime or renderer dependencies           |
+| `packages/runtime`       | Own one prebuilt native process, handshake, requests, events and shutdown           | Protocol public exports and Bun platform APIs |
+| `native/protocol`        | Rust validation and framing matching the TypeScript contract                        | Serde and standard library                    |
+| `native/gpui-host`       | Main-thread GPUI window, widgets and native input                                   | Rust protocol and pinned GPUI                 |
+| `examples/native-window` | Bun-owned counter state and native event observation                                | Runtime public exports                        |
+| `experiments/aot-gpui`   | Compiler interoperability, negative controls, binary inspection and artifact recipe | Pinned compiler and explicit prebuilt host    |
+
+`scripts/quality/boundaries.ts` checks TypeScript import direction and runtime dependency use. Both Rust crates share the root Cargo workspace and lock. The example never invokes Cargo. Its `BUN_NATIVE_HOST` setting selects an already-built executable; the AOT recipe copies that same host into the output and records its hash.
+
+The initial protocol deliberately supports one window per host. Its `hello`, `open`, `update`, `close` and `shutdown` commands are a BN0 integration surface, not the final public component API. The native input owns its editing state. The example observes input events without echoing old values back, which prevents a demonstrated keystroke-loss race. Versioned controlled-input updates belong to BN1.
+
+## Planned package boundaries
 
 | Area                      | Responsibility                                                   | May depend on                               |
 | ------------------------- | ---------------------------------------------------------------- | ------------------------------------------- |
@@ -43,7 +58,7 @@ Enforce this dependency direction, without introducing layers that merely forwar
 
 ## Native bridge and host lifecycle
 
-[BN1 #219](https://github.com/0xPlayerOne/bun-native/issues/219) owns the concrete selection between validated FFI, Node-API, C ABI, subprocess or other native interop. Choose from measured build/AOT compatibility, memory and crash isolation, UI-thread constraints and overhead—not from assumptions.
+BN0 selects an owned subprocess with bounded, validated JSON-lines messages. This gives GPUI the process main thread and keeps application logic in ordinary Bun or the same source's AOT executable. The executed FFI probe demonstrates synchronous native calls and callbacks, but does not establish GPUI thread integration or asynchronous callback safety. [ADR 0002](decisions/0002-owned-native-process.md) records the selection and its cost. [BN1 #219](https://github.com/0xPlayerOne/bun-native/issues/219) extends this transport into reusable handles, tree mutations, batching and capabilities, measuring overhead before freezing the contract.
 
 The host contract must specify:
 
@@ -80,6 +95,6 @@ Follow [engineering-quality.md](engineering-quality.md). The highest-risk paths 
 
 ## Current gaps
 
-There is **no accepted Bun Native ABI, component contract, AOT+GPUI application, package layout or supported release matrix yet**. BN0 establishes the first implementation and test evidence; BN1 stabilizes public/native interfaces. Treat every package/layout/CLI name here as guidance until its implementation issue and ADR make it concrete.
+The BN0 runtime and AOT/GPUI fixture exist. A stable public element API, Solid/React adapters, general native services, controlled-input revisions, complete text accessibility, hot reload and distributable cross-platform releases do not yet exist. Linux software-GPU evidence does not qualify macOS/Windows GUI behavior, Wayland, physical GPUs, IME or assistive technology. BN1 stabilizes reusable interfaces; BN4 and BN6 own the corresponding usability and platform acceptance.
 
 See [decision records](decisions/README.md), [toolchain](toolchain.md), [testing](testing.md) and the [master roadmap](https://github.com/0xPlayerOne/bun-native/issues/1).

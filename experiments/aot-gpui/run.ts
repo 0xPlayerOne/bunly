@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { arch, release, platform, cpus } from 'node:os'
 import { isAbsolute, join } from 'node:path'
 import { inspectBunExecutable } from './inspect'
+import { inspectBunRuntime } from './inspect-runtime'
 
 const destination = process.argv[2]
 if (!destination || !isAbsolute(destination)) {
@@ -77,7 +78,12 @@ run('build-native-echo', [
   native,
 ])
 run('typecheck', [process.execPath, 'check', '--no-script', '-p', join(root, 'tsconfig.json')])
-run('inspector-tests', [process.execPath, 'test', join(root, 'inspect.test.ts')])
+run('inspector-tests', [
+  process.execPath,
+  'test',
+  join(root, 'inspect.test.ts'),
+  join(root, 'inspect-runtime.test.ts'),
+])
 const dev = run('dev', [process.execPath, join(root, 'probe.ts'), library, native, 'dev'])
 run('compile-aot', [
   process.execPath,
@@ -105,6 +111,15 @@ const jitMetadata = inspectBunExecutable(jit)
 if (!aotMetadata.hasCompiledProgram || jitMetadata.hasCompiledProgram) {
   throw new Error('Bun executable metadata does not distinguish AOT from the JIT control')
 }
+const runtimeFeatures =
+  process.platform === 'linux' ? { aot: inspectBunRuntime(aot), jit: inspectBunRuntime(jit) } : null
+if (
+  runtimeFeatures &&
+  (runtimeFeatures.aot.jit === 'present' ||
+    runtimeFeatures.aot.jitRemovedRanges.count === 0 ||
+    runtimeFeatures.jit.jit !== 'present')
+)
+  throw new Error('Runtime feature metadata does not distinguish JIT removal from the JIT control')
 run('missing-library', [aot, join(destination, 'does-not-exist' + librarySuffix), native, 'aot'], 1)
 
 const wrongType = join(destination, 'wrong-type.ts')
@@ -150,6 +165,8 @@ const report = {
     'probe.ts',
     'inspect.ts',
     'inspect.test.ts',
+    'inspect-runtime.ts',
+    'inspect-runtime.test.ts',
     'native.c',
     'tsconfig.json',
   ].map((name) => ({
@@ -163,6 +180,7 @@ const report = {
   binaryInspection,
   aotMetadata,
   jitMetadata,
+  runtimeFeatures,
   artifacts,
   results,
   scope:

@@ -1,0 +1,9 @@
+# Development-only formatter/linter; no Python runtime dependencies.
+# Published Ruff 0.15.22 wheels for Linux, macOS and Windows x64/arm64.
+ruff==0.15.22 \
+    --hash=sha256:365523eb91d9224e1bcb03b022fbf0facb8f9e23792a2c53d9d4b3924bdbdebb \
+    --hash=sha256:742a29cf29bddb7c8327895d6a10e0e6c5b38a96dd407af9b5d0857f809c0576 \
+    --hash=sha256:b82c6482946e9eda7ff2e091d25b8bad3f718684e1916d41bd56873cee05b697 \
+    --hash=sha256:11c1c715af53a09f714e011106bffc419751ec8232fcb5da42173284ea3fec6f \
+    --hash=sha256:9be63ba1eb936acd2d1342fb8337c356353706fce233b2a15a09a97037e6acde \
+    --hash=sha256:e1168075b72158510839f250027659cdd78476f40507dd517892304c41318661

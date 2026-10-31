@@ -7,6 +7,7 @@ import { dirname, relative, resolve, sep } from 'node:path'
 const policy: Record<string, { packages: readonly string[]; platform: boolean }> = {
   protocol: { packages: [], platform: false },
   runtime: { packages: ['protocol'], platform: true },
+  core: { packages: ['protocol', 'runtime'], platform: false },
 }
 
 type Manifest = {

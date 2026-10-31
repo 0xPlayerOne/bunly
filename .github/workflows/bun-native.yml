@@ -54,6 +54,19 @@ jobs:
           echo "$RUNNER_TEMP/actionlint" >> "$GITHUB_PATH"
       - name: Validate workflow syntax
         run: actionlint
+      - name: Install pinned Python quality tool
+        run: |
+          python3 -m venv "$RUNNER_TEMP/native-quality"
+          "$RUNNER_TEMP/native-quality/bin/pip" install --disable-pip-version-check --no-deps --only-binary=:all: --require-hashes -r scripts/quality/requirements.txt
+          echo "$RUNNER_TEMP/native-quality/bin" >> "$GITHUB_PATH"
+      - name: Native harness static and safety checks (headless)
+        env:
+          PYTHONDONTWRITEBYTECODE: 1
+        run: |
+          ruff format --check scripts/quality/native-input-linux.py tests/quality/test_native_input_linux.py
+          ruff check scripts/quality/native-input-linux.py tests/quality/test_native_input_linux.py
+          python3 -m unittest discover -s tests/quality -p 'test_*.py' -v
+          bash -n scripts/quality/native-linux-session.sh
 
   protocol:
     name: Protocol (${{ matrix.os }})
@@ -144,6 +157,11 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+  native:
+    name: Native Linux
+    if: vars.CI_BILLING_PAUSED == 'false' && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
+    uses: ./.github/workflows/native-linux.yml
+
   security:
     name: Security
     if: vars.CI_BILLING_PAUSED == 'false' && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
@@ -152,15 +170,15 @@ jobs:
   gate:
     # This exact check context is required by the existing protected-main ruleset.
     name: Validation / Gate
-    needs: [source, protocol, aot, security]
+    needs: [source, protocol, aot, native, security]
     if: always() && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
     runs-on: ubuntu-slim
     timeout-minutes: 2
     steps:
-      - name: Require every foundation check to pass
+      - name: Require every implementation check to pass
         env:
           RESULTS: ${{ toJSON(needs) }}
         run: |
           node -e 'const jobs=JSON.parse(process.env.RESULTS); const failed=Object.entries(jobs).filter(([,job])=>job.result!=="success"); if(failed.length){console.error(failed);process.exit(1)}'
       - name: Describe coverage precisely
-        run: echo 'Passed source, headless protocol, Linux machine-code AOT/native interop and dependency checks. Real native rendering and OS input remain separate acceptance gates.' >> "$GITHUB_STEP_SUMMARY"
+        run: echo 'Passed source, portable contracts, AOT/native interoperability, dependency audits and actual Linux native input/paint/close checks for both development and verified machine-code AOT applications using the release GPUI host and a software GPU. Physical input, hardware GPU performance and macOS/Windows GUI remain separate evidence.' >> "$GITHUB_STEP_SUMMARY"

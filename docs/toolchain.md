@@ -55,6 +55,8 @@ The shared native host initially uses a separate GPUI process with bounded comma
 
 The headless probe does not satisfy the real-window acceptance in #230 or the same-window AOT acceptance in #227. Native rendering, OS input, GPU behavior, per-platform lifecycle, startup/RSS and interactive latency remain separate evidence. An AOT file's name or a successful compilation alone does not qualify it.
 
+Linux artifact inspection additionally checks the compiler's named runtime-feature record: the actual application and AOT interop probe record JIT removal, while the deliberately non-AOT control retains it. The interpreter remains present. See [the source-backed artifact inspection](aot-inspection.md) for raw records, exact source references and unsupported-format limits.
+
 ## AOT constraints and optimization
 
 The pinned compiler's own [compatibility documentation](https://github.com/oven-sh/bun/blob/da867c60bf0bcbf9d6d36994f8ca0efa42075115/docs/compiler/compatibility.mdx) specifies read-only existing built-ins, compile-time module resolution and interpreted runtime-generated strings. These differences affect dependencies and must be tested in the shipped executable. Bun AOT keeps runtime services and garbage collection; GPUI performs native rendering. AOT does not translate JSX/CSS into native widgets or remove the need for adapters.

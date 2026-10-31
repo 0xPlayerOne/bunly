@@ -35,6 +35,7 @@ The implementation agent may accept an ADR autonomously within the owner's exper
 ## Current decisions
 
 - [0001 — Bun Native direction](0001-bun-native-direction.md)
+- [0002 — Own a separate GPUI process](0002-owned-native-process.md)
 - [Active roadmap](https://github.com/0xPlayerOne/bun-native/issues/1)
 - [Architecture overview](../architecture.md)
 - [Engineering quality](../engineering-quality.md)

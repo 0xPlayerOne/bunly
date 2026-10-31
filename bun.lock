@@ -5,20 +5,41 @@
     "": {
       "name": "bun-native-workspace",
       "devDependencies": {
+        "@bun-native/core": "workspace:*",
         "@bun-native/protocol": "workspace:*",
+        "@bun-native/runtime": "workspace:*",
         "@types/bun": "1.4.4",
         "code-foundry": "1.48.8",
         "oxc-parser": "0.154.0",
         "oxlint": "1.83.0",
       },
     },
+    "packages/core": {
+      "name": "@bun-native/core",
+      "version": "0.0.0",
+      "dependencies": {
+        "@bun-native/protocol": "workspace:*",
+        "@bun-native/runtime": "workspace:*",
+      },
+    },
     "packages/protocol": {
       "name": "@bun-native/protocol",
       "version": "0.0.0",
     },
+    "packages/runtime": {
+      "name": "@bun-native/runtime",
+      "version": "0.0.0",
+      "dependencies": {
+        "@bun-native/protocol": "workspace:*",
+      },
+    },
   },
   "packages": {
+    "@bun-native/core": ["@bun-native/core@workspace:packages/core"],
+
     "@bun-native/protocol": ["@bun-native/protocol@workspace:packages/protocol"],
+
+    "@bun-native/runtime": ["@bun-native/runtime@workspace:packages/runtime"],
 
     "@oxc-parser/binding-android-arm-eabi": ["@oxc-parser/binding-android-arm-eabi@0.154.0", "", { "os": "android", "cpu": "arm" }, "sha512-sDdEtDl7vKdCvf54j72RJbowE3jCmyRz/+oOB6IAwQxAHZ0eI+Dcj4hvVnm0b9Dy31plUkdmfds9C+/Zt895Tg=="],
 

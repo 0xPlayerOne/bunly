@@ -1,0 +1,10 @@
+{
+  "name": "@bun-native/runtime",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "dependencies": {
+    "@bun-native/protocol": "workspace:*"
+  }
+}

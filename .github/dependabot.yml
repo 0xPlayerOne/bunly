@@ -36,3 +36,10 @@ updates:
       cargo-dependencies:
         applies-to: version-updates
         patterns: ['*']
+  - package-ecosystem: pip
+    directory: /scripts/quality
+    target-branch: main
+    schedule:
+      interval: weekly
+      day: sunday
+    open-pull-requests-limit: 1

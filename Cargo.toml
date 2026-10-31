@@ -1,6 +1,5 @@
 [workspace]
-members = ["native/protocol"]
-exclude = ["native/gpui-host"]
+members = ["native/protocol", "native/gpui-host"]
 resolver = "2"
 
 [workspace.package]
@@ -17,3 +16,11 @@ unsafe_code = "forbid"
 
 [workspace.lints.clippy]
 all = "warn"
+
+[profile.dev]
+debug = 0
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = "debuginfo"

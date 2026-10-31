@@ -1,0 +1,2469 @@
+{
+  "schemaVersion": 1,
+  "scope": "Initial real GPUI smoke observations, not a controlled performance comparison or release-profile baseline.",
+  "sourceSnapshot": {
+    "commit": "ba5fd63d1677ad6a87da798bb930e3ed4c8917da",
+    "matchedEveryBuildSourceHash": true,
+    "buildRecordedCommit": "bc5fa40527308a6ed76bf923e103567b2a5555a3",
+    "buildRecordedDirty": true,
+    "sourceFiles": [
+      {
+        "path": ".bun-version",
+        "bytes": 15,
+        "sha256": "8e88ab1b8c52566c35461f87112513119175f5c8f898e968f0684aabaa4e4e2b"
+      },
+      {
+        "path": "examples/native-window/main.ts",
+        "bytes": 1051,
+        "sha256": "305be8b434b37bde84f5a77c195d098a04428c5c05184d2430985170cd7e7c7b"
+      },
+      {
+        "path": "native/gpui-host/Cargo.lock",
+        "bytes": 160678,
+        "sha256": "fa0eb3145d8c5e4026c8ba30f5f50260938888d605d32e18ce1511674da85873"
+      },
+      {
+        "path": "native/gpui-host/Cargo.toml",
+        "bytes": 839,
+        "sha256": "a228a1af6f743cf196fc045f1fb2da54c94eb797af08dac9926e59c0e3a50b3b"
+      },
+      {
+        "path": "native/gpui-host/src/channel.rs",
+        "bytes": 2635,
+        "sha256": "3c86cc4f51a12de97912563972d78da72003366a863108a589215df203d972e9"
+      },
+      {
+        "path": "native/gpui-host/src/evidence.rs",
+        "bytes": 2531,
+        "sha256": "00730f1f0927d8206b992fe2021ac0324370a3c1fd928d8ccacc945f55454f1f"
+      },
+      {
+        "path": "native/gpui-host/src/input.rs",
+        "bytes": 19045,
+        "sha256": "862a5ab22c78d7a4d1f108b43d50ab87b00138a7eff02cd14640876c9aa727c7"
+      },
+      {
+        "path": "native/gpui-host/src/input/paint.rs",
+        "bytes": 5796,
+        "sha256": "8c20773cf2e67b5edd34b5d341de875895b3ab2e1eb39055c040246d0285b470"
+      },
+      {
+        "path": "native/gpui-host/src/main.rs",
+        "bytes": 8505,
+        "sha256": "8c290db36343ba91047dd43ed074c1ea122b63966a4f1bd3dc3a8dfb04091727"
+      },
+      {
+        "path": "native/gpui-host/src/view.rs",
+        "bytes": 2393,
+        "sha256": "012a274d3f5ec61560c376b5836bedf97c2f5b68d257ae2e0b3ffcf95de78962"
+      },
+      {
+        "path": "native/protocol/Cargo.toml",
+        "bytes": 225,
+        "sha256": "b62ea91005cbca4eb770859bac2341e340693c9453ee877486285afc7de7c415"
+      },
+      {
+        "path": "native/protocol/src/lib.rs",
+        "bytes": 7453,
+        "sha256": "ea6cbc0317c5e042669740059ba70bacc13881007ad7ead07d074a5c42ea8d64"
+      },
+      {
+        "path": "native/protocol/src/tests.rs",
+        "bytes": 4189,
+        "sha256": "286c71353069fc37075fc40578d0902aea241a7aeb9672bae6e6eeeff18ec61f"
+      },
+      {
+        "path": "packages/protocol/src/framing.ts",
+        "bytes": 2806,
+        "sha256": "91a8d348152ae987536549666612da76698220eaa21ead3d7969a3dc5155a664"
+      },
+      {
+        "path": "packages/protocol/src/index.ts",
+        "bytes": 244,
+        "sha256": "9bc5f8f83162a3ec273bdf3e40ecde9e77729fd835b7bce317de590b568dad7f"
+      },
+      {
+        "path": "packages/protocol/src/messages.ts",
+        "bytes": 4817,
+        "sha256": "6f5bfceae09a77bf1a6a201d6c544f885cadaa71d9b4aa5c681548d899f903fd"
+      },
+      {
+        "path": "packages/runtime/src/index.ts",
+        "bytes": 9196,
+        "sha256": "4ce55703de83c41cbdda695763ea7734f8259d890c2871add5cca259908a4fca"
+      },
+      {
+        "path": "rust-toolchain.toml",
+        "bytes": 86,
+        "sha256": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+      },
+      {
+        "path": "toolchain.json",
+        "bytes": 1725,
+        "sha256": "cd6be8b67adb3ba5d5cfa2b235f3aff1b11d6fa783dc2f3d1439618d0a574b94"
+      }
+    ]
+  },
+  "toolchain": {
+    "schemaVersion": 1,
+    "bun": {
+      "version": "1.4.4-canary.1",
+      "revision": "da867c60bf0bcbf9d6d36994f8ca0efa42075115",
+      "cliRevision": "1.4.4-canary.1+da867c60b",
+      "source": "https://github.com/oven-sh/bun/tree/da867c60bf0bcbf9d6d36994f8ca0efa42075115",
+      "compileArguments": ["compile", "--no-script", "--production"],
+      "archives": {
+        "linux-x64": {
+          "name": "bun-linux-x64.zip",
+          "assetId": 687869747,
+          "sha256": "e8f27b24f74186e87fc0f0f603bdb6b79264dc86a1680da41e2025a3cb3efee0"
+        },
+        "linux-arm64": {
+          "name": "bun-linux-aarch64.zip",
+          "assetId": 687869647,
+          "sha256": "a6e36924c8c6dc63459660e27a48cdd7189a7e888e590272d029de98d169d1e6"
+        },
+        "darwin-x64": {
+          "name": "bun-darwin-x64.zip",
+          "assetId": 687869655,
+          "sha256": "31e8e67eb5b742f7114002047d91c9455e253ad3f3a9d7a8e27d3dd73465b6a4"
+        },
+        "darwin-arm64": {
+          "name": "bun-darwin-aarch64.zip",
+          "assetId": 687869686,
+          "sha256": "67ede5394a7da4a8b1a1eb0788b72325f480bc956cb1155b6be962919c9aa581"
+        },
+        "win32-x64": {
+          "name": "bun-windows-x64.zip",
+          "assetId": 687870574,
+          "sha256": "053e8d9776759e33d372bef6a1bad38aa45be9f4533b64a98668d04328f776ce"
+        },
+        "win32-arm64": {
+          "name": "bun-windows-aarch64.zip",
+          "assetId": 687870891,
+          "sha256": "bf868100b4c4365e6f3240e7209abfb15a4c36cff8b3d8a25381b9529489d810"
+        }
+      }
+    },
+    "rust": {
+      "version": "1.98.1",
+      "components": ["rustfmt", "clippy"]
+    },
+    "gpui": {
+      "repository": "https://github.com/zed-industries/zed",
+      "revision": "ba63a022c9a22ca66d68ef2a8f0bb9b5b0a9984d",
+      "version": "0.2.2"
+    }
+  },
+  "artifacts": {
+    "application": {
+      "file": "native-window",
+      "bytes": 70712360,
+      "sha256": "e18c83bf2466a6c78665f708a3c8b2289da3961d74e630b408a9c5527b7fea9c",
+      "inspection": {
+        "format": "elf",
+        "payloadOffset": 67510280,
+        "payloadBytes": 3145951,
+        "flags": 16764,
+        "hasCompiledProgram": true
+      }
+    },
+    "host": {
+      "file": "bun-native-host",
+      "profile": "dev",
+      "bytes": 109334544,
+      "sha256": "70f3ff32af786f2776fa9a58785795b4435df9124d7c3b28923013371a168c66",
+      "provenance": "Caller-supplied prebuilt host. Match this hash to native build and interaction evidence."
+    }
+  },
+  "aotCompileMs": 1480.6500680000001,
+  "methodology": {
+    "nativeHostProfile": "dev",
+    "coldProcess": true,
+    "controlledPageCache": false,
+    "physicalInput": false,
+    "gpu": "Mesa llvmpipe software Vulkan",
+    "idleRss": "not-sampled-in-this-first-record",
+    "framePresentationLatency": "unsupported",
+    "powerMode": "not-controlled",
+    "comparison": "Two different scenarios per mode; insufficient samples for a speedup claim.",
+    "screenshotInspection": "Actual after.png screenshots inspected for counter text and typed input. Long input clips visually; no pixel classifier.",
+    "freshSourceCheck": "Every source file hashed by build-window.ts matched the sourceSnapshot.commit Git blob."
+  },
+  "runs": [
+    {
+      "scenario": "click",
+      "originalReportSha256": "fa8747d51a9883154d9dd6cc84662dcde0b7b382febdd48e0d21e691fe1b1dc3",
+      "report": {
+        "schema_version": 1,
+        "status": "passed",
+        "nonce": "9e7f84dff576371c9c10ae660d2ed0ac",
+        "command": ["<pinned-bun>", "examples/native-window/main.ts"],
+        "execution_mode": {
+          "declared": "development",
+          "aot_verified_by_driver": false
+        },
+        "verification_scope": "owned X11 window, OS-injected input, application event/paint reports and close",
+        "platform": {
+          "os": "Linux-6.18.57-x86_64-with-glibc2.39",
+          "architecture": "x86_64",
+          "display": "<isolated-Xvfb-display>",
+          "display_protocol": "X11",
+          "physical_input_tested": false,
+          "vulkan_driver_files": "/usr/share/vulkan/icd.d/lvp_icd.json",
+          "software_gl_requested": "1"
+        },
+        "renderer": {
+          "status": "reported-by-native-window",
+          "gpu": {
+            "is_software_emulated": true,
+            "device_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+            "driver_name": "llvmpipe",
+            "driver_info": "Mesa 25.2.8-0ubuntu0.24.04.4 (LLVM 20.1.2)"
+          }
+        },
+        "measurements": {
+          "rss_method": "sampled sum of process RSS; shared pages may be counted twice",
+          "cold_cache_controlled": false,
+          "samples": [
+            {
+              "elapsed_ms": 1.1891399990417995,
+              "tree_rss_bytes": 1822720,
+              "processes": [
+                {
+                  "pid": 153531,
+                  "state": "R",
+                  "parent_pid": 153525,
+                  "process_group": 153531,
+                  "start_ticks": 5552088,
+                  "rss_bytes": 1822720
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 2.6782109998748638,
+              "tree_rss_bytes": 8040448,
+              "processes": [
+                {
+                  "pid": 153531,
+                  "state": "R",
+                  "parent_pid": 153525,
+                  "process_group": 153531,
+                  "start_ticks": 5552088,
+                  "rss_bytes": 8040448
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 108.55545399681432,
+              "tree_rss_bytes": 135262208,
+              "processes": [
+                {
+                  "pid": 153531,
+                  "state": "S",
+                  "parent_pid": 153525,
+                  "process_group": 153531,
+                  "start_ticks": 5552088,
+                  "rss_bytes": 23597056
+                },
+                {
+                  "pid": 153540,
+                  "state": "R",
+                  "parent_pid": 153531,
+                  "process_group": 153531,
+                  "start_ticks": 5552089,
+                  "rss_bytes": 111665152
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 213.32901599816978,
+              "tree_rss_bytes": 141430784,
+              "processes": [
+                {
+                  "pid": 153531,
+                  "state": "S",
+                  "parent_pid": 153525,
+                  "process_group": 153531,
+                  "start_ticks": 5552088,
+                  "rss_bytes": 23461888
+                },
+                {
+                  "pid": 153540,
+                  "state": "R",
+                  "parent_pid": 153531,
+                  "process_group": 153531,
+                  "start_ticks": 5552089,
+                  "rss_bytes": 117968896
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 318.4880869957851,
+              "tree_rss_bytes": 159277056,
+              "processes": [
+                {
+                  "pid": 153531,
+                  "state": "S",
+                  "parent_pid": 153525,
+                  "process_group": 153531,
+                  "start_ticks": 5552088,
+                  "rss_bytes": 23592960
+                },
+                {
+                  "pid": 153540,
+                  "state": "S",
+                  "parent_pid": 153531,
+                  "process_group": 153531,
+                  "start_ticks": 5552089,
+                  "rss_bytes": 135684096
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 337.24641199660255,
+              "tree_rss_bytes": 169095168,
+              "processes": [
+                {
+                  "pid": 153531,
+                  "state": "S",
+                  "parent_pid": 153525,
+                  "process_group": 153531,
+                  "start_ticks": 5552088,
+                  "rss_bytes": 23592960
+                },
+                {
+                  "pid": 153540,
+                  "state": "S",
+                  "parent_pid": 153531,
+                  "process_group": 153531,
+                  "start_ticks": 5552089,
+                  "rss_bytes": 145502208
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 509.1327009940869,
+              "tree_rss_bytes": 171057152,
+              "processes": [
+                {
+                  "pid": 153531,
+                  "state": "S",
+                  "parent_pid": 153525,
+                  "process_group": 153531,
+                  "start_ticks": 5552088,
+                  "rss_bytes": 23719936
+                },
+                {
+                  "pid": 153540,
+                  "state": "S",
+                  "parent_pid": 153531,
+                  "process_group": 153531,
+                  "start_ticks": 5552089,
+                  "rss_bytes": 147337216
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 548.7403739971342,
+              "tree_rss_bytes": 171057152,
+              "processes": [
+                {
+                  "pid": 153531,
+                  "state": "S",
+                  "parent_pid": 153525,
+                  "process_group": 153531,
+                  "start_ticks": 5552088,
+                  "rss_bytes": 23719936
+                },
+                {
+                  "pid": 153540,
+                  "state": "S",
+                  "parent_pid": 153531,
+                  "process_group": 153531,
+                  "start_ticks": 5552089,
+                  "rss_bytes": 147337216
+                }
+              ]
+            }
+          ],
+          "time_to_window_observed_ms": 334.09140999719966,
+          "sampled_peak_tree_rss_bytes": 171057152
+        },
+        "checks": {
+          "window": "passed",
+          "os_input": "injected-through-XTest",
+          "app_input_event": "passed",
+          "app_render_report": "passed",
+          "pixel_or_text_assertion": "unsupported",
+          "os_close": "passed",
+          "renderer": "passed"
+        },
+        "logs": {
+          "stdout": {
+            "written_bytes": 0,
+            "discarded_bytes": 0
+          },
+          "stderr": {
+            "written_bytes": 0,
+            "discarded_bytes": 0
+          }
+        },
+        "tools": {
+          "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+          "xdotool": "xdotool version 3.20160805.1",
+          "imagemagick": "Version: ImageMagick 6.9.12-98 Q16 x86_64 18038 https://legacy.imagemagick.org\nCopyright: (C) 1999 ImageMagick Studio LLC\nLicense: https://imagemagick.org/script/license.php\nFeatures: Cipher DPC Modules OpenMP(4.5) \nDelegates (built-in): bzlib djvu fftw fontconfig freetype heic jbig jng jp2 jpeg lcms lqr ltdl lzma openexr pangocairo png raw tiff webp wmf x xml zlib"
+        },
+        "intended_toolchain": {
+          "manifest_sha256": "cd6be8b67adb3ba5d5cfa2b235f3aff1b11d6fa783dc2f3d1439618d0a574b94",
+          "bun_revision": "da867c60bf0bcbf9d6d36994f8ca0efa42075115",
+          "rust": {
+            "version": "1.98.1",
+            "components": ["rustfmt", "clippy"]
+          },
+          "gpui": {
+            "repository": "https://github.com/zed-industries/zed",
+            "revision": "ba63a022c9a22ca66d68ef2a8f0bb9b5b0a9984d",
+            "version": "0.2.2"
+          }
+        },
+        "source": {
+          "commit": "bc5fa40527308a6ed76bf923e103567b2a5555a3",
+          "dirty": true
+        },
+        "window_id": "4194305",
+        "screenshots": {
+          "before.png": {
+            "bytes": 16154,
+            "sha256": "5945aeab6fd51d31ae9380bdf0a4d659709ff680dcd6beb44be35a0b723e14b8"
+          },
+          "after.png": {
+            "bytes": 15908,
+            "sha256": "4b6485a143da9f57630898ef081a59ec86f89ec0edea988bb32c46f6a712fffe"
+          }
+        },
+        "observed_events": [
+          {
+            "nonce": "9e7f84dff576371c9c10ae660d2ed0ac",
+            "type": "click",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "9e7f84dff576371c9c10ae660d2ed0ac",
+            "type": "rendered",
+            "text": "Clicks: 1",
+            "input": "",
+            "stage": "native-paint"
+          }
+        ],
+        "cleanup": {
+          "forced_termination": false,
+          "remaining_observed_pids": [],
+          "unreaped_observed_pids": [],
+          "application_exit_code": 0
+        }
+      }
+    },
+    {
+      "scenario": "input",
+      "originalReportSha256": "66c0e35bd77c2aad92486df8c00eddaca59e98cc8b6f7aa56f01da191bb6b951",
+      "report": {
+        "schema_version": 1,
+        "status": "passed",
+        "nonce": "1980431a96cfd0e6306805e85410c559",
+        "command": ["<pinned-bun>", "examples/native-window/main.ts"],
+        "execution_mode": {
+          "declared": "development",
+          "aot_verified_by_driver": false
+        },
+        "verification_scope": "owned X11 window, OS-injected input, application event/paint reports and close",
+        "platform": {
+          "os": "Linux-6.18.57-x86_64-with-glibc2.39",
+          "architecture": "x86_64",
+          "display": "<isolated-Xvfb-display>",
+          "display_protocol": "X11",
+          "physical_input_tested": false,
+          "vulkan_driver_files": "/usr/share/vulkan/icd.d/lvp_icd.json",
+          "software_gl_requested": "1"
+        },
+        "renderer": {
+          "status": "reported-by-native-window",
+          "gpu": {
+            "is_software_emulated": true,
+            "device_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+            "driver_name": "llvmpipe",
+            "driver_info": "Mesa 25.2.8-0ubuntu0.24.04.4 (LLVM 20.1.2)"
+          }
+        },
+        "measurements": {
+          "rss_method": "sampled sum of process RSS; shared pages may be counted twice",
+          "cold_cache_controlled": false,
+          "samples": [
+            {
+              "elapsed_ms": 1.1941869961447082,
+              "tree_rss_bytes": 1228800,
+              "processes": [
+                {
+                  "pid": 153633,
+                  "state": "R",
+                  "parent_pid": 153627,
+                  "process_group": 153633,
+                  "start_ticks": 5552156,
+                  "rss_bytes": 1228800
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 2.2702610003761947,
+              "tree_rss_bytes": 7249920,
+              "processes": [
+                {
+                  "pid": 153633,
+                  "state": "R",
+                  "parent_pid": 153627,
+                  "process_group": 153633,
+                  "start_ticks": 5552156,
+                  "rss_bytes": 7249920
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 111.79385899595218,
+              "tree_rss_bytes": 135467008,
+              "processes": [
+                {
+                  "pid": 153633,
+                  "state": "S",
+                  "parent_pid": 153627,
+                  "process_group": 153633,
+                  "start_ticks": 5552156,
+                  "rss_bytes": 23572480
+                },
+                {
+                  "pid": 153642,
+                  "state": "R",
+                  "parent_pid": 153633,
+                  "process_group": 153633,
+                  "start_ticks": 5552157,
+                  "rss_bytes": 111894528
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 216.630039998563,
+              "tree_rss_bytes": 141717504,
+              "processes": [
+                {
+                  "pid": 153633,
+                  "state": "S",
+                  "parent_pid": 153627,
+                  "process_group": 153633,
+                  "start_ticks": 5552156,
+                  "rss_bytes": 23437312
+                },
+                {
+                  "pid": 153642,
+                  "state": "R",
+                  "parent_pid": 153633,
+                  "process_group": 153633,
+                  "start_ticks": 5552157,
+                  "rss_bytes": 118280192
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 321.5959609951824,
+              "tree_rss_bytes": 169009152,
+              "processes": [
+                {
+                  "pid": 153633,
+                  "state": "S",
+                  "parent_pid": 153627,
+                  "process_group": 153633,
+                  "start_ticks": 5552156,
+                  "rss_bytes": 23568384
+                },
+                {
+                  "pid": 153642,
+                  "state": "S",
+                  "parent_pid": 153633,
+                  "process_group": 153633,
+                  "start_ticks": 5552157,
+                  "rss_bytes": 145440768
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 335.5392800003756,
+              "tree_rss_bytes": 169009152,
+              "processes": [
+                {
+                  "pid": 153633,
+                  "state": "S",
+                  "parent_pid": 153627,
+                  "process_group": 153633,
+                  "start_ticks": 5552156,
+                  "rss_bytes": 23568384
+                },
+                {
+                  "pid": 153642,
+                  "state": "S",
+                  "parent_pid": 153633,
+                  "process_group": 153633,
+                  "start_ticks": 5552157,
+                  "rss_bytes": 145440768
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 405.0135360012064,
+              "tree_rss_bytes": 169009152,
+              "processes": [
+                {
+                  "pid": 153633,
+                  "state": "S",
+                  "parent_pid": 153627,
+                  "process_group": 153633,
+                  "start_ticks": 5552156,
+                  "rss_bytes": 23568384
+                },
+                {
+                  "pid": 153642,
+                  "state": "S",
+                  "parent_pid": 153633,
+                  "process_group": 153633,
+                  "start_ticks": 5552157,
+                  "rss_bytes": 145440768
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 473.5129659966333,
+              "tree_rss_bytes": 170319872,
+              "processes": [
+                {
+                  "pid": 153633,
+                  "state": "S",
+                  "parent_pid": 153627,
+                  "process_group": 153633,
+                  "start_ticks": 5552156,
+                  "rss_bytes": 23568384
+                },
+                {
+                  "pid": 153642,
+                  "state": "S",
+                  "parent_pid": 153633,
+                  "process_group": 153633,
+                  "start_ticks": 5552157,
+                  "rss_bytes": 146751488
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 752.5966899993364,
+              "tree_rss_bytes": 174342144,
+              "processes": [
+                {
+                  "pid": 153633,
+                  "state": "S",
+                  "parent_pid": 153627,
+                  "process_group": 153633,
+                  "start_ticks": 5552156,
+                  "rss_bytes": 26411008
+                },
+                {
+                  "pid": 153642,
+                  "state": "S",
+                  "parent_pid": 153633,
+                  "process_group": 153633,
+                  "start_ticks": 5552157,
+                  "rss_bytes": 147931136
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 788.1281000009039,
+              "tree_rss_bytes": 174342144,
+              "processes": [
+                {
+                  "pid": 153633,
+                  "state": "S",
+                  "parent_pid": 153627,
+                  "process_group": 153633,
+                  "start_ticks": 5552156,
+                  "rss_bytes": 26411008
+                },
+                {
+                  "pid": 153642,
+                  "state": "R",
+                  "parent_pid": 153633,
+                  "process_group": 153633,
+                  "start_ticks": 5552157,
+                  "rss_bytes": 147931136
+                }
+              ]
+            }
+          ],
+          "time_to_window_observed_ms": 332.55574999930104,
+          "sampled_peak_tree_rss_bytes": 174342144
+        },
+        "checks": {
+          "window": "passed",
+          "os_input": "injected-through-XTest",
+          "app_input_event": "passed",
+          "app_render_report": "passed",
+          "pixel_or_text_assertion": "unsupported",
+          "os_close": "passed",
+          "renderer": "passed"
+        },
+        "logs": {
+          "stdout": {
+            "written_bytes": 0,
+            "discarded_bytes": 0
+          },
+          "stderr": {
+            "written_bytes": 0,
+            "discarded_bytes": 0
+          }
+        },
+        "tools": {
+          "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+          "xdotool": "xdotool version 3.20160805.1",
+          "imagemagick": "Version: ImageMagick 6.9.12-98 Q16 x86_64 18038 https://legacy.imagemagick.org\nCopyright: (C) 1999 ImageMagick Studio LLC\nLicense: https://imagemagick.org/script/license.php\nFeatures: Cipher DPC Modules OpenMP(4.5) \nDelegates (built-in): bzlib djvu fftw fontconfig freetype heic jbig jng jp2 jpeg lcms lqr ltdl lzma openexr pangocairo png raw tiff webp wmf x xml zlib"
+        },
+        "intended_toolchain": {
+          "manifest_sha256": "cd6be8b67adb3ba5d5cfa2b235f3aff1b11d6fa783dc2f3d1439618d0a574b94",
+          "bun_revision": "da867c60bf0bcbf9d6d36994f8ca0efa42075115",
+          "rust": {
+            "version": "1.98.1",
+            "components": ["rustfmt", "clippy"]
+          },
+          "gpui": {
+            "repository": "https://github.com/zed-industries/zed",
+            "revision": "ba63a022c9a22ca66d68ef2a8f0bb9b5b0a9984d",
+            "version": "0.2.2"
+          }
+        },
+        "source": {
+          "commit": "bc5fa40527308a6ed76bf923e103567b2a5555a3",
+          "dirty": true
+        },
+        "window_id": "4194305",
+        "screenshots": {
+          "before.png": {
+            "bytes": 16155,
+            "sha256": "b789f111430acdc153c84ec4d14383f482402180c52e7ec6a7aa9c5be3a39ce1"
+          },
+          "after.png": {
+            "bytes": 24848,
+            "sha256": "3eb2a1f01ec03c85361374c6a118a3dee3d3ac019d514bf4fd7c53cba3bf2a33"
+          }
+        },
+        "observed_events": [
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "B",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "B",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bu",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bu",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun ",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun ",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun N",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun N",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Na",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Na",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Nat",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Nat",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Nati",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Nati",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Nativ",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Nativ",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native ",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native ",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 19",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 19",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 198",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 198",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 19804",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 19804",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 198043",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 198043",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a9",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a9",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a96",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a96",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a96c",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a96c",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a96cf",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a96cf",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a96cfd",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a96cfd",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a96cfd0",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a96cfd0",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a96cfd0e",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a96cfd0e",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a96cfd0e6",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a96cfd0e6",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a96cfd0e63",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a96cfd0e63",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a96cfd0e630",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a96cfd0e630",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a96cfd0e6306",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a96cfd0e6306",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a96cfd0e63068",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a96cfd0e63068",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a96cfd0e630680",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a96cfd0e630680",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a96cfd0e6306805",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a96cfd0e6306805",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a96cfd0e6306805e",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a96cfd0e6306805e",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a96cfd0e6306805e8",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a96cfd0e6306805e8",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a96cfd0e6306805e85",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a96cfd0e6306805e85",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a96cfd0e6306805e854",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a96cfd0e6306805e854",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a96cfd0e6306805e8541",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a96cfd0e6306805e8541",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a96cfd0e6306805e85410",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a96cfd0e6306805e85410",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a96cfd0e6306805e85410c",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a96cfd0e6306805e85410c",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a96cfd0e6306805e85410c5",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a96cfd0e6306805e85410c5",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a96cfd0e6306805e85410c55",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a96cfd0e6306805e85410c55",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "input",
+            "value": "Bun Native 1980431a96cfd0e6306805e85410c559",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "1980431a96cfd0e6306805e85410c559",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 1980431a96cfd0e6306805e85410c559",
+            "stage": "native-paint"
+          }
+        ],
+        "cleanup": {
+          "forced_termination": false,
+          "remaining_observed_pids": [],
+          "unreaped_observed_pids": [],
+          "application_exit_code": 0
+        }
+      }
+    },
+    {
+      "scenario": "click",
+      "originalReportSha256": "6beca5b6bda46cc87be3ee0d9b8eb763171bd7c6cbfefc11f45230dd24237316",
+      "report": {
+        "schema_version": 1,
+        "status": "passed",
+        "nonce": "8af04597df736df3b3c4042f1a083174",
+        "command": ["<package>/native-window"],
+        "execution_mode": {
+          "declared": "aot",
+          "aot_verified_by_driver": false
+        },
+        "verification_scope": "owned X11 window, OS-injected input, application event/paint reports and close",
+        "platform": {
+          "os": "Linux-6.18.57-x86_64-with-glibc2.39",
+          "architecture": "x86_64",
+          "display": "<isolated-Xvfb-display>",
+          "display_protocol": "X11",
+          "physical_input_tested": false,
+          "vulkan_driver_files": "/usr/share/vulkan/icd.d/lvp_icd.json",
+          "software_gl_requested": "1"
+        },
+        "renderer": {
+          "status": "reported-by-native-window",
+          "gpu": {
+            "is_software_emulated": true,
+            "device_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+            "driver_name": "llvmpipe",
+            "driver_info": "Mesa 25.2.8-0ubuntu0.24.04.4 (LLVM 20.1.2)"
+          }
+        },
+        "measurements": {
+          "rss_method": "sampled sum of process RSS; shared pages may be counted twice",
+          "cold_cache_controlled": false,
+          "samples": [
+            {
+              "elapsed_ms": 1.0304280003765598,
+              "tree_rss_bytes": 1863680,
+              "processes": [
+                {
+                  "pid": 154253,
+                  "state": "R",
+                  "parent_pid": 154247,
+                  "process_group": 154253,
+                  "start_ticks": 5553105,
+                  "rss_bytes": 1863680
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 1.9518370027071796,
+              "tree_rss_bytes": 6762496,
+              "processes": [
+                {
+                  "pid": 154253,
+                  "state": "R",
+                  "parent_pid": 154247,
+                  "process_group": 154253,
+                  "start_ticks": 5553105,
+                  "rss_bytes": 6762496
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 105.56029299914371,
+              "tree_rss_bytes": 134905856,
+              "processes": [
+                {
+                  "pid": 154253,
+                  "state": "S",
+                  "parent_pid": 154247,
+                  "process_group": 154253,
+                  "start_ticks": 5553105,
+                  "rss_bytes": 22585344
+                },
+                {
+                  "pid": 154257,
+                  "state": "R",
+                  "parent_pid": 154253,
+                  "process_group": 154253,
+                  "start_ticks": 5553105,
+                  "rss_bytes": 112320512
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 210.62670700484887,
+              "tree_rss_bytes": 141873152,
+              "processes": [
+                {
+                  "pid": 154253,
+                  "state": "S",
+                  "parent_pid": 154247,
+                  "process_group": 154253,
+                  "start_ticks": 5553105,
+                  "rss_bytes": 22585344
+                },
+                {
+                  "pid": 154257,
+                  "state": "R",
+                  "parent_pid": 154253,
+                  "process_group": 154253,
+                  "start_ticks": 5553105,
+                  "rss_bytes": 119287808
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 315.270209001028,
+              "tree_rss_bytes": 168062976,
+              "processes": [
+                {
+                  "pid": 154253,
+                  "state": "S",
+                  "parent_pid": 154247,
+                  "process_group": 154253,
+                  "start_ticks": 5553105,
+                  "rss_bytes": 22585344
+                },
+                {
+                  "pid": 154257,
+                  "state": "S",
+                  "parent_pid": 154253,
+                  "process_group": 154253,
+                  "start_ticks": 5553105,
+                  "rss_bytes": 145477632
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 327.4313729998539,
+              "tree_rss_bytes": 168062976,
+              "processes": [
+                {
+                  "pid": 154253,
+                  "state": "S",
+                  "parent_pid": 154247,
+                  "process_group": 154253,
+                  "start_ticks": 5553105,
+                  "rss_bytes": 22585344
+                },
+                {
+                  "pid": 154257,
+                  "state": "S",
+                  "parent_pid": 154253,
+                  "process_group": 154253,
+                  "start_ticks": 5553105,
+                  "rss_bytes": 145477632
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 500.56599100207677,
+              "tree_rss_bytes": 169570304,
+              "processes": [
+                {
+                  "pid": 154253,
+                  "state": "S",
+                  "parent_pid": 154247,
+                  "process_group": 154253,
+                  "start_ticks": 5553105,
+                  "rss_bytes": 23044096
+                },
+                {
+                  "pid": 154257,
+                  "state": "S",
+                  "parent_pid": 154253,
+                  "process_group": 154253,
+                  "start_ticks": 5553105,
+                  "rss_bytes": 146526208
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 530.0883739982964,
+              "tree_rss_bytes": 169570304,
+              "processes": [
+                {
+                  "pid": 154253,
+                  "state": "S",
+                  "parent_pid": 154247,
+                  "process_group": 154253,
+                  "start_ticks": 5553105,
+                  "rss_bytes": 23044096
+                },
+                {
+                  "pid": 154257,
+                  "state": "S",
+                  "parent_pid": 154253,
+                  "process_group": 154253,
+                  "start_ticks": 5553105,
+                  "rss_bytes": 146526208
+                }
+              ]
+            }
+          ],
+          "time_to_window_observed_ms": 324.8221169997123,
+          "sampled_peak_tree_rss_bytes": 169570304
+        },
+        "checks": {
+          "window": "passed",
+          "os_input": "injected-through-XTest",
+          "app_input_event": "passed",
+          "app_render_report": "passed",
+          "pixel_or_text_assertion": "unsupported",
+          "os_close": "passed",
+          "renderer": "passed"
+        },
+        "logs": {
+          "stdout": {
+            "written_bytes": 0,
+            "discarded_bytes": 0
+          },
+          "stderr": {
+            "written_bytes": 0,
+            "discarded_bytes": 0
+          }
+        },
+        "tools": {
+          "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+          "xdotool": "xdotool version 3.20160805.1",
+          "imagemagick": "Version: ImageMagick 6.9.12-98 Q16 x86_64 18038 https://legacy.imagemagick.org\nCopyright: (C) 1999 ImageMagick Studio LLC\nLicense: https://imagemagick.org/script/license.php\nFeatures: Cipher DPC Modules OpenMP(4.5) \nDelegates (built-in): bzlib djvu fftw fontconfig freetype heic jbig jng jp2 jpeg lcms lqr ltdl lzma openexr pangocairo png raw tiff webp wmf x xml zlib"
+        },
+        "intended_toolchain": {
+          "manifest_sha256": "cd6be8b67adb3ba5d5cfa2b235f3aff1b11d6fa783dc2f3d1439618d0a574b94",
+          "bun_revision": "da867c60bf0bcbf9d6d36994f8ca0efa42075115",
+          "rust": {
+            "version": "1.98.1",
+            "components": ["rustfmt", "clippy"]
+          },
+          "gpui": {
+            "repository": "https://github.com/zed-industries/zed",
+            "revision": "ba63a022c9a22ca66d68ef2a8f0bb9b5b0a9984d",
+            "version": "0.2.2"
+          }
+        },
+        "source": {
+          "commit": "bc5fa40527308a6ed76bf923e103567b2a5555a3",
+          "dirty": true
+        },
+        "window_id": "4194305",
+        "screenshots": {
+          "before.png": {
+            "bytes": 16154,
+            "sha256": "5945aeab6fd51d31ae9380bdf0a4d659709ff680dcd6beb44be35a0b723e14b8"
+          },
+          "after.png": {
+            "bytes": 15908,
+            "sha256": "4b6485a143da9f57630898ef081a59ec86f89ec0edea988bb32c46f6a712fffe"
+          }
+        },
+        "observed_events": [
+          {
+            "nonce": "8af04597df736df3b3c4042f1a083174",
+            "type": "click",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "8af04597df736df3b3c4042f1a083174",
+            "type": "rendered",
+            "text": "Clicks: 1",
+            "input": "",
+            "stage": "native-paint"
+          }
+        ],
+        "cleanup": {
+          "forced_termination": false,
+          "remaining_observed_pids": [],
+          "unreaped_observed_pids": [],
+          "application_exit_code": 0
+        }
+      }
+    },
+    {
+      "scenario": "input",
+      "originalReportSha256": "65e2454b27a4b833705bbc02ccd49e9468b2c6af65d45f124befc3beece70145",
+      "report": {
+        "schema_version": 1,
+        "status": "passed",
+        "nonce": "987e01562f299b67934be3f224c02020",
+        "command": ["<package>/native-window"],
+        "execution_mode": {
+          "declared": "aot",
+          "aot_verified_by_driver": false
+        },
+        "verification_scope": "owned X11 window, OS-injected input, application event/paint reports and close",
+        "platform": {
+          "os": "Linux-6.18.57-x86_64-with-glibc2.39",
+          "architecture": "x86_64",
+          "display": "<isolated-Xvfb-display>",
+          "display_protocol": "X11",
+          "physical_input_tested": false,
+          "vulkan_driver_files": "/usr/share/vulkan/icd.d/lvp_icd.json",
+          "software_gl_requested": "1"
+        },
+        "renderer": {
+          "status": "reported-by-native-window",
+          "gpu": {
+            "is_software_emulated": true,
+            "device_name": "llvmpipe (LLVM 20.1.2, 256 bits)",
+            "driver_name": "llvmpipe",
+            "driver_info": "Mesa 25.2.8-0ubuntu0.24.04.4 (LLVM 20.1.2)"
+          }
+        },
+        "measurements": {
+          "rss_method": "sampled sum of process RSS; shared pages may be counted twice",
+          "cold_cache_controlled": false,
+          "samples": [
+            {
+              "elapsed_ms": 1.0512599983485416,
+              "tree_rss_bytes": 1863680,
+              "processes": [
+                {
+                  "pid": 154353,
+                  "state": "R",
+                  "parent_pid": 154347,
+                  "process_group": 154353,
+                  "start_ticks": 5553171,
+                  "rss_bytes": 1863680
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 2.028509996307548,
+              "tree_rss_bytes": 7155712,
+              "processes": [
+                {
+                  "pid": 154353,
+                  "state": "R",
+                  "parent_pid": 154347,
+                  "process_group": 154353,
+                  "start_ticks": 5553171,
+                  "rss_bytes": 7155712
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 106.18809699371923,
+              "tree_rss_bytes": 136830976,
+              "processes": [
+                {
+                  "pid": 154353,
+                  "state": "S",
+                  "parent_pid": 154347,
+                  "process_group": 154353,
+                  "start_ticks": 5553171,
+                  "rss_bytes": 23322624
+                },
+                {
+                  "pid": 154357,
+                  "state": "R",
+                  "parent_pid": 154353,
+                  "process_group": 154353,
+                  "start_ticks": 5553171,
+                  "rss_bytes": 113508352
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 211.68178499647183,
+              "tree_rss_bytes": 144502784,
+              "processes": [
+                {
+                  "pid": 154353,
+                  "state": "S",
+                  "parent_pid": 154347,
+                  "process_group": 154353,
+                  "start_ticks": 5553171,
+                  "rss_bytes": 23322624
+                },
+                {
+                  "pid": 154357,
+                  "state": "R",
+                  "parent_pid": 154353,
+                  "process_group": 154353,
+                  "start_ticks": 5553171,
+                  "rss_bytes": 121180160
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 316.60502199520124,
+              "tree_rss_bytes": 168992768,
+              "processes": [
+                {
+                  "pid": 154353,
+                  "state": "S",
+                  "parent_pid": 154347,
+                  "process_group": 154353,
+                  "start_ticks": 5553171,
+                  "rss_bytes": 23322624
+                },
+                {
+                  "pid": 154357,
+                  "state": "S",
+                  "parent_pid": 154353,
+                  "process_group": 154353,
+                  "start_ticks": 5553171,
+                  "rss_bytes": 145670144
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 329.06658899446484,
+              "tree_rss_bytes": 168992768,
+              "processes": [
+                {
+                  "pid": 154353,
+                  "state": "S",
+                  "parent_pid": 154347,
+                  "process_group": 154353,
+                  "start_ticks": 5553171,
+                  "rss_bytes": 23322624
+                },
+                {
+                  "pid": 154357,
+                  "state": "S",
+                  "parent_pid": 154353,
+                  "process_group": 154353,
+                  "start_ticks": 5553171,
+                  "rss_bytes": 145670144
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 391.3305869937176,
+              "tree_rss_bytes": 168992768,
+              "processes": [
+                {
+                  "pid": 154353,
+                  "state": "S",
+                  "parent_pid": 154347,
+                  "process_group": 154353,
+                  "start_ticks": 5553171,
+                  "rss_bytes": 23322624
+                },
+                {
+                  "pid": 154357,
+                  "state": "S",
+                  "parent_pid": 154353,
+                  "process_group": 154353,
+                  "start_ticks": 5553171,
+                  "rss_bytes": 145670144
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 467.65599999343976,
+              "tree_rss_bytes": 170172416,
+              "processes": [
+                {
+                  "pid": 154353,
+                  "state": "S",
+                  "parent_pid": 154347,
+                  "process_group": 154353,
+                  "start_ticks": 5553171,
+                  "rss_bytes": 23322624
+                },
+                {
+                  "pid": 154357,
+                  "state": "S",
+                  "parent_pid": 154353,
+                  "process_group": 154353,
+                  "start_ticks": 5553171,
+                  "rss_bytes": 146849792
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 810.4357899937895,
+              "tree_rss_bytes": 171712512,
+              "processes": [
+                {
+                  "pid": 154353,
+                  "state": "S",
+                  "parent_pid": 154347,
+                  "process_group": 154353,
+                  "start_ticks": 5553171,
+                  "rss_bytes": 23945216
+                },
+                {
+                  "pid": 154357,
+                  "state": "S",
+                  "parent_pid": 154353,
+                  "process_group": 154353,
+                  "start_ticks": 5553171,
+                  "rss_bytes": 147767296
+                }
+              ]
+            },
+            {
+              "elapsed_ms": 860.4280019935686,
+              "tree_rss_bytes": 171712512,
+              "processes": [
+                {
+                  "pid": 154353,
+                  "state": "S",
+                  "parent_pid": 154347,
+                  "process_group": 154353,
+                  "start_ticks": 5553171,
+                  "rss_bytes": 23945216
+                },
+                {
+                  "pid": 154357,
+                  "state": "S",
+                  "parent_pid": 154353,
+                  "process_group": 154353,
+                  "start_ticks": 5553171,
+                  "rss_bytes": 147767296
+                }
+              ]
+            }
+          ],
+          "time_to_window_observed_ms": 326.64062299591023,
+          "sampled_peak_tree_rss_bytes": 171712512
+        },
+        "checks": {
+          "window": "passed",
+          "os_input": "injected-through-XTest",
+          "app_input_event": "passed",
+          "app_render_report": "passed",
+          "pixel_or_text_assertion": "unsupported",
+          "os_close": "passed",
+          "renderer": "passed"
+        },
+        "logs": {
+          "stdout": {
+            "written_bytes": 0,
+            "discarded_bytes": 0
+          },
+          "stderr": {
+            "written_bytes": 0,
+            "discarded_bytes": 0
+          }
+        },
+        "tools": {
+          "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+          "xdotool": "xdotool version 3.20160805.1",
+          "imagemagick": "Version: ImageMagick 6.9.12-98 Q16 x86_64 18038 https://legacy.imagemagick.org\nCopyright: (C) 1999 ImageMagick Studio LLC\nLicense: https://imagemagick.org/script/license.php\nFeatures: Cipher DPC Modules OpenMP(4.5) \nDelegates (built-in): bzlib djvu fftw fontconfig freetype heic jbig jng jp2 jpeg lcms lqr ltdl lzma openexr pangocairo png raw tiff webp wmf x xml zlib"
+        },
+        "intended_toolchain": {
+          "manifest_sha256": "cd6be8b67adb3ba5d5cfa2b235f3aff1b11d6fa783dc2f3d1439618d0a574b94",
+          "bun_revision": "da867c60bf0bcbf9d6d36994f8ca0efa42075115",
+          "rust": {
+            "version": "1.98.1",
+            "components": ["rustfmt", "clippy"]
+          },
+          "gpui": {
+            "repository": "https://github.com/zed-industries/zed",
+            "revision": "ba63a022c9a22ca66d68ef2a8f0bb9b5b0a9984d",
+            "version": "0.2.2"
+          }
+        },
+        "source": {
+          "commit": "bc5fa40527308a6ed76bf923e103567b2a5555a3",
+          "dirty": true
+        },
+        "window_id": "4194305",
+        "screenshots": {
+          "before.png": {
+            "bytes": 16155,
+            "sha256": "b789f111430acdc153c84ec4d14383f482402180c52e7ec6a7aa9c5be3a39ce1"
+          },
+          "after.png": {
+            "bytes": 23655,
+            "sha256": "93db402fe30bcdb072660e30925695104e9bd5e753defa9bb833d0cec3d93df9"
+          }
+        },
+        "observed_events": [
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "B",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "B",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bu",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bu",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun ",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun ",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun N",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun N",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Na",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Na",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Nat",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Nat",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Nati",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Nati",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Nativ",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Nativ",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native ",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native ",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 9",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 9",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 98",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 98",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e0",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e0",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e015",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e015",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e0156",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e0156",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01562",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01562",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01562f",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01562f",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01562f2",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01562f2",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01562f29",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01562f29",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01562f299",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01562f299",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01562f299b",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01562f299b",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01562f299b6",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01562f299b6",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01562f299b67",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01562f299b67",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01562f299b679",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01562f299b679",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01562f299b6793",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01562f299b6793",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01562f299b67934",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01562f299b67934",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01562f299b67934b",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01562f299b67934b",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01562f299b67934be",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01562f299b67934be",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01562f299b67934be3",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01562f299b67934be3",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01562f299b67934be3f",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01562f299b67934be3f",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01562f299b67934be3f2",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01562f299b67934be3f2",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01562f299b67934be3f22",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01562f299b67934be3f22",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01562f299b67934be3f224",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01562f299b67934be3f224",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01562f299b67934be3f224c",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01562f299b67934be3f224c",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01562f299b67934be3f224c0",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01562f299b67934be3f224c0",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01562f299b67934be3f224c02",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01562f299b67934be3f224c02",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01562f299b67934be3f224c020",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01562f299b67934be3f224c020",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01562f299b67934be3f224c0202",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01562f299b67934be3f224c0202",
+            "stage": "native-paint"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "input",
+            "value": "Bun Native 987e01562f299b67934be3f224c02020",
+            "stage": "bun-application"
+          },
+          {
+            "nonce": "987e01562f299b67934be3f224c02020",
+            "type": "rendered",
+            "text": "Clicks: 0",
+            "input": "Bun Native 987e01562f299b67934be3f224c02020",
+            "stage": "native-paint"
+          }
+        ],
+        "cleanup": {
+          "forced_termination": false,
+          "remaining_observed_pids": [],
+          "unreaped_observed_pids": [],
+          "application_exit_code": 0
+        }
+      }
+    }
+  ]
+}

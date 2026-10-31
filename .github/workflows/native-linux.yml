@@ -1,0 +1,117 @@
+name: Native Linux
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-linux-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  native:
+    name: GPUI release and development/AOT input
+    if: vars.CI_BILLING_PAUSED == 'false' && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    env:
+      CARGO_BUILD_JOBS: 2
+      CARGO_INCREMENTAL: 0
+      BUN_NATIVE_HOST_PROFILE: release
+      PYTHONDONTWRITEBYTECODE: 1
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Prepare evidence directory
+        run: |
+          mkdir "$RUNNER_TEMP/native-evidence"
+          echo "NATIVE_EVIDENCE=$RUNNER_TEMP/native-evidence" >> "$GITHUB_ENV"
+      - name: Install checksum-pinned Bun compiler
+        run: node scripts/install-bun.mjs --destination "$RUNNER_TEMP/bun-native-bun"
+      - name: Install pinned Rust toolchain
+        run: rustup show active-toolchain
+      - name: Install native build and isolated X11 prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y \
+            pkg-config libfontconfig-dev libglib2.0-dev libssl-dev libwayland-dev \
+            libx11-xcb-dev libxkbcommon-x11-dev libvulkan1 libzstd-dev \
+            mesa-vulkan-drivers xvfb xauth x11-utils openbox xdotool imagemagick \
+            dbus-x11 fonts-dejavu-core
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.bun/install/cache
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+          key: gpui-downloads-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('toolchain.json', 'bun.lock', 'rust-toolchain.toml', 'Cargo.lock') }}
+      - run: bun install --frozen-lockfile
+      - name: Record build environment
+        run: |
+          {
+            git rev-parse HEAD
+            uname -a
+            bun --revision
+            rustc --version --verbose
+            cargo --version
+            cc --version
+            dpkg-query -W libvulkan1 mesa-vulkan-drivers libwayland-client0 libxkbcommon0 xvfb openbox xdotool imagemagick
+            printf 'Application modes: Bun development and verified machine-code AOT\nNative host profile: release\nDisplay: isolated Xvfb X11\nInput: XTest\nRenderer request: Mesa software Vulkan/GL; actual adapter in result.json\n'
+          } > "$NATIVE_EVIDENCE/toolchain.txt"
+      - name: Check native source formatting
+        run: cargo fmt --manifest-path Cargo.toml --all -- --check
+      - name: Build native executable
+        run: |
+          { time -p cargo build --locked --release --manifest-path Cargo.toml -p bun-native-host; } 2>&1 | tee "$NATIVE_EVIDENCE/build.log"
+          sha256sum target/release/bun-native-host > "$NATIVE_EVIDENCE/binary-sha256.txt"
+          stat --format='%s bytes' target/release/bun-native-host > "$NATIVE_EVIDENCE/binary-size.txt"
+      - name: Lint and test actual native host
+        run: |
+          cargo clippy --locked --release --manifest-path Cargo.toml -p bun-native-host --all-targets -- -D warnings
+          cargo test --locked --release --manifest-path Cargo.toml -p bun-native-host
+      - name: Development pointer input, text input, paint, close and relaunch
+        env:
+          BUN_NATIVE_HOST: ${{ github.workspace }}/target/release/bun-native-host
+        run: |
+          xvfb-run --auto-servernum --server-args='-screen 0 1280x800x24 -nolisten tcp' \
+            dbus-run-session -- bash scripts/quality/native-linux-session.sh \
+            "$NATIVE_EVIDENCE/development" development bun examples/native-window/main.ts
+      - name: Compile and inspect the actual AOT application
+        run: |
+          bun experiments/aot-gpui/build-window.ts \
+            --source "$GITHUB_WORKSPACE" \
+            --host "$GITHUB_WORKSPACE/target/release/bun-native-host" \
+            --host-profile release --outdir "$NATIVE_EVIDENCE/package"
+      - name: AOT pointer input, text input, paint, close and relaunch
+        env:
+          BUN_NATIVE_HOST: ${{ runner.temp }}/native-evidence/package/bun-native-host
+        run: |
+          xvfb-run --auto-servernum --server-args='-screen 0 1280x800x24 -nolisten tcp' \
+            dbus-run-session -- bash scripts/quality/native-linux-session.sh \
+            "$NATIVE_EVIDENCE/aot" aot "$NATIVE_EVIDENCE/package/native-window"
+      - name: Retain native evidence even after failure
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: ${{ !cancelled() }}
+        with:
+          name: native-linux-${{ runner.arch }}
+          path: |
+            ${{ runner.temp }}/native-evidence/toolchain.txt
+            ${{ runner.temp }}/native-evidence/build.log
+            ${{ runner.temp }}/native-evidence/binary-*.txt
+            ${{ runner.temp }}/native-evidence/development/
+            ${{ runner.temp }}/native-evidence/aot/
+            ${{ runner.temp }}/native-evidence/package/manifest.json
+            ${{ runner.temp }}/native-evidence/package/*.log
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
+      - name: State verified scope
+        run: echo 'The release GPUI host and both the Bun development application and verified machine-code AOT application passed real X11 click/text events, native paint state, OS close and fresh launch using a software GPU. Screenshots and compiler metadata are retained. Physical input, hardware GPU performance and other OS GUIs remain unverified by this lane.' >> "$GITHUB_STEP_SUMMARY"

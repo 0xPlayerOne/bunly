@@ -1,8 +1,8 @@
 # Bun Native
 
-**Bun Native** is an experimental, TypeScript-first desktop framework for building **real native interfaces** with Bun. Applications can be authored in TypeScript or JavaScript, using first-party **SolidJS** and **React** renderers over one shared native host. Production application logic is intended to use **Bun's machine-code ahead-of-time (AOT) compiler**.
+**Bun Native** is an experimental, TypeScript-first desktop framework for building **real native interfaces** with Bun. The first implementation runs a Bun-authored application against Rust GPUI, in development and through **Bun's machine-code ahead-of-time (AOT) compiler**. First-party **SolidJS** and **React** adapters will share the same native host.
 
-> **Status — October 31, 2026:** Bun Native is a **complete rewrite in progress**, not a released or working desktop framework yet. The active workspace now replaces the legacy Bunly/CEF runtime under [BN0 #251](https://github.com/0xPlayerOne/bun-native/issues/251). Do not mistake the previous Bunly 0.6.x code or successful historical tests for Bun Native functionality.
+> **Status — October 31, 2026:** The legacy Bunly/CEF runtime has been removed. A real GPUI fixture now renders, accepts OS-delivered clicks and typing, updates Bun-owned state, and closes cleanly under both Bun development and the same source's AOT executable. Initial GUI verification uses Linux X11 with a software GPU. This is an early implementation, not a released general-purpose framework. See [the precise integration record](docs/bn0-integration.md).
 
 ## What we're building
 
@@ -15,32 +15,22 @@
 
 ### Architecture at a glance
 
-```text
-TypeScript / JavaScript application
-        │
-   SolidJS or React renderer adapter
-        │
-  Shared typed native host API
-        │
- Rust native rendering + OS capabilities
-        │
-  macOS / Windows / Linux windows
-```
+The implemented runtime owns one prebuilt GPUI child process and exchanges bounded, validated commands and events over private pipes. GPUI owns its UI thread. The forthcoming Solid and React adapters will translate their tree changes through that common host. [The architecture](docs/architecture.md) separates implemented packages from planned capabilities.
 
 In development, Bun runs the app code normally. For distribution, Bun's AOT compiler generates CPU-specific machine code for the application while the separately built native host renders the interface. **Native rendering and AOT solve different problems; Bun Native needs both.**
 
 ## Current implementation status
 
-| Capability                                       | Status                                                                                                  |
-| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
-| Repo rename and BN0–BN7 roadmap                  | Planned and tracked                                                                                     |
-| New native codebase (replacement for Bunly/CEF)  | Native workspace and protocol foundation — [#251](https://github.com/0xPlayerOne/bun-native/issues/251) |
-| Real Bun → native renderer window                | Not yet verified — [#230](https://github.com/0xPlayerOne/bun-native/issues/230)                         |
-| Production Bun AOT + native renderer integration | Not yet verified — [#227](https://github.com/0xPlayerOne/bun-native/issues/227)                         |
-| SolidJS, React, components and CLI               | Planned — BN2–BN5                                                                                       |
-| Cross-platform native packaging, benchmarks      | Planned — BN6–BN7                                                                                       |
+| Capability                                      | Status                                                                                                                                                 |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Repo rename and BN0–BN7 roadmap                 | Complete; implementation issues track each acceptance requirement                                                                                      |
+| New native codebase (replacement for Bunly/CEF) | Merged native workspace, strict contracts and replacement CI — [#251](https://github.com/0xPlayerOne/bun-native/issues/251)                            |
+| Real Bun → native renderer window               | Linux X11 click, typing, paint, close/relaunch and in-process lifecycle verified — [#230](https://github.com/0xPlayerOne/bun-native/issues/230)        |
+| Bun AOT + native renderer integration           | Same application compiled and exercised; release-profile CI and final baseline tracked in [#227](https://github.com/0xPlayerOne/bun-native/issues/227) |
+| SolidJS, React, components and CLI              | Planned — BN2–BN5                                                                                                                                      |
+| Cross-platform native packaging, benchmarks     | Planned — BN6–BN7                                                                                                                                      |
 
-The active packages contain the new native protocol foundation. Obsolete CEF runtime, browser fixtures, qualification scripts and benchmark evidence have been removed; Git history preserves them. See the [implementation handoff and removal inventory](docs/bun-native-handoff.md) for current checks and remaining native acceptance.
+The active packages contain the new protocol, runtime and native host. Obsolete CEF runtime, browser fixtures, qualification scripts and benchmark evidence have been removed; Git history preserves them. See the [implementation handoff and removal inventory](docs/bun-native-handoff.md) for current checks and remaining acceptance.
 
 ## Start here
 

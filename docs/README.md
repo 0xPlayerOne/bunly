@@ -2,7 +2,7 @@
 
 This directory documents the **new native Bun + AOT desktop framework**, not the retired Bunly/CEF implementation.
 
-**Current state:** the clean workspace and native protocol foundation are implemented; the native window, framework renderers and AOT release artifacts still require their own acceptance. The [BN0 implementation milestone](https://github.com/0xPlayerOne/bun-native/issues/217) owns replacing legacy source and creating the first working native application.
+**Current state:** the clean workspace, native-process runtime and GPUI window are implemented. The same application has passed Linux X11 input and teardown checks under Bun development and machine-code AOT, using a software GPU. Release-profile CI, measured baselines and the framework/platform roadmap retain their own acceptance. The [BN0 integration record](bn0-integration.md) lists exact evidence and current limits.
 
 ## Product and architecture
 

@@ -1,0 +1,591 @@
+{
+  "bunRevision": "da867c60bf0bcbf9d6d36994f8ca0efa42075115",
+  "artifacts": [
+    {
+      "file": "native-window",
+      "bytes": 70712360,
+      "sha256": "e18c83bf2466a6c78665f708a3c8b2289da3961d74e630b408a9c5527b7fea9c",
+      "runtimeFeatures": {
+        "format": "elf64-le",
+        "section": {
+          "name": ".bun_features",
+          "offset": 19504728,
+          "bytes": 536
+        },
+        "rawRecordHex": "42554e464541540000000000ca000000286069feffffffff0100000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010101010101010101010101000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "trimmedProgramFeatures": false,
+        "removedRangeCount": 202,
+        "jit": "unused",
+        "interpreter": "present",
+        "imageCompiler": "unused",
+        "jitRemovedRanges": {
+          "count": 27,
+          "virtualBytes": 14297303
+        }
+      },
+      "compiledProgram": {
+        "format": "elf",
+        "payloadOffset": 67510280,
+        "payloadBytes": 3145951,
+        "flags": 16764,
+        "hasCompiledProgram": true
+      }
+    },
+    {
+      "file": "probe-aot",
+      "bytes": 70646824,
+      "sha256": "b7c7687e8a187f13335eed010ddd21983cd4084e2aaa373be3f1a972de74965f",
+      "runtimeFeatures": {
+        "format": "elf64-le",
+        "section": {
+          "name": ".bun_features",
+          "offset": 19504728,
+          "bytes": 536
+        },
+        "rawRecordHex": "42554e464541540000000000ca000000286069feffffffff0100000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010101010101010101010101000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "trimmedProgramFeatures": false,
+        "removedRangeCount": 202,
+        "jit": "unused",
+        "interpreter": "present",
+        "imageCompiler": "unused",
+        "jitRemovedRanges": {
+          "count": 27,
+          "virtualBytes": 14297303
+        }
+      },
+      "compiledProgram": {
+        "format": "elf",
+        "payloadOffset": 67510280,
+        "payloadBytes": 3080413,
+        "flags": 16764,
+        "hasCompiledProgram": true
+      }
+    },
+    {
+      "file": "probe-jit",
+      "bytes": 140356264,
+      "sha256": "268b5951aee3804a17b6b6d6a9119d091ae0d122d905b4935a2a11d78675c0e3",
+      "runtimeFeatures": {
+        "format": "elf64-le",
+        "section": {
+          "name": ".bun_features",
+          "offset": 26730072,
+          "bytes": 536
+        },
+        "rawRecordHex": "42554e4645415400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "trimmedProgramFeatures": false,
+        "removedRangeCount": 0,
+        "jit": "present",
+        "interpreter": "present",
+        "imageCompiler": "present",
+        "jitRemovedRanges": {
+          "count": 0,
+          "virtualBytes": 0
+        }
+      },
+      "compiledProgram": {
+        "format": "elf",
+        "payloadOffset": 140300296,
+        "payloadBytes": 2270,
+        "flags": 380,
+        "hasCompiledProgram": false
+      }
+    }
+  ],
+  "applicationManifest": {
+    "schemaVersion": 1,
+    "application": {
+      "file": "native-window",
+      "bytes": 70712360,
+      "sha256": "e18c83bf2466a6c78665f708a3c8b2289da3961d74e630b408a9c5527b7fea9c",
+      "inspection": {
+        "format": "elf",
+        "payloadOffset": 67510280,
+        "payloadBytes": 3145951,
+        "flags": 16764,
+        "hasCompiledProgram": true
+      }
+    },
+    "host": {
+      "file": "bun-native-host",
+      "profile": "dev",
+      "bytes": 109334544,
+      "sha256": "70f3ff32af786f2776fa9a58785795b4435df9124d7c3b28923013371a168c66",
+      "provenance": "Caller-supplied prebuilt host. Match this hash to native build and interaction evidence."
+    },
+    "toolchain": {
+      "schemaVersion": 1,
+      "bun": {
+        "version": "1.4.4-canary.1",
+        "revision": "da867c60bf0bcbf9d6d36994f8ca0efa42075115",
+        "cliRevision": "1.4.4-canary.1+da867c60b",
+        "source": "https://github.com/oven-sh/bun/tree/da867c60bf0bcbf9d6d36994f8ca0efa42075115",
+        "compileArguments": ["compile", "--no-script", "--production"],
+        "archives": {
+          "linux-x64": {
+            "name": "bun-linux-x64.zip",
+            "assetId": 687869747,
+            "sha256": "e8f27b24f74186e87fc0f0f603bdb6b79264dc86a1680da41e2025a3cb3efee0"
+          },
+          "linux-arm64": {
+            "name": "bun-linux-aarch64.zip",
+            "assetId": 687869647,
+            "sha256": "a6e36924c8c6dc63459660e27a48cdd7189a7e888e590272d029de98d169d1e6"
+          },
+          "darwin-x64": {
+            "name": "bun-darwin-x64.zip",
+            "assetId": 687869655,
+            "sha256": "31e8e67eb5b742f7114002047d91c9455e253ad3f3a9d7a8e27d3dd73465b6a4"
+          },
+          "darwin-arm64": {
+            "name": "bun-darwin-aarch64.zip",
+            "assetId": 687869686,
+            "sha256": "67ede5394a7da4a8b1a1eb0788b72325f480bc956cb1155b6be962919c9aa581"
+          },
+          "win32-x64": {
+            "name": "bun-windows-x64.zip",
+            "assetId": 687870574,
+            "sha256": "053e8d9776759e33d372bef6a1bad38aa45be9f4533b64a98668d04328f776ce"
+          },
+          "win32-arm64": {
+            "name": "bun-windows-aarch64.zip",
+            "assetId": 687870891,
+            "sha256": "bf868100b4c4365e6f3240e7209abfb15a4c36cff8b3d8a25381b9529489d810"
+          }
+        }
+      },
+      "rust": {
+        "version": "1.98.1",
+        "components": ["rustfmt", "clippy"]
+      },
+      "gpui": {
+        "repository": "https://github.com/zed-industries/zed",
+        "revision": "ba63a022c9a22ca66d68ef2a8f0bb9b5b0a9984d",
+        "version": "0.2.2"
+      }
+    },
+    "target": {
+      "os": "linux",
+      "architecture": "x64",
+      "osRelease": "6.18.57"
+    },
+    "source": {
+      "commit": "bc5fa40527308a6ed76bf923e103567b2a5555a3",
+      "dirty": true,
+      "files": [
+        {
+          "path": ".bun-version",
+          "bytes": 15,
+          "sha256": "8e88ab1b8c52566c35461f87112513119175f5c8f898e968f0684aabaa4e4e2b"
+        },
+        {
+          "path": "examples/native-window/main.ts",
+          "bytes": 1051,
+          "sha256": "305be8b434b37bde84f5a77c195d098a04428c5c05184d2430985170cd7e7c7b"
+        },
+        {
+          "path": "native/gpui-host/Cargo.lock",
+          "bytes": 160678,
+          "sha256": "fa0eb3145d8c5e4026c8ba30f5f50260938888d605d32e18ce1511674da85873"
+        },
+        {
+          "path": "native/gpui-host/Cargo.toml",
+          "bytes": 839,
+          "sha256": "a228a1af6f743cf196fc045f1fb2da54c94eb797af08dac9926e59c0e3a50b3b"
+        },
+        {
+          "path": "native/gpui-host/src/channel.rs",
+          "bytes": 2635,
+          "sha256": "3c86cc4f51a12de97912563972d78da72003366a863108a589215df203d972e9"
+        },
+        {
+          "path": "native/gpui-host/src/evidence.rs",
+          "bytes": 2531,
+          "sha256": "00730f1f0927d8206b992fe2021ac0324370a3c1fd928d8ccacc945f55454f1f"
+        },
+        {
+          "path": "native/gpui-host/src/input.rs",
+          "bytes": 19045,
+          "sha256": "862a5ab22c78d7a4d1f108b43d50ab87b00138a7eff02cd14640876c9aa727c7"
+        },
+        {
+          "path": "native/gpui-host/src/input/paint.rs",
+          "bytes": 5796,
+          "sha256": "8c20773cf2e67b5edd34b5d341de875895b3ab2e1eb39055c040246d0285b470"
+        },
+        {
+          "path": "native/gpui-host/src/main.rs",
+          "bytes": 8505,
+          "sha256": "8c290db36343ba91047dd43ed074c1ea122b63966a4f1bd3dc3a8dfb04091727"
+        },
+        {
+          "path": "native/gpui-host/src/view.rs",
+          "bytes": 2393,
+          "sha256": "012a274d3f5ec61560c376b5836bedf97c2f5b68d257ae2e0b3ffcf95de78962"
+        },
+        {
+          "path": "native/protocol/Cargo.toml",
+          "bytes": 225,
+          "sha256": "b62ea91005cbca4eb770859bac2341e340693c9453ee877486285afc7de7c415"
+        },
+        {
+          "path": "native/protocol/src/lib.rs",
+          "bytes": 7453,
+          "sha256": "ea6cbc0317c5e042669740059ba70bacc13881007ad7ead07d074a5c42ea8d64"
+        },
+        {
+          "path": "native/protocol/src/tests.rs",
+          "bytes": 4189,
+          "sha256": "286c71353069fc37075fc40578d0902aea241a7aeb9672bae6e6eeeff18ec61f"
+        },
+        {
+          "path": "packages/protocol/src/framing.ts",
+          "bytes": 2806,
+          "sha256": "91a8d348152ae987536549666612da76698220eaa21ead3d7969a3dc5155a664"
+        },
+        {
+          "path": "packages/protocol/src/index.ts",
+          "bytes": 244,
+          "sha256": "9bc5f8f83162a3ec273bdf3e40ecde9e77729fd835b7bce317de590b568dad7f"
+        },
+        {
+          "path": "packages/protocol/src/messages.ts",
+          "bytes": 4817,
+          "sha256": "6f5bfceae09a77bf1a6a201d6c544f885cadaa71d9b4aa5c681548d899f903fd"
+        },
+        {
+          "path": "packages/runtime/src/index.ts",
+          "bytes": 9196,
+          "sha256": "4ce55703de83c41cbdda695763ea7734f8259d890c2871add5cca259908a4fca"
+        },
+        {
+          "path": "rust-toolchain.toml",
+          "bytes": 86,
+          "sha256": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+        },
+        {
+          "path": "toolchain.json",
+          "bytes": 1725,
+          "sha256": "cd6be8b67adb3ba5d5cfa2b235f3aff1b11d6fa783dc2f3d1439618d0a574b94"
+        }
+      ]
+    },
+    "compileCommand": [
+      "<pinned-bun>",
+      "compile",
+      "--no-script",
+      "--production",
+      "--explain=json",
+      "<repo>/examples/native-window/main.ts",
+      "--outfile",
+      "<package>/native-window"
+    ],
+    "buildMs": 1480.6500680000001,
+    "launch": {
+      "executable": "native-window",
+      "environment": {
+        "BUN_NATIVE_HOST": "<absolute-output-directory>/bun-native-host"
+      }
+    },
+    "verification": {
+      "aotCompiledProgram": "passed",
+      "nativeRendering": "not-run",
+      "osInput": "not-run",
+      "teardown": "not-run",
+      "installation": "not-tested",
+      "signing": "unsigned"
+    }
+  },
+  "schemaVersion": 1,
+  "scope": "Linux x64 compiler-recorded JIT omission. Interpreter is retained. Native GUI evidence is separate. Initial supplied GPUI host uses the Cargo development profile.",
+  "sources": [
+    {
+      "path": "src/trim/features/engine.def",
+      "url": "https://github.com/oven-sh/bun/blob/da867c60bf0bcbf9d6d36994f8ca0efa42075115/src/trim/features/engine.def",
+      "sha256": "cffb9cf299fe5f2efbfb979170d0a2594c376dc9ee246388fc9f8ae2ff0bc3e0"
+    },
+    {
+      "path": "scripts/build/trim/features.ts",
+      "url": "https://github.com/oven-sh/bun/blob/da867c60bf0bcbf9d6d36994f8ca0efa42075115/scripts/build/trim/features.ts",
+      "sha256": "4624ac99d957f3b4ebb507ccc47cc1406fa577693eff28c534f6f95536b551a4"
+    },
+    {
+      "path": "src/trim/removable_features/state.rs",
+      "url": "https://github.com/oven-sh/bun/blob/da867c60bf0bcbf9d6d36994f8ca0efa42075115/src/trim/removable_features/state.rs",
+      "sha256": "47369d61a065e42498e561cd0e045f03ddbc331bfcc4c031cd0c6d23c8744bfd"
+    },
+    {
+      "path": "src/trim/removable_features/lib.rs",
+      "url": "https://github.com/oven-sh/bun/blob/da867c60bf0bcbf9d6d36994f8ca0efa42075115/src/trim/removable_features/lib.rs",
+      "sha256": "67a6a20b4c60221161dd343d0cfe16602671051dfdb38ac5648111be13cbb1bb"
+    },
+    {
+      "path": "src/trim/decide.rs",
+      "url": "https://github.com/oven-sh/bun/blob/da867c60bf0bcbf9d6d36994f8ca0efa42075115/src/trim/decide.rs",
+      "sha256": "a5b3af95599864b2ce0fa8a28958503e09a7a3d42d8ddb1cc4e8117b54223ba6"
+    },
+    {
+      "path": "src/trim/apply.rs",
+      "url": "https://github.com/oven-sh/bun/blob/da867c60bf0bcbf9d6d36994f8ca0efa42075115/src/trim/apply.rs",
+      "sha256": "be90aef4aef49b197383363a5ed9f834fed0b8f010d9081140d0d677ac5508b6"
+    }
+  ],
+  "decoderSources": [
+    {
+      "path": "experiments/aot-gpui/inspect.ts",
+      "sha256": "f80f7ec7e8a070f6e9d8478380d193a0120f9b89dedd88422c7f7fd6b3490d48"
+    },
+    {
+      "path": "experiments/aot-gpui/inspect-runtime.ts",
+      "sha256": "77244eec83d8fe1a1ae8ac43c7cceef2ecd6484f3f9e695a43e5aa89945e1380"
+    }
+  ],
+  "rawLogs": {
+    "application-linkage.stderr.log": "",
+    "application-linkage.stdout.log": "\tlinux-vdso.so.1 (0x00007f8e195d8000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f8e193b4000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007f8e195da000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f8e193af000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007f8e193aa000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f8e192c1000)\n",
+    "application-sections.stderr.log": "",
+    "application-sections.stdout.log": "There are 49 section headers, starting at offset 0x436efe8:\n\nSection Headers:\n  [Nr] Name              Type            Address          Off    Size   ES Flg Lk Inf Al\n  [ 0]                   NULL            0000000000000000 000000 000000 00      0   0  0\n  [ 1] .interp           PROGBITS        00000000002002a8 0002a8 00001c 00   A  0   0  1\n  [ 2] .note.ABI-tag     NOTE            00000000002002c4 0002c4 000020 00   A  0   0  4\n  [ 3] .note.bun         NOTE            00000000002002e8 0002e8 001008 00  Ao  0   0  8\n  [ 4] .note.bun.build-id NOTE            00000000002012f0 0012f0 000020 00   A  0   0  4\n  [ 5] .note.gnu.build-id NOTE            0000000000201310 001310 000024 00   A  0   0  4\n  [ 6] .dynsym           DYNSYM          0000000000201338 001338 006678 18   A 12   1  8\n  [ 7] .gnu.version      VERSYM          00000000002079b0 0079b0 00088a 02   A  6   0  2\n  [ 8] .gnu.version_d    VERDEF          000000000020823c 00823c 000038 00   A 12   2  4\n  [ 9] .gnu.version_r    VERNEED         0000000000208274 008274 000190 00   A 12   5  4\n  [10] .gnu.hash         GNU_HASH        0000000000208408 008408 0015dc 00   A  6   0  8\n  [11] .hash             HASH            00000000002099e4 0099e4 002230 04   A  6   0  4\n  [12] .dynstr           STRTAB          000000000020bc14 00bc14 005961 00   A  0   0  1\n  [13] .rela.dyn         RELA            0000000000211578 011578 000588 18   A  6   0  8\n  [14] .rela.plt         RELA            0000000000211b00 011b00 002370 18  AI  6  36  8\n  [15] .bun_trim         PROGBITS        0000000000213e70 013e70 001190 00  Ao  0   0  8\n  [16] .rodata           PROGBITS        00000000008e9000 016000 f05000 00 AMSo  0   0 4096\n  [17] .bun_aot          PROGBITS        0000000001b7d130 1299130 000d28 00  Ao  0   0  8\n  [18] .bun_features     PROGBITS        0000000001b7de58 1299e58 000218 00   A  0   0  8\n  [19] .bun_builtins     PROGBITS        0000000001b7e070 129a070 014f90 00   A  0   0 16\n  [20] .text             PROGBITS        0000000001e24d00 12b2d00 000300 00  AX  0   0 256\n  [21] .init             PROGBITS        00000000085e99b8 40429b8 00001b 00  AX  0   0  4\n  [22] .fini             PROGBITS        00000000085e99d4 40429d4 00000d 00  AX  0   0  4\n  [23] .plt              PROGBITS        00000000085e99f0 40429f0 0017b0 00  AX  0   0 16\n  [24] .tdata            PROGBITS        00000000085ec1a0 40441a0 002550 00 WAT  0   0 16\n  [25] .tbss             NOBITS          00000000085ee6f0 40466f0 0039e8 00 WAT  0   0 16\n  [26] .tm_clone_table   PROGBITS        00000000085ee6f0 40466f0 000000 00  WA  0   0  8\n  [27] .data             PROGBITS        00000000085ee700 4046700 010890 00  WA  0   0 64\n  [28] .fini_array       FINI_ARRAY      00000000085fef90 4056f90 000010 08  WA  0   0  8\n  [29] .init_array       INIT_ARRAY      00000000085fefa0 4056fa0 000050 08 WAo  0   0  8\n  [30] .bun              PROGBITS        00000000087d5000 4062000 3000e7 00  WA  0   0  8\n  [31] __DATA,__jsc_opcodes PROGBITS        00000000085ff000 4057000 004000 00  WA  0   0 4096\n  [32] __DATA,__wtf_config PROGBITS        0000000008603000 405b000 004000 00  WA  0   0 4096\n  [33] .data.rel.ro      PROGBITS        0000000008607000 405f000 0012e8 00  WA  0   0 32\n  [34] .dynamic          DYNAMIC         00000000086082e8 40602e8 0001f0 10  WA 12   0  8\n  [35] .got              PROGBITS        00000000086084d8 40604d8 0000e8 00  WA  0   0  8\n  [36] .got.plt          PROGBITS        00000000086085c0 40605c0 000be8 00  WA  0   0  8\n  [37] .bss              NOBITS          0000000008609200 40611a8 1cb7d8 00  WA  0   0 128\n  [38] .comment          PROGBITS        0000000000000000 4363000 00017f 01  MS  0   0  1\n  [39] .note.stapsdt     NOTE            0000000000000000 4363180 0000e8 00      0   0  4\n  [40] .symtab           SYMTAB          0000000000000000 4363268 006678 18     41   1  8\n  [41] .strtab           STRTAB          0000000000000000 43698e0 00555b 00      0   0  1\n  [42] .shstrtab         STRTAB          0000000000000000 436ee3b 0001a7 00      0   0  1\n  [43] .bun_trim         PROGBITS        0000000000231000 015000 000e70 00  Ao  0   0  8\n  [44] .rodata           PROGBITS        00000000017fa000 f1b000 255000 00 AMSo  0   0 4096\n  [45] .rodata           PROGBITS        0000000001a54000 1170000 129130 00 AMSo  0   0 4096\n  [46] .bun_builtins     PROGBITS        0000000001e1a000 12af000 00301c 00   A  0   0 16\n  [47] .text             PROGBITS        0000000002b66000 12b3000 aec000 00  AX  0   0 256\n  [48] .text             PROGBITS        0000000006346000 1d9f000 22a39b8 00  AX  0   0 256\nKey to Flags:\n  W (write), A (alloc), X (execute), M (merge), S (strings), I (info),\n  L (link order), O (extra OS processing required), G (group), T (TLS),\n  C (compressed), x (unknown), o (OS specific), E (exclude),\n  D (mbind), l (large), p (processor specific)\n",
+    "compile-aot.stderr.log": "",
+    "compile-aot.stdout.log": " [197ms]  bundle  5 modules\n[1272ms] compile  <package>/native-window\n        build id  523ffdb956d3d0d13eba530c5bbac527\n{\"accesses\":{\"byName\":35,\"tested\":25,\"free\":129,\"testedSlotOnly\":0,\"provenWithoutAnyTest\":139},\"dependencyAccesses\":{\"byName\":0,\"tested\":0,\"free\":0,\"testedSlotOnly\":0,\"provenWithoutAnyTest\":0},\"calls\":{\"unknown\":17,\"guarded\":3,\"proven\":149},\"causes\":44}\n{\"rank\":1,\"reason\":\"not-a-plain-object\",\"limit\":null,\"file\":\"packages/protocol/src/framing.ts\",\"line\":30,\"column\":31,\"inDependency\":false,\"source\":\"  private readonly utf8 = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true })\",\"message\":\"An array, a function or a built-in object is used as this type here.\",\"fix\":\"pass an object literal or a class instance, or declare the parameter with the type that is actually passed.\",\"url\":\"https://bun.com/docs/compiler/explain#not-a-plain-object\",\"accesses\":1,\"dependencyAccesses\":0,\"calls\":0,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":33.7,\"function\":\"\",\"types\":[],\"family\":\"unproven-type\",\"why\":{\"reason\":\"not-a-plain-object\",\"message\":\"A primitive, function, array, built-in object or proxy is used as this object type.\",\"fix\":\"pass an object literal or a class instance.\",\"url\":\"https://bun.com/docs/compiler/explain#not-a-plain-object\"}}\n{\"rank\":2,\"reason\":\"not-a-plain-object\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":191,\"column\":21,\"inDependency\":false,\"source\":\"    const decoder = new TextDecoder()\",\"message\":\"An array, a function or a built-in object is used as this type here.\",\"fix\":\"pass an object literal or a class instance, or declare the parameter with the type that is actually passed.\",\"url\":\"https://bun.com/docs/compiler/explain#not-a-plain-object\",\"accesses\":2,\"dependencyAccesses\":0,\"calls\":0,\"operators\":0,\"fixedByThisAlone\":2,\"estimatedPercent\":19.3,\"function\":\"readStderr\",\"types\":[],\"family\":\"unproven-type\",\"why\":{\"reason\":\"not-a-plain-object\",\"message\":\"A primitive, function, array, built-in object or proxy is used as this object type.\",\"fix\":\"pass an object literal or a class instance.\",\"url\":\"https://bun.com/docs/compiler/explain#not-a-plain-object\"}}\n{\"rank\":3,\"reason\":\"builtin-result\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":62,\"column\":24,\"inDependency\":false,\"source\":\"    this.process = Bun.spawn({\",\"message\":\"The value is the result of a built-in function whose result type the compiler doesn't know.\",\"fix\":\"narrow the result.\",\"url\":\"https://bun.com/docs/compiler/explain#builtin-result\",\"accesses\":15,\"dependencyAccesses\":0,\"calls\":4,\"operators\":2,\"fixedByThisAlone\":21,\"estimatedPercent\":18.0,\"function\":\"Gac\",\"types\":[],\"family\":\"unknown-code\",\"why\":{\"reason\":\"declaration-only\",\"message\":\"The type comes from a 'declare' or a .d.ts file, which the compiler can't check against the code.\",\"fix\":\"compile the typed source of the package, or narrow the value.\",\"url\":\"https://bun.com/docs/compiler/explain#declaration-only\"}}\n{\"rank\":4,\"reason\":\"passed-to-builtin\",\"limit\":null,\"file\":\"examples/native-window/main.ts\",\"line\":1,\"column\":1,\"inDependency\":false,\"source\":\"import { NativeHost, type WindowEvent } from '@bun-native/runtime'\",\"message\":\"An object of this type is passed to a built-in function here that may add, delete or redefine its properties.\",\"fix\":\"pass only the fields the function needs, or a copy.\",\"url\":\"https://bun.com/docs/compiler/explain#passed-to-builtin\",\"accesses\":0,\"dependencyAccesses\":0,\"calls\":0,\"operators\":3,\"fixedByThisAlone\":3,\"estimatedPercent\":8.9,\"function\":\"\",\"types\":[],\"family\":\"unknown-code\",\"why\":{\"reason\":\"passed-to-builtin\",\"message\":\"The object is passed to a built-in function that may write to it.\",\"fix\":\"pass a copy, or only the fields the function needs.\",\"url\":\"https://bun.com/docs/compiler/explain#passed-to-builtin\"}}\n{\"rank\":5,\"reason\":\"not-a-plain-object\",\"limit\":null,\"file\":\"packages/protocol/src/messages.ts\",\"line\":41,\"column\":40,\"inDependency\":false,\"source\":\"  if (typeof value !== 'string' || new TextEncoder().encode(value).byteLength > limit)\",\"message\":\"An array, a function or a built-in object is used as this type here.\",\"fix\":\"pass an object literal or a class instance, or declare the parameter with the type that is actually passed.\",\"url\":\"https://bun.com/docs/compiler/explain#not-a-plain-object\",\"accesses\":1,\"dependencyAccesses\":0,\"calls\":0,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":3.5,\"function\":\"FN\",\"types\":[],\"family\":\"unproven-type\",\"why\":{\"reason\":\"not-a-plain-object\",\"message\":\"A primitive, function, array, built-in object or proxy is used as this object type.\",\"fix\":\"pass an object literal or a class instance.\",\"url\":\"https://bun.com/docs/compiler/explain#not-a-plain-object\"}}\n{\"rank\":6,\"reason\":\"unknown-object\",\"limit\":null,\"file\":\"packages/protocol/src/framing.ts\",\"line\":55,\"column\":26,\"inDependency\":false,\"source\":\"        frames.push(JSON.parse(json) as unknown)\",\"message\":\"An object from untyped code is used as this type here, so it can have any shape.\",\"fix\":\"build a new object of this type from it where it enters typed code.\",\"url\":\"https://bun.com/docs/compiler/explain#unknown-object\",\"accesses\":10,\"dependencyAccesses\":0,\"calls\":0,\"operators\":0,\"fixedByThisAlone\":10,\"estimatedPercent\":3.1,\"function\":\"push\",\"types\":[],\"family\":\"unknown-code\",\"why\":{\"reason\":\"external-data\",\"message\":\"The value comes from outside the program (JSON.parse, response.json(), structuredClone, a message).\",\"fix\":\"check its fields, and build a new object of this type from them.\",\"url\":\"https://bun.com/docs/compiler/explain#external-data\"}}\n{\"rank\":7,\"reason\":\"not-a-plain-object\",\"limit\":null,\"file\":\"examples/native-window/main.ts\",\"line\":5,\"column\":28,\"inDependency\":false,\"source\":\"const executable = process.env['BUN_NATIVE_HOST']\",\"message\":\"An array, a function or a built-in object is used as this type here.\",\"fix\":\"pass an object literal or a class instance, or declare the parameter with the type that is actually passed.\",\"url\":\"https://bun.com/docs/compiler/explain#not-a-plain-object\",\"accesses\":1,\"dependencyAccesses\":0,\"calls\":0,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":1.4,\"function\":\"\",\"types\":[],\"family\":\"unproven-type\",\"why\":{\"reason\":\"not-a-plain-object\",\"message\":\"A primitive, function, array, built-in object or proxy is used as this object type.\",\"fix\":\"pass an object literal or a class instance.\",\"url\":\"https://bun.com/docs/compiler/explain#not-a-plain-object\"}}\n{\"rank\":8,\"reason\":\"not-a-plain-object\",\"limit\":null,\"file\":\"examples/native-window/main.ts\",\"line\":8,\"column\":30,\"inDependency\":false,\"source\":\"const evidencePath = process.env['BUN_NATIVE_EVIDENCE_LOG']\",\"message\":\"An array, a function or a built-in object is used as this type here.\",\"fix\":\"pass an object literal or a class instance, or declare the parameter with the type that is actually passed.\",\"url\":\"https://bun.com/docs/compiler/explain#not-a-plain-object\",\"accesses\":1,\"dependencyAccesses\":0,\"calls\":0,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":1.4,\"function\":\"\",\"types\":[],\"family\":\"unproven-type\",\"why\":{\"reason\":\"not-a-plain-object\",\"message\":\"A primitive, function, array, built-in object or proxy is used as this object type.\",\"fix\":\"pass an object literal or a class instance.\",\"url\":\"https://bun.com/docs/compiler/explain#not-a-plain-object\"}}\n{\"rank\":9,\"reason\":\"not-a-plain-object\",\"limit\":null,\"file\":\"examples/native-window/main.ts\",\"line\":9,\"column\":23,\"inDependency\":false,\"source\":\"const nonce = process.env['BUN_NATIVE_EVIDENCE_NONCE']\",\"message\":\"An array, a function or a built-in object is used as this type here.\",\"fix\":\"pass an object literal or a class instance, or declare the parameter with the type that is actually passed.\",\"url\":\"https://bun.com/docs/compiler/explain#not-a-plain-object\",\"accesses\":1,\"dependencyAccesses\":0,\"calls\":0,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":1.4,\"function\":\"\",\"types\":[],\"family\":\"unproven-type\",\"why\":{\"reason\":\"not-a-plain-object\",\"message\":\"A primitive, function, array, built-in object or proxy is used as this object type.\",\"fix\":\"pass an object literal or a class instance.\",\"url\":\"https://bun.com/docs/compiler/explain#not-a-plain-object\"}}\n{\"rank\":10,\"reason\":\"lost-track\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":145,\"column\":3,\"inDependency\":false,\"source\":\"  private request(input: WithoutId<Command>): Promise<void> {\",\"message\":\"The compiler stopped tracking the objects that reach this access.\",\"fix\":\"give the value a declared type, or split the function.\",\"url\":\"https://bun.com/docs/compiler/explain#lost-track\",\"accesses\":0,\"dependencyAccesses\":0,\"calls\":0,\"operators\":1,\"fixedByThisAlone\":1,\"estimatedPercent\":1.1,\"function\":\"request\",\"types\":[],\"family\":\"unproven-type\",\"why\":null}\n{\"rank\":11,\"reason\":\"not-a-plain-object\",\"limit\":null,\"file\":\"packages/protocol/src/framing.ts\",\"line\":17,\"column\":23,\"inDependency\":false,\"source\":\"  const encoded = new TextEncoder().encode(`${json}\\\\n`)\",\"message\":\"An array, a function or a built-in object is used as this type here.\",\"fix\":\"pass an object literal or a class instance, or declare the parameter with the type that is actually passed.\",\"url\":\"https://bun.com/docs/compiler/explain#not-a-plain-object\",\"accesses\":1,\"dependencyAccesses\":0,\"calls\":0,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":1.0,\"function\":\"ci\",\"types\":[],\"family\":\"unproven-type\",\"why\":{\"reason\":\"not-a-plain-object\",\"message\":\"A primitive, function, array, built-in object or proxy is used as this object type.\",\"fix\":\"pass an object literal or a class instance.\",\"url\":\"https://bun.com/docs/compiler/explain#not-a-plain-object\"}}\n{\"rank\":12,\"reason\":\"lost-track\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":157,\"column\":38,\"inDependency\":false,\"source\":\"    const result = new Promise<void>((resolve, reject) => {\",\"message\":\"The compiler stopped tracking the objects that reach this access.\",\"fix\":\"give the value a declared type, or split the function.\",\"url\":\"https://bun.com/docs/compiler/explain#lost-track\",\"accesses\":0,\"dependencyAccesses\":0,\"calls\":0,\"operators\":1,\"fixedByThisAlone\":1,\"estimatedPercent\":0.6,\"function\":\"\",\"types\":[],\"family\":\"unproven-type\",\"why\":null}\n{\"rank\":13,\"reason\":\"unknown-callee\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":134,\"column\":20,\"inDependency\":false,\"source\":\"        return new Promise<IteratorResult<WindowEvent>>((resolve, reject) => {\",\"message\":\"The callee isn't known at build time, so the result has no type.\",\"fix\":\"call the function directly, or narrow the result.\",\"url\":\"https://bun.com/docs/compiler/explain#unknown-callee\",\"accesses\":0,\"dependencyAccesses\":0,\"calls\":2,\"operators\":0,\"fixedByThisAlone\":2,\"estimatedPercent\":0.4,\"function\":\"next\",\"types\":[],\"family\":\"unknown-code\",\"why\":{\"reason\":\"unknown-callee\",\"message\":\"The callee isn't known at build time.\",\"fix\":\"call the function directly.\",\"url\":\"https://bun.com/docs/compiler/explain#unknown-callee\"}}\n{\"rank\":14,\"reason\":\"lost-track\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":197,\"column\":3,\"inDependency\":false,\"source\":\"  private async watch(): Promise<void> {\",\"message\":\"The compiler stopped tracking the objects that reach this access.\",\"fix\":\"give the value a declared type, or split the function.\",\"url\":\"https://bun.com/docs/compiler/explain#lost-track\",\"accesses\":0,\"dependencyAccesses\":0,\"calls\":0,\"operators\":1,\"fixedByThisAlone\":1,\"estimatedPercent\":0.2,\"function\":\"watch\",\"types\":[],\"family\":\"unproven-type\",\"why\":null}\n{\"rank\":15,\"reason\":\"unknown-callee\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":157,\"column\":24,\"inDependency\":false,\"source\":\"    const result = new Promise<void>((resolve, reject) => {\",\"message\":\"The callee isn't known at build time, so the result has no type.\",\"fix\":\"call the function directly, or narrow the result.\",\"url\":\"https://bun.com/docs/compiler/explain#unknown-callee\",\"accesses\":0,\"dependencyAccesses\":0,\"calls\":1,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":0.2,\"function\":\"request\",\"types\":[],\"family\":\"unknown-code\",\"why\":{\"reason\":\"unknown-callee\",\"message\":\"The callee isn't known at build time.\",\"fix\":\"call the function directly.\",\"url\":\"https://bun.com/docs/compiler/explain#unknown-callee\"}}\n{\"rank\":16,\"reason\":\"unknown-callee\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":227,\"column\":17,\"inDependency\":false,\"source\":\"        request.reject(new Error(`Native ${event.code}: ${event.message}`))\",\"message\":\"The callee isn't known at build time, so the result has no type.\",\"fix\":\"call the function directly, or narrow the result.\",\"url\":\"https://bun.com/docs/compiler/explain#unknown-callee\",\"accesses\":0,\"dependencyAccesses\":0,\"calls\":1,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":0.2,\"function\":\"receive\",\"types\":[],\"family\":\"unknown-code\",\"why\":{\"reason\":\"unknown-callee\",\"message\":\"The callee isn't known at build time.\",\"fix\":\"call the function directly.\",\"url\":\"https://bun.com/docs/compiler/explain#unknown-callee\"}}\n{\"rank\":17,\"reason\":\"not-a-plain-object\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":152,\"column\":30,\"inDependency\":false,\"source\":\"      command = parseCommand({ ...input, id: this.nextId++ })\",\"message\":\"An array, a function or a built-in object is used as this type here.\",\"fix\":\"pass an object literal or a class instance, or declare the parameter with the type that is actually passed.\",\"url\":\"https://bun.com/docs/compiler/explain#not-a-plain-object\",\"accesses\":13,\"dependencyAccesses\":0,\"calls\":0,\"operators\":0,\"fixedByThisAlone\":13,\"estimatedPercent\":0.1,\"function\":\"request\",\"types\":[],\"family\":\"unproven-type\",\"why\":{\"reason\":\"not-a-plain-object\",\"message\":\"A primitive, function, array, built-in object or proxy is used as this object type.\",\"fix\":\"pass an object literal or a class instance.\",\"url\":\"https://bun.com/docs/compiler/explain#not-a-plain-object\"}}\n{\"rank\":18,\"reason\":\"lost-track\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":96,\"column\":3,\"inDependency\":false,\"source\":\"  async shutdown(): Promise<void> {\",\"message\":\"The compiler stopped tracking the objects that reach this access.\",\"fix\":\"give the value a declared type, or split the function.\",\"url\":\"https://bun.com/docs/compiler/explain#lost-track\",\"accesses\":0,\"dependencyAccesses\":0,\"calls\":0,\"operators\":2,\"fixedByThisAlone\":2,\"estimatedPercent\":0.0,\"function\":\"shutdown\",\"types\":[],\"family\":\"unproven-type\",\"why\":null}\n{\"rank\":19,\"reason\":\"unknown-callee\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":256,\"column\":15,\"inDependency\":false,\"source\":\"      request.reject(this.failure)\",\"message\":\"The callee isn't known at build time, so the result has no type.\",\"fix\":\"call the function directly, or narrow the result.\",\"url\":\"https://bun.com/docs/compiler/explain#unknown-callee\",\"accesses\":0,\"dependencyAccesses\":0,\"calls\":1,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":0.0,\"function\":\"fail\",\"types\":[],\"family\":\"unknown-code\",\"why\":{\"reason\":\"unknown-callee\",\"message\":\"The callee isn't known at build time.\",\"fix\":\"call the function directly.\",\"url\":\"https://bun.com/docs/compiler/explain#unknown-callee\"}}\n{\"rank\":20,\"reason\":\"unknown-callee\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":260,\"column\":19,\"inDependency\":false,\"source\":\"    this.waiting?.reject(this.failure)\",\"message\":\"The callee isn't known at build time, so the result has no type.\",\"fix\":\"call the function directly, or narrow the result.\",\"url\":\"https://bun.com/docs/compiler/explain#unknown-callee\",\"accesses\":0,\"dependencyAccesses\":0,\"calls\":1,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":0.0,\"function\":\"fail\",\"types\":[],\"family\":\"unknown-code\",\"why\":{\"reason\":\"unknown-callee\",\"message\":\"The callee isn't known at build time.\",\"fix\":\"call the function directly.\",\"url\":\"https://bun.com/docs/compiler/explain#unknown-callee\"}}\n{\"rank\":21,\"reason\":\"lost-track\",\"limit\":null,\"file\":\"examples/native-window/main.ts\",\"line\":11,\"column\":1,\"inDependency\":false,\"source\":\"function record(event: WindowEvent): void {\",\"message\":\"The compiler stopped tracking the objects that reach this access.\",\"fix\":\"give the value a declared type, or split the function.\",\"url\":\"https://bun.com/docs/compiler/explain#lost-track\",\"accesses\":0,\"dependencyAccesses\":0,\"calls\":0,\"operators\":1,\"fixedByThisAlone\":1,\"estimatedPercent\":0.0,\"function\":\"Od\",\"types\":[],\"family\":\"unproven-type\",\"why\":null}\n{\"rank\":22,\"reason\":\"lost-track\",\"limit\":null,\"file\":\"packages/protocol/src/messages.ts\",\"line\":29,\"column\":1,\"inDependency\":false,\"source\":\"function keys(value: Record<string, unknown>, allowed: readonly string[]): void {\",\"message\":\"The compiler stopped tracking the objects that reach this access.\",\"fix\":\"give the value a declared type, or split the function.\",\"url\":\"https://bun.com/docs/compiler/explain#lost-track\",\"accesses\":0,\"dependencyAccesses\":0,\"calls\":0,\"operators\":1,\"fixedByThisAlone\":1,\"estimatedPercent\":0.0,\"function\":\"Fm\",\"types\":[],\"family\":\"unproven-type\",\"why\":null}\n{\"rank\":23,\"reason\":\"lost-track\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":250,\"column\":3,\"inDependency\":false,\"source\":\"  private fail(cause: unknown): void {\",\"message\":\"The compiler stopped tracking the objects that reach this access.\",\"fix\":\"give the value a declared type, or split the function.\",\"url\":\"https://bun.com/docs/compiler/explain#lost-track\",\"accesses\":0,\"dependencyAccesses\":0,\"calls\":0,\"operators\":1,\"fixedByThisAlone\":1,\"estimatedPercent\":0.0,\"function\":\"fail\",\"types\":[],\"family\":\"unproven-type\",\"why\":null}\n{\"rank\":24,\"reason\":\"lost-track\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":127,\"column\":13,\"inDependency\":false,\"source\":\"      next: () => {\",\"message\":\"The compiler stopped tracking the objects that reach this access.\",\"fix\":\"give the value a declared type, or split the function.\",\"url\":\"https://bun.com/docs/compiler/explain#lost-track\",\"accesses\":0,\"dependencyAccesses\":0,\"calls\":0,\"operators\":1,\"fixedByThisAlone\":1,\"estimatedPercent\":0.0,\"function\":\"next\",\"types\":[],\"family\":\"unproven-type\",\"why\":null}\n{\"rank\":25,\"reason\":\"unknown-callee\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":230,\"column\":17,\"inDependency\":false,\"source\":\"        request.reject(error)\",\"message\":\"The callee isn't known at build time, so the result has no type.\",\"fix\":\"call the function directly, or narrow the result.\",\"url\":\"https://bun.com/docs/compiler/explain#unknown-callee\",\"accesses\":0,\"dependencyAccesses\":0,\"calls\":1,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":0.0,\"function\":\"receive\",\"types\":[],\"family\":\"unknown-code\",\"why\":{\"reason\":\"unknown-callee\",\"message\":\"The callee isn't known at build time.\",\"fix\":\"call the function directly.\",\"url\":\"https://bun.com/docs/compiler/explain#unknown-callee\"}}\n{\"rank\":26,\"reason\":\"lost-track\",\"limit\":null,\"file\":\"packages/protocol/src/framing.ts\",\"line\":34,\"column\":3,\"inDependency\":false,\"source\":\"  push(chunk: Uint8Array): unknown[] {\",\"message\":\"The compiler stopped tracking the objects that reach this access.\",\"fix\":\"give the value a declared type, or split the function.\",\"url\":\"https://bun.com/docs/compiler/explain#lost-track\",\"accesses\":0,\"dependencyAccesses\":0,\"calls\":0,\"operators\":6,\"fixedByThisAlone\":6,\"estimatedPercent\":0.0,\"function\":\"push\",\"types\":[],\"family\":\"unproven-type\",\"why\":null}\n{\"rank\":27,\"reason\":\"lost-track\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":211,\"column\":3,\"inDependency\":false,\"source\":\"  private receive(event: NativeEvent): void {\",\"message\":\"The compiler stopped tracking the objects that reach this access.\",\"fix\":\"give the value a declared type, or split the function.\",\"url\":\"https://bun.com/docs/compiler/explain#lost-track\",\"accesses\":0,\"dependencyAccesses\":0,\"calls\":0,\"operators\":1,\"fixedByThisAlone\":1,\"estimatedPercent\":0.0,\"function\":\"receive\",\"types\":[],\"family\":\"unproven-type\",\"why\":null}\n{\"rank\":28,\"reason\":\"not-a-plain-object\",\"limit\":null,\"file\":\"packages/protocol/src/framing.ts\",\"line\":28,\"column\":33,\"inDependency\":false,\"source\":\"  private readonly buffer = new Uint8Array(MAX_FRAME_BYTES)\",\"message\":\"An array, a function or a built-in object is used as this type here.\",\"fix\":\"pass an object literal or a class instance, or declare the parameter with the type that is actually passed.\",\"url\":\"https://bun.com/docs/compiler/explain#not-a-plain-object\",\"accesses\":2,\"dependencyAccesses\":0,\"calls\":0,\"operators\":0,\"fixedByThisAlone\":2,\"estimatedPercent\":0.0,\"function\":\"\",\"types\":[],\"family\":\"unproven-type\",\"why\":{\"reason\":\"not-a-plain-object\",\"message\":\"A primitive, function, array, built-in object or proxy is used as this object type.\",\"fix\":\"pass an object literal or a class instance.\",\"url\":\"https://bun.com/docs/compiler/explain#not-a-plain-object\"}}\n{\"rank\":29,\"reason\":\"missed-optimization\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":55,\"column\":11,\"inDependency\":false,\"source\":\"  private nextId = 1\",\"message\":\"The compiler proved the types here and still emitted the slow path.\",\"fix\":\"this is a missed optimization in Bun, not a problem in your code. Please report it.\",\"url\":\"https://bun.com/docs/compiler/explain#missed-optimization\",\"accesses\":1,\"dependencyAccesses\":0,\"calls\":0,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":1.0,\"function\":\"\",\"types\":[\"Gac\"],\"family\":\"unproven-type\",\"why\":null}\n{\"rank\":30,\"reason\":\"missed-optimization\",\"limit\":null,\"file\":\"examples/native-window/main.ts\",\"line\":24,\"column\":9,\"inDependency\":false,\"source\":\"    if (event.type === 'closed') break\",\"message\":\"The compiler proved the types here and still emitted the slow path.\",\"fix\":\"this is a missed optimization in Bun, not a problem in your code. Please report it.\",\"url\":\"https://bun.com/docs/compiler/explain#missed-optimization\",\"accesses\":1,\"dependencyAccesses\":0,\"calls\":0,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":0.9,\"function\":\"\",\"types\":[],\"family\":\"unproven-type\",\"why\":null}\n{\"rank\":31,\"reason\":\"missed-optimization\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":194,\"column\":50,\"inDependency\":false,\"source\":\"    this.stderrTail = (this.stderrTail + decoder.decode()).slice(-4_096)\",\"message\":\"The compiler proved the types here and still emitted the slow path.\",\"fix\":\"this is a missed optimization in Bun, not a problem in your code. Please report it.\",\"url\":\"https://bun.com/docs/compiler/explain#missed-optimization\",\"accesses\":0,\"dependencyAccesses\":0,\"calls\":1,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":0.8,\"function\":\"readStderr\",\"types\":[],\"family\":\"unproven-type\",\"why\":null}\n{\"rank\":32,\"reason\":\"missed-optimization\",\"limit\":null,\"file\":\"examples/native-window/main.ts\",\"line\":7,\"column\":52,\"inDependency\":false,\"source\":\"const host = await NativeHost.launch({ executable: resolve(executable) })\",\"message\":\"The compiler proved the types here and still emitted the slow path.\",\"fix\":\"this is a missed optimization in Bun, not a problem in your code. Please report it.\",\"url\":\"https://bun.com/docs/compiler/explain#missed-optimization\",\"accesses\":0,\"dependencyAccesses\":0,\"calls\":1,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":0.6,\"function\":\"\",\"types\":[],\"family\":\"unproven-type\",\"why\":null}\n{\"rank\":33,\"reason\":\"missed-optimization\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":73,\"column\":10,\"inDependency\":false,\"source\":\"    if (!isAbsolute(options.executable)) throw new Error('Native host path must be absolute')\",\"message\":\"The compiler proved the types here and still emitted the slow path.\",\"fix\":\"this is a missed optimization in Bun, not a problem in your code. Please report it.\",\"url\":\"https://bun.com/docs/compiler/explain#missed-optimization\",\"accesses\":0,\"dependencyAccesses\":0,\"calls\":1,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":0.2,\"function\":\"launch\",\"types\":[],\"family\":\"unproven-type\",\"why\":null}\n{\"rank\":34,\"reason\":\"unknown-callee-result\",\"limit\":null,\"file\":\"node:fs\",\"line\":474,\"column\":42,\"inDependency\":false,\"source\":\"  appendFileSync = fs.appendFileSync.bind(fs),\",\"message\":\"The value is returned by a call whose callee isn't known at build time.\",\"fix\":\"give the callee a function type.\",\"url\":\"https://bun.com/docs/compiler/explain#unknown-callee-result\",\"accesses\":0,\"dependencyAccesses\":0,\"calls\":1,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":0.1,\"function\":\"\",\"types\":[],\"family\":\"unknown-code\",\"why\":{\"reason\":\"unknown-callee\",\"message\":\"The callee isn't known at build time.\",\"fix\":\"call the function directly.\",\"url\":\"https://bun.com/docs/compiler/explain#unknown-callee\"}}\n{\"rank\":35,\"reason\":\"missed-optimization\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":163,\"column\":19,\"inDependency\":false,\"source\":\"        expected: command.type === 'open' ? 'opened' : 'ack',\",\"message\":\"The compiler proved the types here and still emitted the slow path.\",\"fix\":\"this is a missed optimization in Bun, not a problem in your code. Please report it.\",\"url\":\"https://bun.com/docs/compiler/explain#missed-optimization\",\"accesses\":1,\"dependencyAccesses\":0,\"calls\":0,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":0.1,\"function\":\"\",\"types\":[],\"family\":\"unproven-type\",\"why\":null}\n{\"rank\":36,\"reason\":\"missed-optimization\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":213,\"column\":9,\"inDependency\":false,\"source\":\"    if (event.type === 'ready') {\",\"message\":\"The compiler proved the types here and still emitted the slow path.\",\"fix\":\"this is a missed optimization in Bun, not a problem in your code. Please report it.\",\"url\":\"https://bun.com/docs/compiler/explain#missed-optimization\",\"accesses\":1,\"dependencyAccesses\":0,\"calls\":0,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":0.1,\"function\":\"receive\",\"types\":[],\"family\":\"unproven-type\",\"why\":null}\n{\"rank\":37,\"reason\":\"missed-optimization\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":221,\"column\":25,\"inDependency\":false,\"source\":\"      const requestId = event.id\",\"message\":\"The compiler proved the types here and still emitted the slow path.\",\"fix\":\"this is a missed optimization in Bun, not a problem in your code. Please report it.\",\"url\":\"https://bun.com/docs/compiler/explain#missed-optimization\",\"accesses\":1,\"dependencyAccesses\":0,\"calls\":0,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":0.0,\"function\":\"receive\",\"types\":[],\"family\":\"unproven-type\",\"why\":null}\n{\"rank\":38,\"reason\":\"missed-optimization\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":152,\"column\":46,\"inDependency\":false,\"source\":\"      command = parseCommand({ ...input, id: this.nextId++ })\",\"message\":\"The compiler proved the types here and still emitted the slow path.\",\"fix\":\"this is a missed optimization in Bun, not a problem in your code. Please report it.\",\"url\":\"https://bun.com/docs/compiler/explain#missed-optimization\",\"accesses\":1,\"dependencyAccesses\":0,\"calls\":0,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":0.0,\"function\":\"request\",\"types\":[\"Gac\"],\"family\":\"unproven-type\",\"why\":null}\n{\"rank\":39,\"reason\":\"missed-optimization\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":152,\"column\":51,\"inDependency\":false,\"source\":\"      command = parseCommand({ ...input, id: this.nextId++ })\",\"message\":\"The compiler proved the types here and still emitted the slow path.\",\"fix\":\"this is a missed optimization in Bun, not a problem in your code. Please report it.\",\"url\":\"https://bun.com/docs/compiler/explain#missed-optimization\",\"accesses\":1,\"dependencyAccesses\":0,\"calls\":0,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":0.0,\"function\":\"request\",\"types\":[\"Gac\"],\"family\":\"unproven-type\",\"why\":null}\n{\"rank\":40,\"reason\":\"missed-optimization\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":219,\"column\":37,\"inDependency\":false,\"source\":\"      if (event.type === 'error' && event.id === undefined)\",\"message\":\"The compiler proved the types here and still emitted the slow path.\",\"fix\":\"this is a missed optimization in Bun, not a problem in your code. Please report it.\",\"url\":\"https://bun.com/docs/compiler/explain#missed-optimization\",\"accesses\":1,\"dependencyAccesses\":0,\"calls\":0,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":0.0,\"function\":\"receive\",\"types\":[],\"family\":\"unproven-type\",\"why\":null}\n{\"rank\":41,\"reason\":\"missed-optimization\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":227,\"column\":44,\"inDependency\":false,\"source\":\"        request.reject(new Error(`Native ${event.code}: ${event.message}`))\",\"message\":\"The compiler proved the types here and still emitted the slow path.\",\"fix\":\"this is a missed optimization in Bun, not a problem in your code. Please report it.\",\"url\":\"https://bun.com/docs/compiler/explain#missed-optimization\",\"accesses\":1,\"dependencyAccesses\":0,\"calls\":0,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":0.0,\"function\":\"receive\",\"types\":[],\"family\":\"unproven-type\",\"why\":null}\n{\"rank\":42,\"reason\":\"missed-optimization\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":159,\"column\":45,\"inDependency\":false,\"source\":\"        () => this.fail(new Error(`Native ${command.type} request ${command.id} timed out`)),\",\"message\":\"The compiler proved the types here and still emitted the slow path.\",\"fix\":\"this is a missed optimization in Bun, not a problem in your code. Please report it.\",\"url\":\"https://bun.com/docs/compiler/explain#missed-optimization\",\"accesses\":1,\"dependencyAccesses\":0,\"calls\":0,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":0.0,\"function\":\"\",\"types\":[],\"family\":\"unproven-type\",\"why\":null}\n{\"rank\":43,\"reason\":\"missed-optimization\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":220,\"column\":43,\"inDependency\":false,\"source\":\"        throw new ProtocolError(`Native ${event.code}: ${event.message}`)\",\"message\":\"The compiler proved the types here and still emitted the slow path.\",\"fix\":\"this is a missed optimization in Bun, not a problem in your code. Please report it.\",\"url\":\"https://bun.com/docs/compiler/explain#missed-optimization\",\"accesses\":1,\"dependencyAccesses\":0,\"calls\":0,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":0.0,\"function\":\"receive\",\"types\":[],\"family\":\"unproven-type\",\"why\":null}\n{\"rank\":44,\"reason\":\"missed-optimization\",\"limit\":null,\"file\":\"packages/runtime/src/index.ts\",\"line\":220,\"column\":58,\"inDependency\":false,\"source\":\"        throw new ProtocolError(`Native ${event.code}: ${event.message}`)\",\"message\":\"The compiler proved the types here and still emitted the slow path.\",\"fix\":\"this is a missed optimization in Bun, not a problem in your code. Please report it.\",\"url\":\"https://bun.com/docs/compiler/explain#missed-optimization\",\"accesses\":1,\"dependencyAccesses\":0,\"calls\":0,\"operators\":0,\"fixedByThisAlone\":1,\"estimatedPercent\":0.0,\"function\":\"receive\",\"types\":[],\"family\":\"unproven-type\",\"why\":null}\n",
+    "host-linkage.stderr.log": "",
+    "host-linkage.stdout.log": "\tlinux-vdso.so.1 (0x00007f302a2ca000)\n\tlibxcb.so.1 => /lib/x86_64-linux-gnu/libxcb.so.1 (0x00007f3026602000)\n\tlibxkbcommon.so.0 => /lib/x86_64-linux-gnu/libxkbcommon.so.0 (0x00007f30265b9000)\n\tlibxkbcommon-x11.so.0 => /lib/x86_64-linux-gnu/libxkbcommon-x11.so.0 (0x00007f30265af000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f3026581000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f3026498000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f3026284000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007f302a2cc000)\n\tlibXau.so.6 => /lib/x86_64-linux-gnu/libXau.so.6 (0x00007f302627e000)\n\tlibXdmcp.so.6 => /lib/x86_64-linux-gnu/libXdmcp.so.6 (0x00007f3026276000)\n\tlibxcb-xkb.so.1 => /lib/x86_64-linux-gnu/libxcb-xkb.so.1 (0x00007f3026258000)\n\tlibbsd.so.0 => /lib/x86_64-linux-gnu/libbsd.so.0 (0x00007f3026242000)\n\tlibmd.so.0 => /lib/x86_64-linux-gnu/libmd.so.0 (0x00007f3026231000)\n"
+  },
+  "validation": {
+    "report": "linux-x64.json",
+    "steps": 17,
+    "syntheticInspectorTests": 25,
+    "expectations": 47,
+    "actualAotJitControl": "passed",
+    "buildWindowRecipe": "passed",
+    "buildWindowProfile": "dev",
+    "buildWindowNativeGui": "not-run by build recipe",
+    "buildWindowManifest": {
+      "schemaVersion": 1,
+      "application": {
+        "file": "native-window",
+        "bytes": 70712360,
+        "sha256": "5e82036b819b23e2150f7e36a36a63065b274cfdbac468ec0a76f53109c6b5c9",
+        "inspection": {
+          "format": "elf",
+          "payloadOffset": 67510280,
+          "payloadBytes": 3145951,
+          "flags": 16764,
+          "hasCompiledProgram": true
+        },
+        "runtimeFeatures": {
+          "format": "elf64-le",
+          "section": {
+            "name": ".bun_features",
+            "offset": 19504728,
+            "bytes": 536
+          },
+          "rawRecordHex": "42554e464541540000000000ca000000286069feffffffff0100000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010101010101010101010101000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "trimmedProgramFeatures": false,
+          "removedRangeCount": 202,
+          "jit": "unused",
+          "interpreter": "present",
+          "imageCompiler": "unused",
+          "jitRemovedRanges": {
+            "count": 27,
+            "virtualBytes": 14297303
+          }
+        }
+      },
+      "host": {
+        "file": "bun-native-host",
+        "profile": "dev",
+        "bytes": 109334544,
+        "sha256": "70f3ff32af786f2776fa9a58785795b4435df9124d7c3b28923013371a168c66",
+        "provenance": "Caller-supplied prebuilt host. Match this hash to native build and interaction evidence."
+      },
+      "toolchain": {
+        "schemaVersion": 1,
+        "bun": {
+          "version": "1.4.4-canary.1",
+          "revision": "da867c60bf0bcbf9d6d36994f8ca0efa42075115",
+          "cliRevision": "1.4.4-canary.1+da867c60b",
+          "source": "https://github.com/oven-sh/bun/tree/da867c60bf0bcbf9d6d36994f8ca0efa42075115",
+          "compileArguments": ["compile", "--no-script", "--production"],
+          "archives": {
+            "linux-x64": {
+              "name": "bun-linux-x64.zip",
+              "assetId": 687869747,
+              "sha256": "e8f27b24f74186e87fc0f0f603bdb6b79264dc86a1680da41e2025a3cb3efee0"
+            },
+            "linux-arm64": {
+              "name": "bun-linux-aarch64.zip",
+              "assetId": 687869647,
+              "sha256": "a6e36924c8c6dc63459660e27a48cdd7189a7e888e590272d029de98d169d1e6"
+            },
+            "darwin-x64": {
+              "name": "bun-darwin-x64.zip",
+              "assetId": 687869655,
+              "sha256": "31e8e67eb5b742f7114002047d91c9455e253ad3f3a9d7a8e27d3dd73465b6a4"
+            },
+            "darwin-arm64": {
+              "name": "bun-darwin-aarch64.zip",
+              "assetId": 687869686,
+              "sha256": "67ede5394a7da4a8b1a1eb0788b72325f480bc956cb1155b6be962919c9aa581"
+            },
+            "win32-x64": {
+              "name": "bun-windows-x64.zip",
+              "assetId": 687870574,
+              "sha256": "053e8d9776759e33d372bef6a1bad38aa45be9f4533b64a98668d04328f776ce"
+            },
+            "win32-arm64": {
+              "name": "bun-windows-aarch64.zip",
+              "assetId": 687870891,
+              "sha256": "bf868100b4c4365e6f3240e7209abfb15a4c36cff8b3d8a25381b9529489d810"
+            }
+          }
+        },
+        "rust": {
+          "version": "1.98.1",
+          "components": ["rustfmt", "clippy"]
+        },
+        "gpui": {
+          "repository": "https://github.com/zed-industries/zed",
+          "revision": "ba63a022c9a22ca66d68ef2a8f0bb9b5b0a9984d",
+          "version": "0.2.2"
+        }
+      },
+      "target": {
+        "os": "linux",
+        "architecture": "x64",
+        "osRelease": "6.18.57"
+      },
+      "source": {
+        "commit": "ac4ddbb743e2c79eaa85402a8db1313280fc9954",
+        "dirty": true,
+        "files": [
+          {
+            "path": ".bun-version",
+            "bytes": 15,
+            "sha256": "8e88ab1b8c52566c35461f87112513119175f5c8f898e968f0684aabaa4e4e2b"
+          },
+          {
+            "path": "Cargo.lock",
+            "bytes": 160678,
+            "sha256": "fa0eb3145d8c5e4026c8ba30f5f50260938888d605d32e18ce1511674da85873"
+          },
+          {
+            "path": "Cargo.toml",
+            "bytes": 434,
+            "sha256": "7d08084d373b49b686b8cc1dde3f0b2452cdf2fed338fac69a55052e1e05316d"
+          },
+          {
+            "path": "examples/native-window/main.ts",
+            "bytes": 1051,
+            "sha256": "305be8b434b37bde84f5a77c195d098a04428c5c05184d2430985170cd7e7c7b"
+          },
+          {
+            "path": "native/gpui-host/Cargo.toml",
+            "bytes": 628,
+            "sha256": "55b3955d570c37d41c808e1a9eadd4ab2b5d3231d0c2fb74cb89884eb8ed0b24"
+          },
+          {
+            "path": "native/gpui-host/src/channel.rs",
+            "bytes": 2635,
+            "sha256": "3c86cc4f51a12de97912563972d78da72003366a863108a589215df203d972e9"
+          },
+          {
+            "path": "native/gpui-host/src/evidence.rs",
+            "bytes": 2531,
+            "sha256": "00730f1f0927d8206b992fe2021ac0324370a3c1fd928d8ccacc945f55454f1f"
+          },
+          {
+            "path": "native/gpui-host/src/input.rs",
+            "bytes": 19045,
+            "sha256": "862a5ab22c78d7a4d1f108b43d50ab87b00138a7eff02cd14640876c9aa727c7"
+          },
+          {
+            "path": "native/gpui-host/src/input/paint.rs",
+            "bytes": 5796,
+            "sha256": "8c20773cf2e67b5edd34b5d341de875895b3ab2e1eb39055c040246d0285b470"
+          },
+          {
+            "path": "native/gpui-host/src/main.rs",
+            "bytes": 8505,
+            "sha256": "8c290db36343ba91047dd43ed074c1ea122b63966a4f1bd3dc3a8dfb04091727"
+          },
+          {
+            "path": "native/gpui-host/src/view.rs",
+            "bytes": 2393,
+            "sha256": "012a274d3f5ec61560c376b5836bedf97c2f5b68d257ae2e0b3ffcf95de78962"
+          },
+          {
+            "path": "native/protocol/Cargo.toml",
+            "bytes": 225,
+            "sha256": "b62ea91005cbca4eb770859bac2341e340693c9453ee877486285afc7de7c415"
+          },
+          {
+            "path": "native/protocol/src/lib.rs",
+            "bytes": 7453,
+            "sha256": "ea6cbc0317c5e042669740059ba70bacc13881007ad7ead07d074a5c42ea8d64"
+          },
+          {
+            "path": "native/protocol/src/tests.rs",
+            "bytes": 4189,
+            "sha256": "286c71353069fc37075fc40578d0902aea241a7aeb9672bae6e6eeeff18ec61f"
+          },
+          {
+            "path": "packages/protocol/src/framing.ts",
+            "bytes": 2806,
+            "sha256": "91a8d348152ae987536549666612da76698220eaa21ead3d7969a3dc5155a664"
+          },
+          {
+            "path": "packages/protocol/src/index.ts",
+            "bytes": 244,
+            "sha256": "9bc5f8f83162a3ec273bdf3e40ecde9e77729fd835b7bce317de590b568dad7f"
+          },
+          {
+            "path": "packages/protocol/src/messages.ts",
+            "bytes": 4817,
+            "sha256": "6f5bfceae09a77bf1a6a201d6c544f885cadaa71d9b4aa5c681548d899f903fd"
+          },
+          {
+            "path": "packages/runtime/src/index.ts",
+            "bytes": 9196,
+            "sha256": "4ce55703de83c41cbdda695763ea7734f8259d890c2871add5cca259908a4fca"
+          },
+          {
+            "path": "rust-toolchain.toml",
+            "bytes": 86,
+            "sha256": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+          },
+          {
+            "path": "toolchain.json",
+            "bytes": 1725,
+            "sha256": "cd6be8b67adb3ba5d5cfa2b235f3aff1b11d6fa783dc2f3d1439618d0a574b94"
+          }
+        ]
+      },
+      "compileCommand": [
+        "<pinned-bun>",
+        "compile",
+        "--no-script",
+        "--production",
+        "--explain=json",
+        "<repo>/examples/native-window/main.ts",
+        "--outfile",
+        "<package>/native-window"
+      ],
+      "buildMs": 1467.3995439999999,
+      "launch": {
+        "executable": "native-window",
+        "environment": {
+          "BUN_NATIVE_HOST": "<absolute-output-directory>/bun-native-host"
+        }
+      },
+      "verification": {
+        "aotCompiledProgram": "passed",
+        "jitOmission": "passed",
+        "nativeRendering": "not-run",
+        "osInput": "not-run",
+        "teardown": "not-run",
+        "installation": "not-tested",
+        "signing": "unsigned"
+      }
+    }
+  }
+}

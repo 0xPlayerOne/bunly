@@ -10,25 +10,28 @@
     "check": "bun run format:check && bun run lint && bun run typecheck && bun run check:boundaries && bun run test && bun run build",
     "format": "bun fmt --no-script .",
     "format:check": "bun fmt --no-script --check .",
-    "lint": "oxlint --deny-warnings packages scripts tests examples",
+    "lint": "oxlint --deny-warnings packages scripts tests examples benchmarks",
     "typecheck": "bun --check --tsconfig-override tsconfig.json",
     "check:boundaries": "bun scripts/quality/boundaries.ts",
     "test": "bun test tests",
     "build": "bun scripts/build.ts",
-    "native:check": "cargo check --locked --manifest-path Cargo.toml -p bun-native-protocol",
-    "native:test": "cargo test --locked --manifest-path Cargo.toml -p bun-native-protocol",
-    "native:build": "cargo build --locked --manifest-path Cargo.toml -p bun-native-protocol --release",
-    "format:native": "cargo fmt --manifest-path Cargo.toml",
-    "format:native:check": "cargo fmt --manifest-path Cargo.toml --check",
-    "lint:native": "cargo clippy --locked --manifest-path Cargo.toml -p bun-native-protocol --all-targets -- -D warnings",
-    "foundry:doctor": "bun --bun code-foundry doctor"
+    "native:check": "cargo check --locked --workspace --all-targets",
+    "native:test": "cargo test --locked --workspace --all-targets",
+    "native:build": "cargo build --locked -p bun-native-host --release",
+    "format:native": "cargo fmt --all",
+    "format:native:check": "cargo fmt --all -- --check",
+    "lint:native": "cargo clippy --locked --workspace --all-targets -- -D warnings",
+    "foundry:doctor": "bun --bun code-foundry doctor",
+    "example": "bun examples/native-window/main.ts"
   },
   "devDependencies": {
     "@types/bun": "1.4.4",
     "code-foundry": "1.48.8",
     "oxc-parser": "0.154.0",
     "oxlint": "1.83.0",
-    "@bun-native/protocol": "workspace:*"
+    "@bun-native/protocol": "workspace:*",
+    "@bun-native/runtime": "workspace:*",
+    "@bun-native/core": "workspace:*"
   },
   "engines": {
     "bun": "1.4.4-canary.1"
