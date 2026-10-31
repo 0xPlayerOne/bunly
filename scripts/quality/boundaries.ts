@@ -4,10 +4,14 @@ import { builtinModules } from 'node:module'
 import { dirname, relative, resolve, sep } from 'node:path'
 
 // New packages must deliberately declare their direction here before use.
-const policy: Record<string, { packages: readonly string[]; platform: boolean }> = {
+const policy: Record<
+  string,
+  { packages: readonly string[]; platform: boolean; external?: readonly string[] }
+> = {
   protocol: { packages: [], platform: false },
   runtime: { packages: ['protocol'], platform: true },
   core: { packages: ['protocol', 'runtime'], platform: false },
+  solid: { packages: ['core'], platform: false, external: ['solid-js', 'solid-js/universal'] },
 }
 
 type Manifest = {
@@ -78,6 +82,11 @@ function inspectSource(
 
     const name = moduleName(specifier)
     imports.add(name)
+    if (rule.external?.includes(specifier)) {
+      if (!(name in (owner.manifest.dependencies ?? {})))
+        errors.push(`${file}: undeclared dependency ${name}`)
+      return
+    }
     const dependency = packages.get(name)
     if (!dependency || !rule.packages.includes(dependency.directory)) {
       errors.push(`${file}: forbidden package dependency ${specifier}`)
@@ -165,7 +174,10 @@ export async function checkBoundaries(root: string): Promise<string[]> {
     }
     for (const dependency of Object.keys(pkg.manifest.dependencies ?? {})) {
       const target = packages.get(dependency)
-      if (!target || !rule.packages.includes(target.directory))
+      if (
+        (!target || !rule.packages.includes(target.directory)) &&
+        !rule.external?.some((specifier) => moduleName(specifier) === dependency)
+      )
         errors.push(`${name}: forbidden manifest dependency ${dependency}`)
       if (!imports.has(dependency)) errors.push(`${name}: unused runtime dependency ${dependency}`)
     }

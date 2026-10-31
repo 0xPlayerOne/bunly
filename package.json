@@ -22,7 +22,8 @@
     "format:native:check": "cargo fmt --all -- --check",
     "lint:native": "cargo clippy --locked --workspace --all-targets -- -D warnings",
     "foundry:doctor": "bun --bun code-foundry doctor",
-    "example": "bun examples/native-window/main.ts"
+    "example": "bun examples/native-window/main.ts",
+    "solid:build": "bun scripts/solid-build.ts"
   },
   "devDependencies": {
     "@types/bun": "1.4.4",
@@ -31,7 +32,12 @@
     "oxlint": "1.83.0",
     "@bun-native/protocol": "workspace:*",
     "@bun-native/runtime": "workspace:*",
-    "@bun-native/core": "workspace:*"
+    "@bun-native/core": "workspace:*",
+    "@bun-native/solid": "workspace:*",
+    "solid-js": "1.9.18",
+    "@babel/core": "7.29.7",
+    "@types/babel__core": "7.20.5",
+    "babel-preset-solid": "1.9.16"
   },
   "engines": {
     "bun": "1.4.4-canary.1"

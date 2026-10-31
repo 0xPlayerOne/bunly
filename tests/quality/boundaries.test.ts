@@ -111,3 +111,32 @@ describe('native package boundaries', () => {
     expect(await checkBoundaries(root)).toEqual([])
   })
 })
+
+async function solidFixture(source: string) {
+  const root = await fixture('', '', {})
+  const directory = join(root, 'packages/solid')
+  await mkdir(join(directory, 'src'), { recursive: true })
+  await Bun.write(
+    join(directory, 'package.json'),
+    JSON.stringify({
+      name: '@bun-native/solid',
+      exports: { '.': './src/index.ts' },
+      dependencies: { 'solid-js': '1.9.18' },
+    })
+  )
+  await Bun.write(join(directory, 'src/index.ts'), source)
+  return root
+}
+
+test('Solid may use its universal/reactive exports, with DOM and internal host paths forbidden', async () => {
+  const native = await solidFixture(
+    'import { createSignal } from "solid-js"; import { createRenderer } from "solid-js/universal";'
+  )
+  expect(await checkBoundaries(native)).toEqual([])
+  for (const specifier of ['solid-js/web', 'solid-js/h', '@bun-native/runtime']) {
+    const invalid = await solidFixture(`import * as renderer from "${specifier}";`)
+    expect(
+      (await checkBoundaries(invalid)).some((error) => error.includes('forbidden package'))
+    ).toBe(true)
+  }
+})

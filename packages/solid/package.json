@@ -1,0 +1,14 @@
+{
+  "name": "@bun-native/solid",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./jsx-runtime": "./src/jsx.ts"
+  },
+  "dependencies": {
+    "@bun-native/core": "workspace:*",
+    "solid-js": "1.9.18"
+  }
+}

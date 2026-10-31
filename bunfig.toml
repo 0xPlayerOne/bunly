@@ -2,5 +2,6 @@
 exact = true
 
 [test]
+preload = ["./scripts/solid/test-runtime.ts"]
 root = "./tests"
 coverageThreshold = { lines = 0.8 }
