@@ -190,6 +190,25 @@ def fixture_paint(tree_revision, label, value=""):
     }
 
 
+def javascript_fixture_paint(tree_revision, label, value, input_revision):
+    state = fixture_paint(tree_revision, label, value)
+    state["nodes"][1]["element"]["text"] = "JavaScript consumer"
+    state["nodes"][3]["element"]["text"] = "Update"
+    state["nodes"][4]["element"]["text"] = "Native input from JavaScript"
+    state["nodes"][5]["input_revision"] = input_revision
+    return state
+
+
+def lifecycle_fixture_paint(tree_revision, label):
+    state = fixture_paint(tree_revision, label)
+    state["nodes"] = state["nodes"][:4]
+    state["nodes"][0]["children"] = [2, 3, 4]
+    state["nodes"][1]["element"]["text"] = "Public lifecycle"
+    state["nodes"][3]["element"]["text"] = "Run 1,000 cycles"
+    state["nodes"][3]["element"]["style"]["width"] = 200
+    return state
+
+
 def interrupted(signum, _frame):
     raise InterruptedError(f"Native input driver received signal {signum}")
 

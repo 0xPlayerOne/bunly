@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   native:
-    name: GPUI release and development/AOT input
+    name: GPUI release, native contracts and baselines
     if: vars.CI_BILLING_PAUSED == 'false' && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
     runs-on: ubuntu-24.04
     timeout-minutes: 60
@@ -77,26 +77,95 @@ jobs:
         run: |
           cargo clippy --locked --release --manifest-path Cargo.toml -p bun-native-host --all-targets -- -D warnings
           cargo test --locked --release --manifest-path Cargo.toml -p bun-native-host
-      - name: Development pointer input, text input, paint, close and relaunch
+      - name: Development public API input, stale revision and window lifecycle
         env:
           BUN_NATIVE_HOST: ${{ github.workspace }}/target/release/bun-native-host
         run: |
           xvfb-run --auto-servernum --server-args='-screen 0 1280x800x24 -nolisten tcp' \
             dbus-run-session -- bash scripts/quality/native-linux-session.sh \
             "$NATIVE_EVIDENCE/development" development bun examples/native-window/main.ts
-      - name: Compile and inspect the actual AOT application
+      - name: Development checked-JavaScript consumer input
+        env:
+          BUN_NATIVE_HOST: ${{ github.workspace }}/target/release/bun-native-host
         run: |
-          bun experiments/aot-gpui/build-window.ts \
-            --source "$GITHUB_WORKSPACE" \
-            --host "$GITHUB_WORKSPACE/target/release/bun-native-host" \
-            --host-profile release --outdir "$NATIVE_EVIDENCE/package"
-      - name: AOT pointer input, text input, paint, close and relaunch
+          xvfb-run --auto-servernum --server-args='-screen 0 1280x800x24 -nolisten tcp' \
+            dbus-run-session -- bash scripts/quality/native-linux-session.sh \
+            "$NATIVE_EVIDENCE/javascript-development" javascript bun tests/native/javascript.js
+      - name: Development public listener and subtree lifecycle
+        env:
+          BUN_NATIVE_HOST: ${{ github.workspace }}/target/release/bun-native-host
+        run: |
+          xvfb-run --auto-servernum --server-args='-screen 0 1280x800x24 -nolisten tcp' \
+            dbus-run-session -- bash scripts/quality/native-linux-session.sh \
+            "$NATIVE_EVIDENCE/lifecycle-development" core-lifecycle bun tests/native/public-lifecycle.ts
+      - name: Compile and inspect the five actual AOT entries
+        run: |
+          for entry in native-window input-race bridge javascript core-lifecycle; do
+            outdir="$NATIVE_EVIDENCE/$entry-package"
+            if [[ "$entry" == native-window ]]; then
+              outdir="$NATIVE_EVIDENCE/package"
+            fi
+            bun experiments/aot-gpui/build-window.ts \
+              --source "$GITHUB_WORKSPACE" \
+              --host "$GITHUB_WORKSPACE/target/release/bun-native-host" \
+              --entry "$entry" --host-profile release --outdir "$outdir"
+          done
+      - name: AOT public API pointer, text, keyboard, paint and close
         env:
           BUN_NATIVE_HOST: ${{ runner.temp }}/native-evidence/package/bun-native-host
         run: |
           xvfb-run --auto-servernum --server-args='-screen 0 1280x800x24 -nolisten tcp' \
             dbus-run-session -- bash scripts/quality/native-linux-session.sh \
             "$NATIVE_EVIDENCE/aot" aot "$NATIVE_EVIDENCE/package/native-window"
+      - name: AOT stale native input rejection
+        env:
+          BUN_NATIVE_HOST: ${{ github.workspace }}/target/release/bun-native-host
+        run: |
+          xvfb-run --auto-servernum --server-args='-screen 0 1280x800x24 -nolisten tcp' \
+            dbus-run-session -- bash scripts/quality/native-linux-session.sh \
+            "$NATIVE_EVIDENCE/input-race-aot" aot-input-race "$NATIVE_EVIDENCE/input-race-package/input-race"
+      - name: AOT checked-JavaScript consumer input
+        env:
+          BUN_NATIVE_HOST: ${{ github.workspace }}/target/release/bun-native-host
+        run: |
+          xvfb-run --auto-servernum --server-args='-screen 0 1280x800x24 -nolisten tcp' \
+            dbus-run-session -- bash scripts/quality/native-linux-session.sh \
+            "$NATIVE_EVIDENCE/javascript-aot" aot-javascript "$NATIVE_EVIDENCE/javascript-package/javascript"
+      - name: AOT public listener and subtree lifecycle
+        env:
+          BUN_NATIVE_HOST: ${{ github.workspace }}/target/release/bun-native-host
+        run: |
+          xvfb-run --auto-servernum --server-args='-screen 0 1280x800x24 -nolisten tcp' \
+            dbus-run-session -- bash scripts/quality/native-linux-session.sh \
+            "$NATIVE_EVIDENCE/lifecycle-aot" aot-core-lifecycle "$NATIVE_EVIDENCE/core-lifecycle-package/core-lifecycle"
+      - name: Development bridge acknowledgement measurements
+        timeout-minutes: 4
+        run: |
+          xvfb-run --auto-servernum --server-args='-screen 0 1280x800x24 -nolisten tcp' \
+            dbus-run-session -- bash scripts/quality/native-linux-session.sh \
+            "$NATIVE_EVIDENCE/bridge-development-session" -- bun benchmarks/bridge.ts \
+            --mode development --host "$GITHUB_WORKSPACE/target/release/bun-native-host" \
+            --host-profile release --source "$GITHUB_WORKSPACE" \
+            --output "$NATIVE_EVIDENCE/bridge-development" 2>&1 | tee "$NATIVE_EVIDENCE/bridge-development.log"
+      - name: AOT bridge acknowledgement measurements
+        timeout-minutes: 4
+        run: |
+          xvfb-run --auto-servernum --server-args='-screen 0 1280x800x24 -nolisten tcp' \
+            dbus-run-session -- bash scripts/quality/native-linux-session.sh \
+            "$NATIVE_EVIDENCE/bridge-aot-session" -- "$NATIVE_EVIDENCE/bridge-package/bridge" \
+            --mode aot --aot-manifest "$NATIVE_EVIDENCE/bridge-package/manifest.json" \
+            --host "$GITHUB_WORKSPACE/target/release/bun-native-host" --host-profile release \
+            --source "$GITHUB_WORKSPACE" --output "$NATIVE_EVIDENCE/bridge-aot" \
+            2>&1 | tee "$NATIVE_EVIDENCE/bridge-aot.log"
+      - name: Repeated matched development and AOT release-host baseline
+        timeout-minutes: 8
+        run: |
+          xvfb-run --auto-servernum --server-args='-screen 0 1280x800x24 -nolisten tcp' \
+            dbus-run-session -- bash scripts/quality/native-linux-session.sh \
+            "$NATIVE_EVIDENCE/baseline-session" -- python3 benchmarks/native-baseline.py \
+            --output "$NATIVE_EVIDENCE/baseline" --package "$NATIVE_EVIDENCE/package" \
+            --bun "$(command -v bun)" --samples 5 --warmups 1 --idle-seconds 2 \
+            2>&1 | tee "$NATIVE_EVIDENCE/baseline.log"
       - name: Retain native evidence even after failure
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: ${{ !cancelled() }}
@@ -108,10 +177,31 @@ jobs:
             ${{ runner.temp }}/native-evidence/binary-*.txt
             ${{ runner.temp }}/native-evidence/development/
             ${{ runner.temp }}/native-evidence/aot/
+            ${{ runner.temp }}/native-evidence/input-race-aot/
+            ${{ runner.temp }}/native-evidence/javascript-development/
+            ${{ runner.temp }}/native-evidence/javascript-aot/
+            ${{ runner.temp }}/native-evidence/lifecycle-development/
+            ${{ runner.temp }}/native-evidence/lifecycle-aot/
+            ${{ runner.temp }}/native-evidence/bridge-development/
+            ${{ runner.temp }}/native-evidence/bridge-aot/
+            ${{ runner.temp }}/native-evidence/bridge-*-session/*.log
+            ${{ runner.temp }}/native-evidence/bridge-*.log
+            ${{ runner.temp }}/native-evidence/baseline/
+            ${{ runner.temp }}/native-evidence/baseline-session/*.log
+            ${{ runner.temp }}/native-evidence/baseline.log
             ${{ runner.temp }}/native-evidence/package/manifest.json
             ${{ runner.temp }}/native-evidence/package/*.log
+            ${{ runner.temp }}/native-evidence/*-package/manifest.json
+            ${{ runner.temp }}/native-evidence/*-package/*.log
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 14
       - name: State verified scope
-        run: echo 'The release GPUI host and both the Bun development application and verified machine-code AOT application passed real X11 click/text events, native paint state, OS close and fresh launch using a software GPU. Screenshots and compiler metadata are retained. Physical input, hardware GPU performance and other OS GUIs remain unverified by this lane.' >> "$GITHUB_STEP_SUMMARY"
+        run: |
+          {
+            echo 'One release GPUI host artifact passed the BN1 native suite through both development Bun and inspected machine-code AOT entries.'
+            echo 'Required checks include public API and checked-JavaScript pointer/text input, Enter activation, native stale-input rejection, and 1,000 public listener/subtree lifecycle cycles followed by OS-close cancellation.'
+            echo 'The native input checks use isolated X11, XTest and verified Mesa software rendering. Exact paint trees, screenshots, source/artifact hashes and cleanup reports are retained.'
+            echo 'Bridge acknowledgement timings run with instrumentation disabled; they are not display-presentation timings. The startup/RSS baseline retains one warm-up and five measured fresh-process trials per mode, alternating order, with a two-second idle interval and uncontrolled OS caches.'
+            echo 'These bounded runs do not establish long-term leak freedom, physical input, hardware GPU performance or macOS/Windows native GUI support.'
+          } >> "$GITHUB_STEP_SUMMARY"

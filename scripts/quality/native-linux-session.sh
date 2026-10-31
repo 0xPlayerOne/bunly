@@ -3,16 +3,20 @@
 set -euo pipefail
 
 if (( $# < 3 )); then
-  echo 'usage: native-linux-session.sh NEW_OUTPUT_DIR {development|aot|aot-input-race|--} COMMAND [ARGS...]' >&2
+  echo 'usage: native-linux-session.sh NEW_OUTPUT_DIR MODE COMMAND [ARGS...]' >&2
   exit 1
 fi
 evidence_dir=$1
 mode=$2
 shift 2
-if [[ "$mode" != development && "$mode" != aot && "$mode" != aot-input-race && "$mode" != -- ]]; then
-  echo 'Choose development, aot, aot-input-race, or -- followed by an explicit command' >&2
-  exit 1
-fi
+case "$mode" in
+  development|aot|aot-input-race|javascript|aot-javascript|core-lifecycle|aot-core-lifecycle|--)
+    ;;
+  *)
+    echo 'Choose development, aot, aot-input-race, javascript, aot-javascript, core-lifecycle, aot-core-lifecycle, or -- followed by an explicit command' >&2
+    exit 1
+    ;;
+esac
 mkdir "$evidence_dir"
 evidence_dir=$(cd "$evidence_dir" && pwd)
 export XDG_RUNTIME_DIR="$evidence_dir/runtime"
@@ -63,7 +67,7 @@ fi
 
 # Share the independent full-tree expectations with the repeated baseline.
 snapshot() {
-  python3 - "$@" <<'PY'
+  python3 - "$mode" "$@" <<'PY'
 import importlib.util
 import json
 import sys
@@ -71,15 +75,45 @@ import sys
 spec = importlib.util.spec_from_file_location("native_input_linux", "scripts/quality/native-input-linux.py")
 driver = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(driver)
-print(json.dumps(driver.fixture_paint(int(sys.argv[1]), sys.argv[2], sys.argv[3])))
+if sys.argv[1] in ("javascript", "aot-javascript"):
+    state = driver.javascript_fixture_paint(int(sys.argv[2]), sys.argv[3], sys.argv[4], int(sys.argv[5]))
+elif sys.argv[1] in ("core-lifecycle", "aot-core-lifecycle"):
+    state = driver.lifecycle_fixture_paint(int(sys.argv[2]), sys.argv[3])
+else:
+    state = driver.fixture_paint(int(sys.argv[2]), sys.argv[3], sys.argv[4])
+print(json.dumps(state))
 PY
 }
 
-initial=$(snapshot 1 'Clicks: 0' '')
-execution_mode=$mode
-if [[ "$mode" == aot-input-race ]]; then
+execution_mode=development
+if [[ "$mode" == aot || "$mode" == aot-* ]]; then
   execution_mode=aot
 fi
+
+if [[ "$mode" == core-lifecycle || "$mode" == aot-core-lifecycle ]]; then
+  python3 scripts/quality/native-input-linux.py \
+    --output "$evidence_dir/lifecycle" --mode "$execution_mode" --timeout 60 \
+    --title 'Bun Native public lifecycle' --expect-software-renderer \
+    --expect-initial-render "$(snapshot 1 Ready)" --click 100 130 \
+    --expect-event '{"type":"click","stage":"bun-application","sequence":1,"target":"public-lifecycle"}' \
+    --expect-render "$(snapshot 3002 'Completed 1000 cycles')" -- "$@"
+  exit
+fi
+
+if [[ "$mode" == javascript || "$mode" == aot-javascript ]]; then
+  initial=$(snapshot 2 'Updates: 0' 'JavaScript is ready' 1)
+  driver=(python3 scripts/quality/native-input-linux.py --mode "$execution_mode" --timeout 30
+    --title 'Bun Native JavaScript' --expect-software-renderer --expect-initial-render "$initial")
+  "${driver[@]}" --output "$evidence_dir/click" --click 100 130 \
+    --expect-event '{"type":"click","stage":"bun-application","sequence":1,"target":"javascript-update"}' \
+    --expect-render "$(snapshot 3 'Updates: 1' 'JavaScript is ready' 1)" -- "$@"
+  "${driver[@]}" --output "$evidence_dir/input" --key ctrl+a --text 'Bun Native {nonce}' \
+    --expect-event '{"type":"input","stage":"bun-application","sequence":43,"input_revision":44,"value":"Bun Native {nonce}"}' \
+    --expect-render "$(snapshot 2 'Updates: 0' 'Bun Native {nonce}' 44)" -- "$@"
+  exit
+fi
+
+initial=$(snapshot 1 'Clicks: 0' '')
 driver=(python3 scripts/quality/native-input-linux.py --mode "$execution_mode" --timeout 30
   --title 'Bun Native BN1' --expect-software-renderer --expect-initial-render "$initial")
 

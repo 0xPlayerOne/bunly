@@ -31,16 +31,24 @@ const { values } = parseArgs({
   allowPositionals: false,
 })
 const entry = values.entry
-if (entry !== 'native-window' && entry !== 'input-race' && entry !== 'bridge')
-  throw new Error('--entry must be native-window, input-race or bridge')
+if (
+  entry !== 'native-window' &&
+  entry !== 'input-race' &&
+  entry !== 'bridge' &&
+  entry !== 'javascript' &&
+  entry !== 'core-lifecycle'
+)
+  throw new Error('--entry must be native-window, input-race, bridge, javascript or core-lifecycle')
 const entryPath = {
   'native-window': 'examples/native-window/main.ts',
   'input-race': 'tests/native/input-race.ts',
   bridge: 'benchmarks/bridge.ts',
+  javascript: 'tests/native/javascript.js',
+  'core-lifecycle': 'tests/native/public-lifecycle.ts',
 }[entry]
 if (!values.host || !values.outdir || !isAbsolute(values.host) || !isAbsolute(values.outdir)) {
   throw new Error(
-    'Usage: bun experiments/aot-gpui/build-window.ts --host <absolute-native-host> --outdir <absolute-empty-directory> [--source <repository>] [--entry native-window|input-race|bridge]'
+    'Usage: bun experiments/aot-gpui/build-window.ts --host <absolute-native-host> --outdir <absolute-empty-directory> [--source <repository>] [--entry native-window|input-race|bridge|javascript|core-lifecycle]'
   )
 }
 if (Bun.revision !== toolchain.bun.revision) throw new Error('Use the pinned Bun AOT compiler')
@@ -50,8 +58,8 @@ const hostProfile = values['host-profile'] ?? 'unverified'
 if (!['dev', 'release', 'unverified'].includes(hostProfile)) {
   throw new Error('--host-profile must be dev or release when supplied')
 }
-if (entry === 'bridge' && hostProfile === 'unverified')
-  throw new Error('The bridge benchmark requires --host-profile dev or release')
+if ((entry === 'bridge' || entry === 'core-lifecycle') && hostProfile === 'unverified')
+  throw new Error('Native benchmarks require --host-profile dev or release')
 if (existsSync(outdir) && readdirSync(outdir).length > 0)
   throw new Error('Output directory must be empty')
 const source = resolve(values.source ?? fileURLToPath(new URL('../..', import.meta.url)))

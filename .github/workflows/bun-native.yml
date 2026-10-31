@@ -63,8 +63,8 @@ jobs:
         env:
           PYTHONDONTWRITEBYTECODE: 1
         run: |
-          ruff format --check scripts/quality/native-input-linux.py tests/quality/test_native_input_linux.py
-          ruff check scripts/quality/native-input-linux.py tests/quality/test_native_input_linux.py
+          ruff format --check scripts/quality/native-input-linux.py benchmarks/native-baseline.py tests/quality
+          ruff check scripts/quality/native-input-linux.py benchmarks/native-baseline.py tests/quality
           python3 -m unittest discover -s tests/quality -p 'test_*.py' -v
           bash -n scripts/quality/native-linux-session.sh
 
@@ -181,4 +181,4 @@ jobs:
         run: |
           node -e 'const jobs=JSON.parse(process.env.RESULTS); const failed=Object.entries(jobs).filter(([,job])=>job.result!=="success"); if(failed.length){console.error(failed);process.exit(1)}'
       - name: Describe coverage precisely
-        run: echo 'Passed source, portable contracts, AOT/native interoperability, dependency audits and actual Linux native input/paint/close checks for both development and verified machine-code AOT applications using the release GPUI host and a software GPU. Physical input, hardware GPU performance and macOS/Windows GUI remain separate evidence.' >> "$GITHUB_STEP_SUMMARY"
+        run: echo 'Passed source and checked-JavaScript contracts, portable protocol checks, AOT/native interoperability, dependency audits, and the release-host Linux native suite. The suite requires development/AOT public API and JavaScript input, stale-input rejection, public listener lifecycle, bridge acknowledgement diagnostics and a repeated startup/RSS baseline. Input uses XTest and actual GPUI paint evidence on a software GPU. Physical input, hardware GPU performance and macOS/Windows GUI remain separate evidence.' >> "$GITHUB_STEP_SUMMARY"
